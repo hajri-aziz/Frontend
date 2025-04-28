@@ -1,0 +1,81 @@
+<div class="w-[1440px] h-[996px] relative bg-[#f4feff] overflow-hidden">
+    <!-- Sidebar -->
+    <div class="absolute left-0 top-0 w-80 h-full">
+      <!-- Logo -->
+      <img src="assets/logo.png" alt="Zenaura Logo" class="w-28 h-28 absolute left-[60px] top-[34px]">
+      <div class="absolute left-[176px] top-[68px] text-[#172048] text-2xl font-medium font-poppins">Zenaura</div>
+      <!-- Profile Image -->
+      <img src="assets/Ellipse 23.png" alt="Profile Image" class="w-28 h-28 absolute left-[100px] top-[195px] rounded-full">
+      <!-- Admin Label -->
+      <div class="absolute left-[103px] top-[323px] text-[#444444] text-2xl font-medium font-poppins tracking-wide">Admin</div>
+      <!-- Navigation Links -->
+      <div class="flex flex-col space-y-8 absolute left-[44px] top-[433px]">
+        <!-- Dashboard -->
+        <div class="flex items-center space-x-4">
+          <div class="w-2.5 h-2.5 bg-[#04789d] rounded-full"></div>
+          <img src="assets/Vector.svg" alt="Profile Image" class="w-6 h-7  ">
+          <a routerLink="/dashboard" class="text-[#04789d] text-2xl font-medium font-poppins tracking-wide">Dashboard</a>
+        </div>
+        <!-- Créer un compte -->
+        <div class="flex items-center space-x-4">
+          <div class="relative">
+            <img src="assets/person_raised_hand.svg" alt="Profile Image" class="w-6 h-7  ">
+          </div>
+          <a routerLink="/create-account" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Créer un compte</a>
+        </div>
+        <!-- Liste Utilisateurs -->
+        <div class="flex items-center space-x-4">
+            <img src="assets/Vector (1).svg" alt="Profile Image" class="w-6 h-7  ">
+          <a routerLink="/user-list" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Liste Utilisateurs</a>
+        </div>
+      </div>
+      <!-- Logout -->
+      <div class="flex items-center space-x-4 absolute left-[54px] top-[906px]">
+        <img src="assets/deco.svg" alt="Profile Image" class="w-6 h-7  ">
+        <a routerLink="/home" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Se déconnecter</a>
+      </div>
+    </div>
+  
+    <!-- Main Content -->
+    <div class="absolute left-[320px] top-[195px]">
+      <!-- Divider -->
+      <div class="w-[783.02px] h-0 origin-top-left rotate-[89.63deg] border-2 border-[#eaeaea]"></div>
+      <!-- Welcome Text -->
+      <div class="absolute left-[78px] top-[25px] text-[#444444] text-3xl font-bold font-poppins tracking-wider">BIENVENUE Admin,</div>
+      <!-- Profile Information Card -->
+      <div class="absolute left-[62px] top-[103px] w-[890px] h-[639px] bg-[#f4feff] rounded-[30px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] border border-[#56e0e0]">
+        <div class="absolute left-[60px] top-[58px] text-[#636262] text-3xl font-medium font-poppins tracking-wider">Informations personnelles</div>
+        <div class="absolute left-[60px] top-[126px] flex flex-col space-y-7">
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">Nom:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide">Aziz hajri</span>
+          </div>
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">Nom anonyme:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide">shinigami</span>
+          </div>
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">Email:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide">aziz.hajri@esprit.com</span>
+          </div>
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">Ville:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide"></span>
+          </div>
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">État:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide"></span>
+          </div>
+          <div class="flex space-x-2">
+            <span class="text-[#444444] text-2xl font-semibold font-poppins tracking-wide">Profession:</span>
+            <span class="text-[#444444] text-2xl font-normal font-poppins tracking-wide"></span>
+          </div>
+        </div>
+        <!-- Edit Profile Button -->
+        <button routerLink="/edit-profile" class="absolute left-[60px] bottom-[60px] w-48 h-10 px-12 py-3 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white text-xl font-semibold font-poppins rounded-2xl shadow-[0px_4.708333492279053px_7.062500476837158px_rgba(1,115,153,0.20)]">
+          Modifier le profil
+        </button>
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenaura - Accueil</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#f4feff] overflow-hidden">
+    <div class="max-w-[1458px] mx-auto relative min-h-screen">
+        <!-- Navbar -->
+        <nav class="flex items-center justify-between px-6 py-4">
+            <div class="flex items-center space-x-4">
+                <img src="assets/logo.png" alt="Logo" class="w-28 h-28">
+                <span class="text-indigo-950 text-2xl font-medium font-poppins">Zenaura</span>
+            </div>
+            <div class="flex items-center space-x-32">
+                <div class="flex space-x-8 text-zinc-500 text-xl font-semibold font-poppins">
+                    <a routerLink="/" class="hover:text-teal-500">Accueil</a>
+                    <a routerLink="/services" class="hover:text-teal-500">Services</a>
+                    <a href="#" class="hover:text-teal-500">Contact</a>
+                    <a routerLink="/about" class="hover:text-teal-500">À propos de nous</a>
+                </div>
+                <button (click)="navigateToLogin()" class="px-12 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
+            </div>
+        </nav>
+
+        <!-- Hero Section -->
+        <section class="flex items-start justify-between mt-20 px-6">
+            <div class="flex flex-col space-y-10 max-w-[597px]">
+                <h1 class="text-5xl font-bold font-poppins">
+                    <span class="text-zinc-900">Esprits sains, vies heureuses</span>
+                    <span class="text-teal-300"> Conseil en santé mentale</span>
+                </h1>
+                <p class="text-neutral-400 text-xl font-medium font-poppins max-w-[551px]">
+                    Bienvenue sur Zenaura, votre refuge pour le bien-être mental ! Explorez des ressources, trouvez du soutien et connectez-vous avec une communauté dédiée au bien-être.
+                </p>
+                <button class="w-60 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">
+                    Commencer
+                </button>
+            </div>
+            <img src="assets/home1.png" alt="Hero Image" class="w-[675px] h-[513px]">
+        </section>
+
+        <!-- Why Choose Us (Circles Included) -->
+        <section class="mt-40 text-center relative">
+            <h2 class="text-5xl font-bold font-poppins">
+                <span class="text-zinc-900">Pourquoi nos consultants en</span>
+                <span class="text-teal-300"> santé mentale</span>
+                <span class="text-zinc-900"> sont le meilleur choix</span>
+            </h2>
+            <div class="flex justify-center space-x-8 mt-20 relative">
+                <div class="w-96 h-[525px] bg-slate-50 rounded-2xl shadow-lg"></div>
+                <div class="w-96 h-[525px] bg-gradient-to-b from-teal-300 to-sky-700 rounded-2xl shadow-lg"></div>
+                <div class="w-96 h-[525px] bg-slate-50 rounded-2xl shadow-lg"></div>
+                <!-- Circles -->
+                <div class="w-40 h-40 absolute left-[215px] top-[150px] bg-white rounded-full"></div>
+                <img src="assets/doctor (1) 1.svg" alt="Circle 1" class="w-40 h-40 absolute left-[215px] top-[150px] shadow-lg">
+                <div class="w-40 h-40 absolute left-[642px] top-[150px] bg-white rounded-full"></div>
+                <img src="assets/medicine (1) 1.png" alt="Circle 2" class="w-24 h-28 absolute left-[678px] top-[178px]">
+                <div class="w-40 h-40 absolute left-[1070px] top-[150px] bg-white rounded-full"></div>
+                <img src="assets/hospital (1) 1.png" alt="Circle 3" class="w-24 h-28 absolute left-[1099px] top-[181px]">
+            </div>
+            <div class="flex justify-center space-x-72 mt-10">
+                <div class="text-indigo-950 text-xl font-bold font-poppins">Discuter avec un expert</div>
+                <div class="text-indigo-950 text-xl font-bold font-poppins">Identité anonyme</div>
+                <div class="text-indigo-950 text-xl font-bold font-poppins">Visiter les hôpitaux</div>
+            </div>
+            <div class="flex justify-center space-x-72 mt-4 text-xs font-normal font-poppins text-indigo-950">
+                <p class="w-80 text-sky-800">Vous pouvez vous connecter directement, rapidement et facilement, sans aucun doute sur la qualité de la consultation et du traitement proposés.</p>
+                <p class="w-80 text-sky-800">Parlez des problèmes de santé que vous ressentez et n’hésitez pas à demander le traitement approprié.</p>
+                <p class="w-80 text-sky-800">Bénéficiez de services prioritaires dans les hôpitaux avec Haidoc, qui vous permet de gagner du temps.</p>
+            </div>
+            <!-- Navigation Dots -->
+            <div class="flex justify-center space-x-2 mt-10">
+                <div class="w-5 h-5 border border-sky-800 rounded-full"></div>
+                <div class="w-5 h-5 bg-sky-800 rounded-full"></div>
+                <div class="w-5 h-5 border border-sky-800 rounded-full"></div>
+            </div>
+        </section>
+
+        <!-- Mind Mates Section -->
+        <section class="mt-40 bg-gradient-to-b from-blue-100 to-teal-100 py-20">
+            <div class="flex justify-center space-x-8 px-6">
+                <div class="w-96 h-[477px] bg-slate-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
+                    <div class="w-32 h-32 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
+                    <img src="assets/Ellipse 21.png" alt="Avatar" class="w-32 h-32 -mt-32 rounded-full">
+                    <div class="text-indigo-950 text-xl font-semibold font-poppins mt-4">Vos bienfaiteurs</div>
+                    <div class="flex space-x-2 mt-4">
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Dépression</button>
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
+                    </div>
+                    <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins max-w-72">Je crois que la santé mentale est un élément clé du bien-être et de la réussite.</p>
+                    <button class="mt-4 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">Commencer le chat</button>
+                </div>
+                <div class="w-96 h-[477px] bg-slate-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
+                    <div class="w-32 h-32 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
+                    <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-32 h-32 -mt-32 rounded-full">
+                    <div class="text-indigo-950 text-xl font-semibold font-poppins mt-4">Mains secourables</div>
+                    <div class="flex space-x-2 mt-4">
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiété</button>
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Dépression</button>
+                    </div>
+                    <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins max-w-72">Je crois en la poursuite de ma passion, et je la réalise en créant des êtres conscients.</p>
+                    <button class="mt-4 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">Commencer le chat</button>
+                </div>
+                <div class="w-96 h-[477px] bg-slate-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
+                    <div class="w-32 h-32 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
+                    <img src="assets/Ellipse 20.png" alt="Avatar" class="w-32 h-32 -mt-32 rounded-full">
+                    <div class="text-indigo-950 text-xl font-semibold font-poppins mt-4">Sourire</div>
+                    <div class="flex space-x-2 mt-4">
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiété</button>
+                        <button class="px-4 py-2 bg-slate-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
+                    </div>
+                    <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins max-w-72">Mon objectif est de créer un environnement thérapeutique sûr pour les clients.</p>
+                    <button class="mt-4 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">Commencer le chat</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us -->
+        <section class="mt-40 text-center">
+            <h3 class="text-3xl font-bold font-manrope">À propos de nous</h3>
+            <h2 class="mt-10 text-5xl font-bold font-poppins">
+                <span class="text-zinc-900">Découvrez les visages derrière notre cabinet de</span>
+                <span class="text-teal-300"> santé mentale</span>
+            </h2>
+            <p class="mt-10 text-neutral-400 text-lg font-normal font-poppins max-w-[689px] mx-auto">
+                Rencontrez nos Mind Mates bienveillants chez Zenaura. Experts dans divers domaines, ils sont là pour vous accompagner sur votre chemin vers le bien-être mental.
+            </p>
+            <div class="flex justify-center mt-10">
+                <button class="px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">
+                    Explorer les experts
+                </button>
+            </div>
+            <div class="relative mt-20">
+                <img src="assets/DP.svg" alt="Team" class="w-80 h-56 absolute left-[200px] top-[-100px]">
+                <img src="assets/image 14.png" alt="Team" class="w-52 h-48 absolute left-[150px] top-[-300px]">
+            </div>
+        </section>
+
+        <!-- Community Posts -->
+        <section class="mt-80 text-center">
+            <h2 class="text-5xl font-bold font-poppins">
+                <span class="text-zinc-900">Communauté</span>
+                <span class="text-teal-300"> Publications anonymes</span>
+            </h2>
+            <div class="mt-20 space-y-10 px-6">
+                <div class="p-10 bg-gradient-to-l from-sky-800 via-teal-400 to-teal-300 rounded-[30px] shadow-lg flex items-center">
+                    <img src="assets/Ellipse 22.png" alt="Avatar" class="w-40 h-40 rounded-full">
+                    <div class="ml-10 text-left">
+                        <h4 class="text-white text-4xl font-semibold font-poppins">Mystery Mind</h4>
+                        <p class="text-white text-xl font-normal font-poppins max-w-[661px] mt-4">
+                            Hi, i had been suffering from depression since past few months then i came across this website, and consulted...
+                        </p>
+                        <div class="flex space-x-4 mt-4 text-white text-2xl font-semibold font-poppins">
+                            <span>View</span>
+                            <span>Reply</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-10 rounded-[30px] shadow-lg border-2 border-neutral-400 flex items-center">
+                    <img src="assets/Ellipse 23.png" alt="Avatar" class="w-32 h-32 rounded-full">
+                    <div class="ml-10 text-left">
+                        <h4 class="text-zinc-900 text-3xl font-semibold font-poppins">Micky Mouse</h4>
+                        <p class="text-neutral-400 text-lg font-normal font-poppins max-w-[661px] mt-4">
+                            Really thankful to the MindMates! They helped me overcome my situation of anxiety...
+                        </p>
+                        <div class="flex space-x-4 mt-4 text-zinc-900 text-2xl font-semibold font-poppins">
+                            <span>View</span>
+                            <span>Reply</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-10 rounded-[30px] shadow-lg border-2 border-neutral-400 flex items-center">
+                    <img src="assets/Ellipse 24.png" alt="Avatar" class="w-32 h-32 rounded-full">
+                    <div class="ml-10 text-left">
+                        <h4 class="text-zinc-900 text-3xl font-semibold font-poppins">Shadow Light</h4>
+                        <p class="text-neutral-400 text-lg font-normal font-poppins max-w-[661px] mt-4">
+                            Few months back, I was just like a typical depressed person, but now, I’m a whole new person...
+                        </p>
+                        <div class="flex space-x-4 mt-4 text-zinc-900 text-2xl font-semibold font-poppins">
+                            <span>View</span>
+                            <span>Reply</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="mt-10 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-3xl font-semibold font-poppins rounded-[40px] shadow-lg">
+                Voir tout
+            </button>
+        </section>
+
+        <!-- Find Your Mind Mate -->
+        <section class="mt-40 flex items-center justify-between px-6">
+            <img src="assets/Mind Mate Search.svg" alt="Mind Mate" class="w-[589px] h-[554px] rounded-lg">
+            <div class="flex flex-col space-y-10 max-w-[597px]">
+                <h2 class="text-6xl font-bold font-poppins">
+                    <span class="text-zinc-900">Trouvez votre</span><br>
+                    <span class="text-sky-800">Mind Mate</span>
+                    <span class="text-zinc-900"> idéal</span>
+                </h2>
+                <button class="w-64 px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">
+                    Explorer les experts
+                </button>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="mt-40 bg-gradient-to-b from-blue-100 to-teal-100 py-20">
+            <h2 class="text-cyan-700 text-5xl font-bold font-poppins text-center">FAQ’S</h2>
+            <div class="mt-10 max-w-[602px] mx-auto space-y-4">
+                <div class="p-4 bg-gradient-to-r from-teal-400 to-cyan-700 rounded-2xl">
+                    <p class="text-sky-800 text-xl font-normal font-poppins">Is my data and information safe with Mindmates?</p>
+                </div>
+                <div class="p-4 bg-blue-100 rounded-2xl border-4 border-teal-400">
+                    <p class="text-sky-800 text-xl font-normal font-poppins">Is it free to use?</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="mt-40 bg-[#f4feff] py-10">
+            <div class="flex justify-between px-6">
+                <div>
+                    <img src="assets/logo.png" alt="Logo" class="w-28 h-28">
+                    <span class="text-indigo-950 text-3xl font-medium font-poppins">Zenaura</span>
+                    <p class="mt-4 text-neutral-400 text-xl font-medium font-poppins max-w-[320px]">
+                        Vous êtes arrivé à la fin, mais ce n’est pas la fin ! Rappelez-vous, vous n’êtes pas seul.
+                    </p>
+                </div>
+                <div class="flex space-x-20">
+                    <div>
+                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Services</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                            <li>Psychothérapie</li>
+                            <li>Conseil en santé mentale</li>
+                            <li>Groupes de soutien</li>
+                            <li>Gestion de cas</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Contact</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                            <li>+14 5464 8272</li>
+                            <li>rona@domain.com</li>
+                            <li>Lazyy Tower 192, Burn Swiss</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Liens</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                            <li>Politique de confidentialité</li>
+                            <li>Conditions d'utilisation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-10 border-t-4 border-slate-50">
+            <p class="text-center text-indigo-950 text-lg font-normal font-poppins">Droits d’auteur 2025 @Zenaura Tous droits réservés</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenaura - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white overflow-hidden">
+    <div class="max-w-[1440px] mx-auto relative h-[1024px]">
+        <!-- Background Section -->
+        <div class="absolute left-[-52px] top-0 w-[773px] h-[1037px] bg-[#f4feff]"></div>
+
+        <!-- Login Section -->
+        <section class="flex items-center justify-end h-full">
+            <div class="w-[669px] h-[659px] absolute left-4 top-48">
+                <img src="assets/LoginImage.png" alt="Decorative Image" class="w-full h-full object-cover">
+            </div>
+            <div class="w-[640px] pr-10 flex flex-col space-y-9">
+                <!-- Welcome Text -->
+                <h1 class="text-gray-600 text-4xl font-extrabold font-poppins tracking-[3.6px]">BIENVENUE!</h1>
+                <p class="text-gray-600 text-2xl font-normal font-nunito tracking-widest">
+                    Vous avez déjà un compte ? <span class="font-semibold">Se connecter</span>
+                </p>
+
+                <!-- Form -->
+                <div class="flex flex-col space-y-9">
+                    <!-- Username Field -->
+                    <div class="flex flex-col space-y-4">
+                        <label class="text-gray-600 text-3xl font-semibold font-poppins tracking-[2.8px]">Nom d'utilisateur</label>
+                        <div class="w-full px-8 py-6 bg-white rounded-[80px] border-2 border-indigo-400 flex items-center">
+                            <input type="text" placeholder="deniel123@gmail.com" class="w-full text-indigo-200 text-2xl font-normal font-nunito tracking-widest bg-transparent outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Password Field -->
+                    <div class="flex flex-col space-y-4">
+                        <label class="text-gray-600 text-3xl font-semibold font-poppins tracking-[2.8px]">Mot de passe</label>
+                        <div class="w-full px-8 py-6 bg-white rounded-[80px] border-2 border-indigo-400 flex items-center justify-between">
+                            <input type="password" placeholder="••••••" class="w-full text-indigo-200 text-2xl font-normal font-nunito tracking-widest bg-transparent outline-none">
+                            <div class="w-8 h-8 flex items-center justify-center">
+                                <!-- Placeholder for eye icon -->
+                                <div class="w-7 h-5 bg-indigo-300"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Forgot Password -->
+                    <div class="flex justify-between items-center">
+                        <div></div>
+                        <a href="#" class="text-sky-800 text-xl font-semibold font-nunito tracking-widest">Mot de passe oublié ?</a>
+                    </div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="flex flex-col space-y-4">
+                    <!-- Sign Up Button -->
+                    <button (click)="navigateToDashboard()" class="w-72 h-16 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-3xl font-extrabold font-nunito tracking-[2.8px] rounded-[80px] shadow-[4px_8px_12px_rgba(78,99,141,0.06)]">
+                      Se connecter
+                    </button>
+                    <!-- Login Button -->
+                    <button (click)="navigateToLogin()" class="w-72 h-16 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-3xl font-extrabold font-nunito tracking-[2.8px] rounded-[80px] shadow-[4px_8px_12px_rgba(78,99,141,0.06)]">
+                    Créer un compte 
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
