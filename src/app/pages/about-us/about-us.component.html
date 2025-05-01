@@ -7,48 +7,62 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
-<body class="bg-white overflow-hidden">
-    <div class="max-w-[1440px] mx-auto relative min-h-screen">
+<body class="bg-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Navbar -->
-        <nav class="flex items-center justify-between px-6 py-4">
+        <nav class="flex items-center justify-between py-4">
             <div class="flex items-center space-x-4">
-                <img src="assets/logo.png" alt="Logo" class="w-28 h-28">
-                <span class="text-indigo-950 text-2xl font-medium font-poppins">Zenaura</span>
+                <img src="assets/logo.png" alt="Logo" class="w-16 h-16 sm:w-20 sm:h-20">
+                <span class="text-indigo-950 text-lg sm:text-xl font-medium font-poppins">Zenaura</span>
             </div>
-            <div class="flex items-center space-x-32">
-                <div class="flex space-x-8 text-zinc-500 text-xl font-semibold font-poppins">
-                    <a routerLink="/" class="hover:text-teal-500">Accueil</a>
-                    <a routerLink="/services" class="hover:text-teal-500">Services</a>
+            <div class="hidden md:flex items-center space-x-8">
+                <div class="flex space-x-6 text-zinc-500 text-base font-semibold font-poppins">
+                    <a href="/" class="hover:text-teal-500">Accueil</a>
+                    <a href="/services" class="hover:text-teal-500">Services</a>
                     <a href="#" class="hover:text-teal-500">Contact</a>
-                    <a routerLink="/about" class="hover:text-teal-500">À propos de nous</a>
+                    <a href="/about" class="hover:text-teal-500">À propos de nous</a>
                 </div>
-                <button (click)="navigateToLogin()" class="px-12 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-xl font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
+                <button (click)="navigateToLogin()" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
             </div>
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-indigo-950 focus:outline-none">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
         </nav>
+        <!-- Mobile Menu (Hidden by Default) -->
+        <div class="md:hidden hidden flex-col space-y-2 text-zinc-500 text-base font-semibold font-poppins bg-white p-4 rounded-lg">
+            <a href="/" class="hover:text-teal-500">Accueil</a>
+            <a href="/services" class="hover:text-teal-500">Services</a>
+            <a href="#" class="hover:text-teal-500">Contact</a>
+            <a href="/about" class="hover:text-teal-500">À propos de nous</a>
+            <button  (click)="navigateToLogin()" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
+        </div>
 
         <!-- Header Section -->
-        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-20 px-6">
+        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
             <div class="flex items-center space-x-4">
-                <div class="w-1 h-52 bg-sky-800"></div>
-                <h1 class="text-sky-800 text-5xl font-extrabold font-manrope">About Us</h1>
+                <div class="w-1 h-32 sm:h-40 bg-sky-800"></div>
+                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">About Us</h1>
             </div>
-            <p class="mt-10 text-sky-800 text-lg font-normal font-poppins max-w-[1140px]">
+            <p class="mt-6 text-sky-800 text-base sm:text-lg font-normal font-poppins max-w-4xl">
                 Our website offers a range of services to support your well-being, including online therapy sessions with licensed professionals, community forums for peer support, and personalized mental health assessments.
             </p>
         </section>
 
         <!-- Consultants Section -->
-        <section class="mt-20 bg-white py-20 px-6">
-            <h2 class="text-center text-5xl font-bold font-poppins max-w-[763px] mx-auto">
+        <section class="mt-12 sm:mt-16 bg-white py-12 sm:py-16 px-4 sm:px-6">
+            <h2 class="text-center text-3xl sm:text-4xl md:text-5xl font-bold font-poppins max-w-3xl mx-auto">
                 <span class="text-zinc-900">Discover the Faces Behind Our</span>
                 <span class="text-teal-300"> Mental Health</span>
                 <span class="text-zinc-900"> Consultants</span>
             </h2>
-            <div class="flex justify-center space-x-8 mt-20">
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 20.png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Your Well Wisher</div>
-                    <div class="mt-4 text-zinc-600 text-xl font-normal font-poppins max-w-72">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 20.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Your Well Wisher</div>
+                    <div class="mt-4 text-zinc-600 text-sm sm:text-base font-normal font-poppins">
                         <p>M.Phil Clinical Psychology (RCI)</p>
                         <p>Diploma in Guidance & Counseling</p>
                         <p>M.A. Psychology</p>
@@ -56,14 +70,14 @@
                         <p class="font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Helping hands</div>
-                    <div class="mt-4 text-neutral-400 text-xl font-normal font-poppins max-w-72">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Helping hands</div>
+                    <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                         <p>M.A Counselling Psychology</p>
                         <p>APA Member</p>
                         <p>Certified NLP practitioner</p>
@@ -71,14 +85,14 @@
                         <p class="text-zinc-600 font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 21.png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Smiley</div>
-                    <div class="mt-4 text-neutral-400 text-xl font-normal font-poppins max-w-72">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Smiley</div>
+                    <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                         <p>M. Phil. Clinical Psychology</p>
                         <p>Masters in Psychology</p>
                         <p>Bachelors in Psychology</p>
@@ -86,65 +100,63 @@
                         <p class="text-zinc-600 font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
-            </div>
-            <div class="flex justify-center space-x-8 mt-10">
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 22.png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Peaceful mind</div>
-                    <div class="mt-4 text-neutral-400 text-xl font-normal font-poppins max-w-72">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 22.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Peaceful mind</div>
+                    <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                         <p>PhD Psychology</p>
                         <p>Masters in Psychology</p>
                         <p class="text-zinc-600 font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 21.png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Zuzutsu Kaisen</div>
-                    <div class="mt-4 text-neutral-400 text-xl font-normal font-poppins max-w-72">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Zuzutsu Kaisen</div>
+                    <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                         <p>Phd in Clinical Psychology</p>
                         <p>APA Certified</p>
                         <p class="text-zinc-600 font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
-                <div class="w-96 h-[559px] bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
-                    <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-28 h-32 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-2xl font-semibold font-poppins mt-4">Yours truly</div>
-                    <div class="mt-4 text-neutral-400 text-xl font-normal font-poppins max-w-72">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
+                    <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Yours truly</div>
+                    <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                         <p>Masters in Counseling Psychology</p>
                         <p class="text-zinc-600 font-semibold">Address:</p>
                         <p>Any City, XYZ MP</p>
                     </div>
-                    <button class="mt-4 w-44 h-9 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-[30px]">
+                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
                         Start Chat
                     </button>
                 </div>
             </div>
-            <div class="flex justify-center mt-10">
-                <button class="w-72 h-16 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-2xl font-bold font-poppins rounded-full">
+            <div class="flex justify-center mt-8">
+                <button class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
                     View All
                 </button>
             </div>
         </section>
 
         <!-- Mind Mates Section -->
-        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-20 px-6">
-            <div class="flex items-center justify-between">
-                <img src="assets/Doctor-pana 1.png" alt="Mind Mates" class="w-[610px] h-[613px]">
-                <div class="flex flex-col space-y-10 max-w-[635px]">
-                    <h2 class="text-sky-800 text-6xl font-bold font-poppins text-center">Zenaura</h2>
-                    <p class="text-sky-800 text-3xl font-normal font-poppins">
+        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <img src="assets/Doctor-pana 1.png" alt="Mind Mates" class="w-full max-w-md h-auto mb-8 md:mb-0 md:mr-8">
+                <div class="flex flex-col space-y-6 max-w-lg">
+                    <h2 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-bold font-poppins text-center md:text-left">Zenaura</h2>
+                    <p class="text-sky-800 text-base sm:text-lg md:text-xl font-normal font-poppins">
                         Our mental health counselors are highly qualified professionals with extensive experience in their fields, providing expert support and guidance tailored to individual needs. Trust in their expertise to navigate and address your mental health concerns effectively.
                     </p>
                 </div>
@@ -152,19 +164,21 @@
         </section>
 
         <!-- Footer -->
-        <footer class="bg-gray-50 py-10">
-            <div class="flex justify-between px-6">
-                <div>
-                    <img src="assets/logo.png" alt="Logo" class="w-28 h-28">
-                    <span class="text-indigo-950 text-3xl font-medium font-poppins">Zenaura</span>
-                    <p class="mt-4 text-neutral-400 text-xl font-medium font-poppins max-w-[320px]">
+        <footer class="bg-gray-50 py-12">
+            <div class="flex flex-col md:flex-row justify-between space-y-8 md:space-y-0 px-4 sm:px-6">
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="flex items-center space-x-4">
+                        <img src="assets/logo.png" alt="Logo" class="w-16 h-16">
+                        <span class="text-indigo-950 text-xl font-medium font-poppins">Zenaura</span>
+                    </div>
+                    <p class="mt-4 text-neutral-400 text-base font-medium font-poppins text-center md:text-left max-w-xs">
                         Vous êtes arrivé à la fin, mais ce n’est pas la fin ! Rappelez-vous, vous n’êtes pas seul. Cherchez du soutien, ouvrez-vous et donnez la priorité à votre bien-être mental.
                     </p>
                 </div>
-                <div class="flex space-x-20">
+                <div class="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
                     <div>
-                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Services</h3>
-                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Services</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
                             <li>Psychothérapie</li>
                             <li>Conseil en santé mentale</li>
                             <li>Groupes de soutien</li>
@@ -172,24 +186,24 @@
                         </ul>
                     </div>
                     <div>
-                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Contact</h3>
-                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Contact</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
                             <li>+14 5464 8272</li>
                             <li>rona@domain.com</li>
                             <li>Lazyy Tower 192, Burn Swiss</li>
                         </ul>
                     </div>
                     <div>
-                        <h3 class="text-indigo-950 text-3xl font-bold font-manrope">Liens</h3>
-                        <ul class="mt-4 space-y-2 text-indigo-950 text-lg font-normal font-poppins">
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Liens</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
                             <li>Politique de confidentialité</li>
                             <li>Conditions d'utilisation</li>
                         </ul>
                     </div>
                 </div>
             </div>
-            <hr class="my-10 border-t-4 border-gray-50">
-            <p class="text-center text-indigo-950 text-lg font-normal font-poppins">Droits d’auteur 2025 @Zenaura Tous droits réservés</p>
+            <hr class="my-8 border-t-2 border-gray-50">
+            <p class="text-center text-indigo-950 text-base font-normal font-poppins">Droits d’auteur 2025 @Zenaura Tous droits réservés</p>
         </footer>
     </div>
 </body>
