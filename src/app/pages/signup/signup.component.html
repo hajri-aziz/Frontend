@@ -1,15 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zenaura - Sign Up</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Nunito:wght@400;600;700;800&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
 </head>
+
 <body class="bg-white min-h-screen flex items-center justify-center overflow-x-hidden">
-    <div class="relative flex flex-col md:flex-row items-center justify-center max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
-        <!-- Background Section (Decorative) -->
+    <div class="relative flex flex-col md:flex-row items-center justify-center max-w-5xl mx-auto p-4 sm:p-6 md:p-8">
         <div class="absolute inset-0 bg-[#f4feff] opacity-5 md:w-1/2 hidden md:block"></div>
 
         <!-- Signup Image -->
@@ -19,55 +22,110 @@
 
         <!-- Signup Form Section -->
         <div class="w-full md:w-1/2 z-10 bg-white p-6 sm:p-8 rounded-lg shadow-lg">
-            <!-- Welcome Text -->
-            <h1 class="text-gray-600 text-2xl sm:text-3xl font-extrabold font-poppins tracking-wider mb-2">WELCOME!</h1>
+            <h1 class="text-gray-600 text-2xl sm:text-3xl font-extrabold font-poppins tracking-wider mb-2">BIENVENUE!
+            </h1>
             <p class="text-gray-600 text-lg sm:text-xl font-normal font-nunito tracking-wider mb-6">
-                Don’t have an account? <span class="text-sky-800 font-bold">Sign up</span>
+                Déjà utilisateur ! <span class="font-semibold"><a href="/login"
+                        class="text-indigo-600">Connexion</a></span>
             </p>
 
             <!-- Form -->
-            <form class="flex flex-col space-y-6">
-                <!-- Full Name Field -->
-                <div class="flex flex-col space-y-2">
-                    <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Full Name</label>
-                    <div class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
-                        <input type="text" placeholder="Hajri Aziz" class="w-full text-indigo-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none">
+            <form [formGroup]="signupForm" (ngSubmit)="onSubmit()" class="flex flex-col space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Nom -->
+                    <div class="flex flex-col space-y-2">
+                        <label
+                            class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Nom</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
+                            <input type="text" formControlName="nom" placeholder="Hajri"
+                                class="w-full max-w-[400px] text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Prénom -->
+                    <div class="flex flex-col space-y-2">
+                        <label
+                            class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Prénom</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
+                            <input type="text" formControlName="prenom" placeholder="Aziz"
+                                class="w-full h1 text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Email Field -->
-                <div class="flex flex-col space-y-2">
-                    <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Email</label>
-                    <div class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
-                        <input type="email" placeholder="aziz.hajri@esprit.tn" class="w-full text-indigo-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Email -->
+                    <div class="flex flex-col space-y-2">
+                        <label
+                            class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Email</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
+                            <input type="email" formControlName="email" placeholder="aziz.hajri@esprit.tn"
+                                class="w-full h1 text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Mot de
+                            passe</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center justify-between">
+                            <input type="password" formControlName="password" placeholder="*********"
+                                class="w-full h1 text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
+                            <div class="w-6 h-6 flex items-center justify-center">
+                                <img src="assets/Vector.png">
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Password Field -->
-                <div class="flex flex-col space-y-2">
-                    <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Password</label>
-                    <div class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center justify-between">
-                        <input type="password" placeholder="••••••" class="w-full text-indigo-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none">
-                        <div class="w-6 h-6 flex items-center justify-center">
-                            <img src="assets/Vector.png" >
-                            <div class="w-5 h-4 bg-indigo-300"></div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <!-- Date de naissance -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Date
+                            de naissance</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
+                            <input type="date" formControlName="dateNaissance"
+                                class="w-full h1 text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
+                        </div>
+                    </div>
+
+                    <!-- Téléphone -->
+                    <div class="flex flex-col space-y-2">
+                        <label class="text-gray-600 text-lg sm:text-xl font-semibold font-poppins tracking-wider">Numéro
+                            de téléphone</label>
+                        <div
+                            class="w-full px-4 py-3 bg-white rounded-full border-2 border-indigo-400 flex items-center">
+                            <input type="tel" formControlName="telephone" placeholder="12345678"
+                                class="w-full h1 text-black-200 text-base sm:text-lg font-normal font-nunito tracking-wider bg-transparent outline-none"
+                                required>
                         </div>
                     </div>
                 </div>
 
                 <!-- Buttons -->
-                <div class="flex flex-col space-y-4">
-                    <!-- Sign Up Button -->
-                    <button type="submit" class="w-full sm:w-64 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg sm:text-xl font-extrabold font-nunito tracking-wider rounded-full shadow-md hover:shadow-lg transition">
-                        Sign Up
+                <div class="flex flex-row justify-center items-center space-x-4 mt-6">
+                    <button type="submit"
+                        class="w-full h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-extrabold font-nunito tracking-wider rounded-full shadow-md hover:shadow-lg transition">
+                        S'inscrire
                     </button>
-                    <!-- Sign In with Google Button -->
-                    <button type="button" class="w-full sm:w-64 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg sm:text-xl font-bold font-roboto rounded-full shadow-md hover:shadow-lg transition">
-                        Sign in with Google
+                    <button type="button"
+                        class="w-full h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-roboto rounded-full shadow-md hover:shadow-lg transition">
+                        S'inscrire avec Google
                     </button>
                 </div>
             </form>
         </div>
     </div>
 </body>
+
 </html>
