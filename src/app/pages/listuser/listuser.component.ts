@@ -3,6 +3,7 @@ import { UserService } from 'src/app/services/user.service';
 import { EditUserDialogComponent } from '../edit-user-dialog/edit-user-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Overlay } from '@angular/cdk/overlay';
+import { DeleteConfirmationDialogComponent } from '../delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 @Component({
   selector: 'app-listuser',
@@ -47,19 +48,28 @@ onEditUser(user: any) {
   });
 }
 
-onDeleteUser(user: any) {
-  if (confirm(`Voulez-vous vraiment supprimer ${user.nom} ?`)) {
-    this.userService.deleteUser(user._id).subscribe({
-      next: (response: any) => {
-        console.log(`Utilisateur ${user.nom} supprimé avec succès.`);
-        this.loadUsers(); // Recharge la liste après suppression
-      },
-      error: (err: any) => {
-        console.error(`Erreur lors de la suppression de ${user.nom} :`, err);
-      }
+  onDeleteUser(user: any) {
+    const dialogRef = this.dialog.open(DeleteConfirmationDialogComponent, {
+      data: { userName: user.nom },
+      width: '400px',
+      height: 'auto',
+      disableClose: true
     });
-  }
+  dialogRef.afterClosed().subscribe(result => {
+    if (result) {
+      this.userService.deleteUser(user._id).subscribe({
+        next: (response: any) => {
+          console.log(`Utilisateur ${user.nom} supprimé avec succès.`);
+          this.loadUsers(); // Recharge la liste après suppression
+        },
+        error: (err: any) => {
+          console.error(`Erreur lors de la suppression de ${user.nom} :`, err);
+        }
+      });
+    }
+  });
 }
+
 
 
 }

@@ -16,6 +16,7 @@ import { SidebarComponent } from './pages/sidebar/sidebar.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
 import { EditUserDialogComponent } from './pages/edit-user-dialog/edit-user-dialog.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { DeleteConfirmationDialogComponent } from './pages/delete-confirmation-dialog/delete-confirmation-dialog.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     CreateAccountComponent,
     SidebarComponent,
     ListuserComponent,
-    EditUserDialogComponent
+    EditUserDialogComponent,
+    DeleteConfirmationDialogComponent
   ],
   imports: [
     BrowserModule,
