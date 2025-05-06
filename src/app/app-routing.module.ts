@@ -11,6 +11,8 @@ import { SocialFeedComponent } from './pages/social-feed/social-feed.component';
 import { DispEventComponent } from  './pages/disp-event/disp-event.component';
 import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
 
+import { SidebarComponent } from './pages/sidebar/sidebar.component';
+import { ListuserComponent } from './pages/listuser/listuser.component';
 
 
 const routes: Routes = [
@@ -19,14 +21,15 @@ const routes: Routes = [
   { path: 'about', component: AboutUsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  //{ path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
   {path: 'social-feed', component: SocialFeedComponent },
   {path: 'dispo-event', component: DispEventComponent },
   {path: 'rendz-inscri', component: RendzInscriComponent },
+  { path: 'list-user', component: ListuserComponent },
 
-
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: '' },
+  
 ];
 
 @NgModule({

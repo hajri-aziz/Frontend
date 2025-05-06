@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Frontend';
+  constructor(public router: Router) {}
+
+  // Méthode pour déterminer si on est sur une page sans sidebar
+  shouldShowSidebar(): boolean {
+    const hiddenRoutes = ['/login', '/signup'];
+    return !hiddenRoutes.includes(this.router.url);
+  }
 }

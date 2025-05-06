@@ -1,0 +1,77 @@
+<div class="flex flex-col md:flex-row max-w-7xl mx-auto font-sans">
+    <!-- Sidebar -->
+    <div class="w-full md:w-64 bg-[#f4feff] md:h-screen md:fixed border-r border-gray-300 shadow-md">
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden p-4 text-[#172048] focus:outline-none" (click)="toggleMenu()">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+            </svg>
+        </button>
+
+        <!-- Sidebar Content -->
+        <div class="hidden md:flex flex-col h-full p-6">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 mb-6">
+                <img src="assets/logo.png" alt="Zenaura Logo" class="w-14 h-14" />
+                <span class="text-xl font-semibold text-[#172048]">Zenaura</span>
+            </div>
+
+            <!-- Profile -->
+            <div class="flex flex-col items-center my-10">
+                <img src="assets/Ellipse 23.png" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
+                <p class="text-gray-700 text-lg font-semibold mt-4">Admin</p>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="flex flex-col space-y-4">
+                <!-- Dashboard -->
+                <a routerLink="/dashboard"
+                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+            'text-[#04789d] font-semibold': router.url === '/dashboard',
+            'text-gray-600': router.url !== '/dashboard'
+          }">
+                    <ng-container *ngIf="router.url === '/dashboard'">
+                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                    </ng-container>
+                    <img src="assets/Vector.svg" alt="Dashboard Icon" class="w-5 h-5" />
+                    <span>Dashboard</span>
+                </a>
+
+                <!-- Créer un compte -->
+                <a routerLink="/create-account"
+                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+            'text-[#04789d] font-semibold': router.url === '/create-account',
+            'text-gray-600': router.url !== '/create-account'
+          }">
+                    <ng-container *ngIf="router.url === '/create-account'">
+                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                    </ng-container>
+                    <img src="assets/person_raised_hand.svg" alt="Create Account Icon" class="w-5 h-5" />
+                    <span>Créer un compte</span>
+                </a>
+
+                <!-- Liste Utilisateurs -->
+                <a routerLink="list-user"
+                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+            'text-[#04789d] font-semibold': router.url === '/user-list',
+            'text-gray-600': router.url !== '/user-list'
+          }">
+                    <ng-container *ngIf="router.url === '/user-list'">
+                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                    </ng-container>
+                    <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
+                    <span>Liste Utilisateurs</span>
+                </a>
+            </nav>
+
+            <!-- Logout -->
+            <div class="mt-auto pt-10 border-t border-gray-300">
+                <a routerLink="/home"
+                    class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
+                    <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
+                    <span>Se déconnecter</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
