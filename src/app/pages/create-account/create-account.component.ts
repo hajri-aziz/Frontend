@@ -39,7 +39,7 @@ export class CreateAccountComponent implements OnInit {
     this.userService.register(user).subscribe(
       (response) => {
         console.log('Utilisateur ajouté avec succès:', response);
-        // Vous pouvez rediriger l'utilisateur ou réinitialiser le formulaire ici
+        // Vous pouvez rediriger l'utilisateur ou réinitial3.0iser le formulaire ici
       },
       (error) => {
         console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);

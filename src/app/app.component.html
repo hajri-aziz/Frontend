@@ -1,9 +1,11 @@
 <!-- Layout avec sidebar -->
-<div *ngIf="shouldShowSidebar(); else simpleLayout" class="flex">
+<div *ngIf="shouldShowSidebar(); else simpleLayout" class="flex min-h-screen bg-[#f4feff]">
+    <!-- Sidebar -->
     <div class="w-64 h-screen fixed bg-[#f4feff] border-r border-[#cbd5e0]">
         <app-sidebar></app-sidebar>
     </div>
 
+    <!-- Contenu principal -->
     <div class="flex-1 p-6 ml-64">
         <router-outlet></router-outlet>
     </div>

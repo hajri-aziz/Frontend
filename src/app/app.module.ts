@@ -14,6 +14,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from './pages/sidebar/sidebar.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
+import { EditUserDialogComponent } from './pages/edit-user-dialog/edit-user-dialog.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -27,14 +29,16 @@ import { ListuserComponent } from './pages/listuser/listuser.component';
     DashboardComponent,
     CreateAccountComponent,
     SidebarComponent,
-    ListuserComponent
+    ListuserComponent,
+    EditUserDialogComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
-      FormsModule, 
+    FormsModule, 
+       MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
