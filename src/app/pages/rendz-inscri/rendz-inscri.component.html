@@ -1,0 +1,235 @@
+<div class="w-full min-h-screen bg-[#f4feff] overflow-hidden">
+  <div class="flex flex-col lg:flex-row">
+    <!-- Sidebar (Left Sidebar) -->
+    <div class="w-full lg:w-80 h-auto lg:h-screen bg-[#f4feff] flex flex-col items-center lg:items-start pt-6 lg:pt-0 order-1 lg:order-1">
+      <!-- Logo -->
+      <img src="assets/images/logo.png" alt="Zenaura Logo" class="w-28 h-28 mt-6 lg:mt-[25px] ml-0 lg:ml-[57px]">
+      <div class="text-[#172048] text-2xl font-medium font-poppins text-center lg:text-left mt-4 lg:mt-[34px] lg:ml-[173px]">Zenaura</div>
+      <!-- Profile Image -->
+      <img src="assets/images/profile.png" alt="Profile Image" class="w-28 h-28 rounded-full mt-10 lg:mt-[195px] ml-0 lg:ml-[100px]">
+      <!-- Username -->
+      <div class="text-[#444444] text-2xl font-medium font-poppins tracking-wide mt-4 lg:mt-[330px] ml-0 lg:ml-[79px] text-center lg:text-left">HappyHappy</div>
+      <!-- Navigation Links -->
+      <div class="flex flex-col space-y-8 mt-8 lg:mt-[433px] w-full lg:w-auto px-4 lg:px-0">
+        <!-- Dashboard -->
+        <div class="flex items-center space-x-4 justify-center lg:justify-start">
+          <div class="w-6 h-7 bg-[#707070]"></div>
+          <a routerLink="/dashboard" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Dashboard</a>
+        </div>
+        <!-- Questionnaire -->
+        <div class="flex items-center space-x-4 justify-center lg:justify-start relative">
+          <div class="w-2.5 h-2.5 bg-[#707070] rounded-full ml-0 lg:ml-[44px]"></div>
+          <div class="w-10 h-10 bg-[#d9d9d9] absolute left-1/2 lg:left-[71px] transform -translate-x-1/2 lg:translate-x-0">
+            <div class="w-9 h-9 bg-[#707070] absolute left-[2.42px] top-[1.71px]"></div>
+          </div>
+          <a routerLink="/social-feed" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Questionnaire</a>
+        </div>
+        <!-- État d'esprit quotidien -->
+        <div class="flex items-center space-x-4 justify-center lg:justify-start">
+          <div class="w-8 h-7 bg-[#707070] ml-0 lg:ml-[76px]"></div>
+          <a routerLink="/daily-mood" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">État d'esprit<br class="lg:hidden"> quotidien</a>
+        </div>
+        <!-- Accueil -->
+        <div class="flex items-center space-x-4 justify-center lg:justify-start">
+          <div class="w-8 h-7 bg-[#707070] ml-0 lg:ml-[76px]"></div>
+          <a routerLink="/home" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Accueil</a>
+        </div>
+        <!-- Se déconnecter -->
+        <div class="flex items-center space-x-4 justify-center lg:justify-start mb-8 lg:mb-0 mt-8 lg:mt-[904px]">
+          <div class="w-6 h-6 outline outline-[3px] outline-[#707070] ml-0 lg:ml-[44px]"></div>
+          <a routerLink="/login" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Se déconnecter</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content: Patient Space -->
+    <div class="flex-1 flex justify-center px-4 py-6 lg:py-0 lg:pt-[162.8px] order-2 lg:order-2">
+      <div class="w-full max-w-[627.77px]">
+        <h1 class="text-3xl font-bold font-['Helvetica_Neue'] text-[#080808] mb-6">Espace Patient</h1>
+        <!-- Tabs -->
+        <div class="border-b border-[#cfd0d4]">
+          <ul class="flex -mb-px">
+            <li class="w-1/2 text-center">
+              <a 
+                [class]="activeTab === 'appointments' ? 'border-[#04789d] text-[#04789d] border-b-2 py-2 px-4 inline-block w-full font-medium font-poppins' : 'text-[#66676b] hover:text-[#444444] py-2 px-4 inline-block w-full font-poppins'"
+                (click)="setActiveTab('appointments')"
+              >
+                Rendez-vous
+              </a>
+            </li>
+            <li class="w-1/2 text-center">
+              <a 
+                [class]="activeTab === 'events' ? 'border-[#04789d] text-[#04789d] border-b-2 py-2 px-4 inline-block w-full font-medium font-poppins' : 'text-[#66676b] hover:text-[#444444] py-2 px-4 inline-block w-full font-poppins'"
+                (click)="setActiveTab('events')"
+              >
+                Événements
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Appointments Tab Content -->
+        <div *ngIf="activeTab === 'appointments'" class="mt-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Calendar Card -->
+            <div class="md:col-span-1 bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+              <div class="p-6 border-b border-[#cfd0d4]">
+                <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Sélectionnez une date</h2>
+                <p class="text-sm text-[#66676b] font-poppins">Consultez les disponibilités des psychologues</p>
+              </div>
+              <div class="p-6">
+                <div class="grid grid-cols-7 gap-1">
+                  <div *ngFor="let day of calendarDays" class="text-center">
+                    <button 
+                      class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-poppins"
+                      [class.bg-[#04789d]]="isSelectedDate(day.date)"
+                      [class.text-white]="isSelectedDate(day.date)"
+                      [class.text-[#8c939c]]="day.isOtherMonth"
+                      [class.hover:bg-[#f1f2f5]]="!isSelectedDate(day.date)"
+                      (click)="selectDate(day.date)"
+                    >
+                      {{ day.day }}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Availabilities Card -->
+            <div class="md:col-span-2 bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+              <div class="p-6 border-b border-[#cfd0d4]">
+                <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Disponibilités</h2>
+                <p class="text-sm text-[#66676b] font-poppins">
+                  {{ selectedDate ? (selectedDate | date:'dd MMMM yyyy':'':'fr') : 'Sélectionnez une date pour voir les disponibilités' }}
+                </p>
+              </div>
+              <div class="p-6">
+                <div *ngIf="selectedDate; else noDateSelected">
+                  <div *ngIf="availabilities.length > 0; else noAvailabilities" class="space-y-4">
+                    <div *ngFor="let slot of availabilities" class="flex items-center justify-between p-4 border border-[#c4c4c4] rounded-lg">
+                      <div>
+                        <h3 class="font-medium font-['Helvetica_Neue'] text-[#080808]">{{ slot.psychologist }}</h3>
+                        <p class="text-sm text-[#66676b] font-poppins">{{ slot.startTime }} - {{ slot.endTime }}</p>
+                      </div>
+                      <button 
+                        class="flex items-center justify-center w-[160px] h-10 px-4 py-2 bg-[#04789d] text-white font-medium font-poppins text-sm rounded-md hover:bg-[#04789d]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
+                        (click)="openAppointmentModal(slot)"
+                      >
+                        Prendre rendez-vous
+                      </button>
+                    </div>
+                  </div>
+                  <ng-template #noAvailabilities>
+                    <div class="text-center py-8 text-[#66676b] font-poppins">
+                      Aucune disponibilité pour cette date
+                    </div>
+                  </ng-template>
+                </div>
+                <ng-template #noDateSelected>
+                  <div class="text-center py-8 text-[#66676b] font-poppins">
+                    Veuillez sélectionner une date pour voir les disponibilités
+                  </div>
+                </ng-template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Events Tab Content -->
+        <div *ngIf="activeTab === 'events'" class="mt-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div *ngFor="let event of events" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+              <div class="p-6 border-b border-[#cfd0d4]">
+                <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">{{ event.title }}</h2>
+                <p class="text-sm text-[#66676b] font-poppins">{{ event.date | date:'dd MMMM yyyy':'':'fr' }} à {{ event.startTime }}</p>
+              </div>
+              <div class="p-6">
+                <p class="text-sm mb-4 font-poppins text-[#080808]">{{ event.description }}</p>
+                <div class="flex items-center gap-4 text-sm text-[#66676b] font-poppins">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
+                      <circle cx="12" cy="12" r="10"></circle>
+                      <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    {{ event.duration }} min
+                  </div>
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    {{ event.registered }}/{{ event.capacity }}
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button 
+                    class="flex items-center justify-center w-full h-10 px-4 py-2 bg-[#04789d] text-white font-medium font-poppins text-sm rounded-md hover:bg-[#04789d]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    (click)="registerForEvent(event)"
+                    [disabled]="event.registered >= event.capacity"
+                  >
+                    S'inscrire
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appointment Modal -->
+        <div *ngIf="showAppointmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] w-full max-w-md mx-4">
+            <div class="p-6 border-b border-[#cfd0d4]">
+              <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Prendre rendez-vous</h2>
+              <p class="text-sm text-[#66676b] font-poppins">
+                Avec {{ selectedSlot?.psychologist }} le {{ selectedDate | date:'dd MMMM yyyy':'':'fr' }} de {{ selectedSlot?.startTime }} à {{ selectedSlot?.endTime }}
+              </p>
+            </div>
+            <div class="p-6">
+              <form [formGroup]="appointmentForm" (ngSubmit)="submitAppointment()">
+                <div class="space-y-4">
+                  <div class="space-y-2">
+                    <label for="appointment-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure</label>
+                    <select
+                      id="appointment-time"
+                      formControlName="heure"
+                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      <option *ngFor="let time of availableTimes" [value]="time">{{ time }}</option>
+                    </select>
+                  </div>
+                  <div class="space-y-2">
+                    <label for="appointment-reason" class="block text-sm font-medium font-poppins text-[#080808]">Motif</label>
+                    <textarea
+                      id="appointment-reason"
+                      formControlName="motif"
+                      placeholder="Motif du rendez-vous"
+                      class="flex min-h-[100px] w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                    ></textarea>
+                  </div>
+                </div>
+                <div class="flex justify-end gap-4 mt-6">
+                  <button 
+                    type="button" 
+                    class="flex items-center justify-center w-[100px] h-10 px-4 py-2 border border-[#c4c4c4] bg-white text-[#080808] font-medium font-poppins text-sm rounded-md hover:bg-[#f1f2f5] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
+                    (click)="closeAppointmentModal()"
+                  >
+                    Annuler
+                  </button>
+                  <button 
+                    type="submit" 
+                    class="flex items-center justify-center w-[100px] h-10 px-4 py-2 bg-[#04789d] text-white font-medium font-poppins text-sm rounded-md hover:bg-[#04789d]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    [disabled]="appointmentForm.invalid"
+                  >
+                    Confirmer
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

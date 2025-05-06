@@ -7,6 +7,10 @@ import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
+import { SocialFeedComponent } from './pages/social-feed/social-feed.component';
+import { DispEventComponent } from  './pages/disp-event/disp-event.component';
+import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
+
 
 
 const routes: Routes = [
@@ -17,6 +21,11 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
+  {path: 'social-feed', component: SocialFeedComponent },
+  {path: 'dispo-event', component: DispEventComponent },
+  {path: 'rendz-inscri', component: RendzInscriComponent },
+
+
   { path: '**', redirectTo: '' }
 ];
 

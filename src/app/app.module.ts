@@ -9,6 +9,11 @@ import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
+import { SocialFeedComponent } from './pages/social-feed/social-feed.component';
+import { DispEventComponent } from './pages/disp-event/disp-event.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -18,11 +23,16 @@ import { CreateAccountComponent } from './pages/create-account/create-account.co
     LoginComponent,
     SignupComponent,
     DashboardComponent,
-    CreateAccountComponent
+    CreateAccountComponent,
+    SocialFeedComponent,
+    DispEventComponent,
+    RendzInscriComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]

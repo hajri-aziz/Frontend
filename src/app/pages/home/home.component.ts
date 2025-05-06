@@ -12,4 +12,15 @@ export class HomeComponent {
   navigateToLogin() {
     this.router.navigate(['/login']);
   }
+  
+  navigatechat() {
+    this.router.navigate(['/social-feed']);
+  }
+  navigate() {
+    this.router.navigate(['/dispo-event']);
+  }
+  navigate1() {
+    this.router.navigate(['/rendz-inscri']);
+  }
+ 
 }
