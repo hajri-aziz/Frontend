@@ -1,1 +1,17 @@
-<router-outlet></router-outlet>
+<!-- Layout avec sidebar -->
+<div *ngIf="shouldShowSidebar(); else simpleLayout" class="flex">
+    <div class="w-64 h-screen fixed bg-[#f4feff] border-r border-[#cbd5e0]">
+        <app-sidebar></app-sidebar>
+    </div>
+
+    <div class="flex-1 p-6 ml-64">
+        <router-outlet></router-outlet>
+    </div>
+</div>
+
+<!-- Layout sans sidebar (login, signup) -->
+<ng-template #simpleLayout>
+    <div class="min-h-screen flex items-center justify-center bg-white">
+        <router-outlet></router-outlet>
+    </div>
+</ng-template>

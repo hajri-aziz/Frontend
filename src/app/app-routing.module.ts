@@ -7,6 +7,8 @@ import { LoginComponent } from './pages/login/login.component';
 import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
+import { SidebarComponent } from './pages/sidebar/sidebar.component';
+import { ListuserComponent } from './pages/listuser/listuser.component';
 
 
 const routes: Routes = [
@@ -15,9 +17,12 @@ const routes: Routes = [
   { path: 'about', component: AboutUsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  { path: 'dashboard', component: DashboardComponent },
+  //{ path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
-  { path: '**', redirectTo: '' }
+  { path: 'list-user', component: ListuserComponent },
+
+  { path: '**', redirectTo: '' },
+  
 ];
 
 @NgModule({

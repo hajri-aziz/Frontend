@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
+  isMobileMenuOpen = false;
+
+  // Méthode pour basculer l'état du menu mobile
+  toggleMenu() {
+    this.isMobileMenuOpen = !this.isMobileMenuOpen;
+  }
 
 }

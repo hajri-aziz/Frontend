@@ -12,6 +12,8 @@ import { CreateAccountComponent } from './pages/create-account/create-account.co
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
+import { SidebarComponent } from './pages/sidebar/sidebar.component';
+import { ListuserComponent } from './pages/listuser/listuser.component';
 
 
 @NgModule({
@@ -23,7 +25,9 @@ import { FormsModule } from '@angular/forms';
     LoginComponent,
     SignupComponent,
     DashboardComponent,
-    CreateAccountComponent
+    CreateAccountComponent,
+    SidebarComponent,
+    ListuserComponent
   ],
   imports: [
     BrowserModule,
