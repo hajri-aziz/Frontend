@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 
@@ -26,10 +27,14 @@ export class LoginComponent {
       password: this.password
     };
 
+console.log(credentials);
     this.userService.login(credentials).subscribe({
       next: (res:any) => {
         console.log('Connexion réussie :', res);
         localStorage.setItem('token', res.token);
+        localStorage.setItem('userId', res.user.id);// Enregistre l'ID de l'utilisateur dans le localStorage
+        console.log('Token enregistré :', res.token);
+        console.log('ID de l\'utilisateur enregistré :', res.user.id);
         alert('Connexion réussie.');
         this.router.navigate(['/dashboard']); // Redirige vers une autre page
       },

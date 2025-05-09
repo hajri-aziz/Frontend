@@ -9,6 +9,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
 import { SidebarComponent } from './pages/sidebar/sidebar.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
+import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 
 
 const routes: Routes = [
@@ -20,6 +21,7 @@ const routes: Routes = [
   //{ path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
   { path: 'list-user', component: ListuserComponent },
+  { path: 'editprofil', component: EditprofilComponent },
 
   { path: '**', redirectTo: '' },
   

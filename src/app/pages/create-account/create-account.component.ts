@@ -23,23 +23,21 @@ export class CreateAccountComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(8)]],
       dateNaissance: ['', Validators.required],
       telephone: ['', [Validators.required, Validators.pattern('^[0-9]{8}$')]],
-      role: ['user', Validators.required] // Rôle par défaut 'user', peut être 'admin' si l'admin crée un utilisateur.
+      role: ['', Validators.required], // Rôle par défaut 'user', peut être 'admin' si l'admin crée un utilisateur.
+      isApproved: [false]
     });
   }
 
   // Méthode appelée lors de la soumission du formulaire
-  onAddUserSubmit(): void {
-    if (this.createAccountForm.invalid) {
-      return; // Ne rien faire si le formulaire est invalide
-    }
+onAddUserSubmit(): void {
+  const user = this.createAccountForm.value; // Récupère les données du formulaire
+  console.log(user.isApproved);
 
-    const user = this.createAccountForm.value; // Récupère les données du formulaire
-
-    // Si vous avez un service UserService pour ajouter un utilisateur, vous pouvez l'utiliser ici
+    // Envoi des données du formulaire au service pour l'ajout d'utilisateur
     this.userService.register(user).subscribe(
       (response) => {
         console.log('Utilisateur ajouté avec succès:', response);
-        // Vous pouvez rediriger l'utilisateur ou réinitial3.0iser le formulaire ici
+        // Réinitialiser le formulaire ou effectuer toute autre action (par exemple, redirection)
       },
       (error) => {
         console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
@@ -47,7 +45,5 @@ export class CreateAccountComponent implements OnInit {
     );
   }
 
-  get f() {
-    return this.createAccountForm.controls;
-  }
+  
 }
