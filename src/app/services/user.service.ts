@@ -53,8 +53,10 @@ export class UserService {
     return this.http.delete(`${this.apiUrl}/user/delete/${id}`, { headers: this.getAuthHeaders() });
   }
 
-  updateUser(id: string, data: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/user/update/${id}`, data, { headers: this.getAuthHeaders() });
+  updateUser(id: string, formData: FormData): Observable<any> {
+    return this.http.put(`${this.apiUrl}/user/update/${id}`, formData, {
+      headers: this.getAuthHeaders(),
+    });
   }
 
   authorizeUser(id: string): Observable<any> {

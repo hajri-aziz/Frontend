@@ -1,0 +1,84 @@
+<!-- Boîte de dialogue -->
+<div style="
+    background: white;
+    padding: 24px;
+    width: 450px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+">
+
+    <!-- Entête avec bouton de fermeture -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px;">
+        <h2 style="font-family: 'Inter', sans-serif; color: #53709e; font-size: 1.25rem; font-weight: bold;">
+            Modifier l'utilisateur
+        </h2>
+    </div>
+
+        <button (click)="onCancel()"
+            style="background: none; border: none; font-size: 20px; cursor: pointer;">×</button>
+    </div>
+
+    <form [formGroup]="editForm" (ngSubmit)="onSave()">
+        <div style="margin-bottom: 12px;">
+            <label>Nom:</label><br />
+            <input formControlName="nom"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label>Prénom:</label><br />
+            <input formControlName="prenom"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label>Email:</label><br />
+            <input formControlName="email"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label>Rôle:</label><br />
+            <input formControlName="role"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 12px;">
+            <label>Téléphone:</label><br />
+            <input formControlName="telephone"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        </div>
+
+        <div style="margin-bottom: 20px;">
+            <label>isApproved:</label><br />
+            <select formControlName="isApproved"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <option [value]="true">Oui</option>
+                <option [value]="false">Non</option>
+            </select>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+            <button type="button" (click)="onCancel()"
+                style="background-color: #ccc; padding: 8px 16px; border: none; border-radius: 4px;">Annuler</button>
+            <button type="submit"
+                style="background-color: #2196F3; color: white; padding: 8px 16px; border: none; border-radius: 4px;">Enregistrer</button>
+        </div>
+    </form>
+</div>
+
+<!-- Fond semi-transparent -->
+<div style="position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;">
+</div>

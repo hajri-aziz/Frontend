@@ -15,6 +15,7 @@ import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { AvailabilityComponent } from './pages/disp-event/availability/availability.component';
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
+import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 
 
 const routes: Routes = [
@@ -36,6 +37,7 @@ const routes: Routes = [
   },
   {path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
+  { path: 'editprofil', component: EditprofilComponent },
 
   { path: '**', redirectTo: '' },
   

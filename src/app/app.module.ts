@@ -20,7 +20,10 @@ import { AvailabilityComponent } from './pages/disp-event/availability/availabil
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
-
+import { EditUserDialogComponent } from './pages/edit-user-dialog/edit-user-dialog.component';
+import { DeleteConfirmationDialogComponent } from './pages/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { EditprofilComponent } from './pages/editprofil/editprofil.component';
+import { MatDialogModule } from '@angular/material/dialog';
 
 
 @NgModule({
@@ -42,13 +45,18 @@ import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/
     EventsComponent,
     AnalyseGraphiqueComponent,
     
+    EditUserDialogComponent,
+    DeleteConfirmationDialogComponent,
+    EditprofilComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-      FormsModule, 
+    FormsModule, 
+    FormsModule, 
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
