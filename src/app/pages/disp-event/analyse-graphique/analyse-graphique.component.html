@@ -1,0 +1,33 @@
+<!-- Error Message -->
+<div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md font-poppins">
+  {{ errorMessage }}
+</div>
+
+<!-- Section calendrier -->
+<div class="mb-6">
+  <label for="selectedDate" class="block text-gray-700 font-medium mb-2 font-poppins">Filtrer par date :</label>
+  <input type="date" id="selectedDate" [(ngModel)]="selectedDate" (change)="filterDataByDate()"
+    class="p-2 border border-gray-300 rounded-md shadow-sm" />
+</div>
+
+<!-- Section analyse visuelle -->
+<div class="mt-6">
+  <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808] mb-4">Analyse Visuelle des Statistiques</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Graphique en barres -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Répartition des disponibilités (Barres)</h3>
+      <canvas #availabilityBarChart></canvas>
+    </div>
+    <!-- Graphique en donut -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Répartition des disponibilités (Donut)</h3>
+      <canvas #availabilityDonutChart></canvas>
+    </div>
+    <!-- Graphique des événements -->
+    <div class="bg-white p-4 rounded-lg shadow-md">
+      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Distribution des événements par date</h3>
+      <canvas #eventChart></canvas>
+    </div>
+  </div>
+</div>

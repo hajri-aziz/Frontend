@@ -1,249 +1,53 @@
-<div class="w-full min-h-screen bg-[#f4feff] overflow-hidden">
-  <div class="flex flex-col lg:flex-row">
-    <!-- Sidebar (Left Sidebar) -->
-    <div class="w-full lg:w-80 h-auto lg:h-screen bg-[#f4feff] flex flex-col items-center lg:items-start pt-6 lg:pt-0 order-1 lg:order-1">
-      <!-- Logo -->
-      <img src="assets/images/logo.png" alt="Zenaura Logo" class="w-28 h-28 mt-6 lg:mt-[25px] ml-0 lg:ml-[57px]">
-      <div class="text-[#172048] text-2xl font-medium font-poppins text-center lg:text-left mt-4 lg:mt-[34px] lg:ml-[173px]">Zenaura</div>
-      <!-- Profile Image -->
-      <img src="assets/images/profile.png" alt="Profile Image" class="w-28 h-28 rounded-full mt-10 lg:mt-[195px] ml-0 lg:ml-[100px]">
-      <!-- Username -->
-      <div class="text-[#444444] text-2xl font-medium font-poppins tracking-wide mt-4 lg:mt-[330px] ml-0 lg:ml-[79px] text-center lg:text-left">HappyHappy</div>
-      <!-- Navigation Links -->
-      <div class="flex flex-col space-y-8 mt-8 lg:mt-[433px] w-full lg:w-auto px-4 lg:px-0">
-        <!-- Dashboard -->
-        <div class="flex items-center space-x-4 justify-center lg:justify-start">
-          <div class="w-6 h-7 bg-[#04789d]"></div>
-          <a routerLink="/dashboard" class="text-[#04789d] text-2xl font-medium font-poppins tracking-wide">Dashboard</a>
-        </div>
-        <!-- Questionnaire -->
-        <div class="flex items-center space-x-4 justify-center lg:justify-start relative">
-          <div class="w-2.5 h-2.5 bg-[#707070] rounded-full ml-0 lg:ml-[44px]"></div>
-          <div class="w-10 h-10 bg-[#d9d9d9] absolute left-1/2 lg:left-[71px] transform -translate-x-1/2 lg:translate-x-0">
-            <div class="w-9 h-9 bg-[#707070] absolute left-[2.42px] top-[1.71px]"></div>
-          </div>
-          <a routerLink="/social-feed" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Questionnaire</a>
-        </div>
-        <!-- État d'esprit quotidien -->
-        <div class="flex items-center space-x-4 justify-center lg:justify-start">
-          <div class="w-8 h-7 bg-[#707070] ml-0 lg:ml-[76px]"></div>
-          <a routerLink="/daily-mood" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">État d'esprit<br class="lg:hidden"> quotidien</a>
-        </div>
-        <!-- Accueil -->
-        <div class="flex items-center space-x-4 justify-center lg:justify-start">
-          <div class="w-8 h-7 bg-[#707070] ml-0 lg:ml-[76px]"></div>
-          <a routerLink="/home" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Accueil</a>
-        </div>
-        <!-- Se déconnecter -->
-        <div class="flex items-center space-x-4 justify-center lg:justify-start mb-8 lg:mb-0 mt-8 lg:mt-[904px]">
-          <div class="w-6 h-6 outline outline-[3px] outline-[#707070] ml-0 lg:ml-[44px]"></div>
-          <a routerLink="/login" class="text-[#707070] text-2xl font-medium font-poppins tracking-wide">Se déconnecter</a>
-        </div>
-      </div>
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SocialFeed</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#f4feff] min-h-screen flex items-center justify-center overflow-hidden">
+<div class="w-full max-w-7xl px-4 py-6 lg:py-0 lg:pt-[162.8px]">
+  <div class="w-full max-w-[627.77px] mx-auto">
+    <h1 class="text-3xl font-bold font-['Helvetica_Neue'] text-[#080808] mb-6 text-center">Tableau de bord</h1>
+
+    <!-- Tabs -->
+    <div class="border-b border-[#cfd0d4]">
+      <ul class="flex flex-col sm:flex-row -mb-px">
+        <li class="w-full sm:w-1/3 text-center">
+          <a 
+            [routerLink]="['/dispo-event/availability']"
+            routerLinkActive="border-[#04789d] text-[#04789d] border-b-2"
+            class="py-2 px-4 inline-block w-full font-medium font-poppins text-[#66676b] hover:text-[#444444]"
+          >
+            Disponibilités
+          </a>
+        </li>
+        <li class="w-full sm:w-1/3 text-center">
+          <a 
+            [routerLink]="['/dispo-event/events']"
+            routerLinkActive="border-[#04789d] text-[#04789d] border-b-2"
+            class="py-2 px-4 inline-block w-full font-medium font-poppins text-[#66676b] hover:text-[#444444]"
+          >
+            Événements
+          </a>
+        </li>
+        <li class="w-full sm:w-1/3 text-center">
+          <a 
+            [routerLink]="['/dispo-event/dashboard']"
+            routerLinkActive="border-[#04789d] text-[#04789d] border-b-2"
+            class="py-2 px-4 inline-block w-full font-medium font-poppins text-[#66676b] hover:text-[#444444]"
+          >
+            Dashboard
+          </a>
+        </li>
+      </ul>
     </div>
 
-    <!-- Main Content: Dashboard -->
-    <div class="flex-1 flex justify-center px-4 py-6 lg:py-0 lg:pt-[162.8px] order-2 lg:order-2">
-      <div class="w-full max-w-[627.77px]">
-        <h1 class="text-3xl font-bold font-['Helvetica_Neue'] text-[#080808] mb-6">Tableau de bord</h1>
-        <!-- Tabs -->
-        <div class="border-b border-[#cfd0d4]">
-          <ul class="flex -mb-px">
-            <li class="w-1/2 text-center">
-              <a 
-                [class]="activeTab === 'availability' ? 'border-[#04789d] text-[#04789d] border-b-2 py-2 px-4 inline-block w-full font-medium font-poppins' : 'text-[#66676b] hover:text-[#444444] py-2 px-4 inline-block w-full font-poppins'"
-                (click)="setActiveTab('availability')"
-              >
-                Disponibilités
-              </a>
-            </li>
-            <li class="w-1/2 text-center">
-              <a 
-                [class]="activeTab === 'events' ? 'border-[#04789d] text-[#04789d] border-b-2 py-2 px-4 inline-block w-full font-medium font-poppins' : 'text-[#66676b] hover:text-[#444444] py-2 px-4 inline-block w-full font-poppins'"
-                (click)="setActiveTab('events')"
-              >
-                Événements
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Availability Tab Content -->
-        <div *ngIf="activeTab === 'availability'" class="mt-6">
-          <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
-            <div class="p-6 border-b border-[#cfd0d4]">
-              <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Ajouter une disponibilité</h2>
-              <p class="text-sm text-[#66676b] font-poppins">Définissez vos heures de disponibilité pour les rendez-vous</p>
-            </div>
-            <div class="p-6 space-y-4">
-              <form (ngSubmit)="submitAvailability()">
-                <!-- Date -->
-                <div class="space-y-2">
-                  <label for="availability-date" class="block text-sm font-medium font-poppins text-[#080808]">Date</label>
-                  <div class="relative">
-                    <input 
-                      type="date" 
-                      id="availability-date" 
-                      formControlName="date"
-                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                </div>
-
-                <!-- Time Range -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="space-y-2">
-                    <label for="start-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de début</label>
-                    <input 
-                      type="time" 
-                      id="start-time" 
-                      formControlName="heure_debut"
-                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                  <div class="space-y-2">
-                    <label for="end-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de fin</label>
-                    <input 
-                      type="time" 
-                      id="end-time" 
-                      formControlName="heure_fin"
-                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                </div>
-
-                <!-- Status -->
-                <div class="space-y-2">
-                  <label for="status" class="block text-sm font-medium font-poppins text-[#080808]">Statut</label>
-                  <select
-                    id="status"
-                    formControlName="statut"
-                    class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <option value="disponible">Disponible</option>
-                    <option value="indisponible">Indisponible</option>
-                  </select>
-                </div>
-
-                <!-- Submit Button -->
-                <div class="pt-4">
-                  <button 
-                    type="submit" 
-                    class="flex items-center justify-center w-full h-10 px-4 py-2 bg-[#04789d] text-white font-medium font-poppins text-sm rounded-md hover:bg-[#04789d]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    [disabled]="availabilityForm.invalid"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Ajouter la disponibilité
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <!-- Events Tab Content -->
-        <div *ngIf="activeTab === 'events'" class="mt-6">
-          <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
-            <div class="p-6 border-b border-[#cfd0d4]">
-              <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Créer un événement</h2>
-              <p class="text-sm text-[#66676b] font-poppins">Organisez un événement pour vos patients</p>
-            </div>
-            <div class="p-6 space-y-4">
-              <form (ngSubmit)="submitEvent()">
-                <!-- Title -->
-                <div class="space-y-2">
-                  <label for="event-title" class="block text-sm font-medium font-poppins text-[#080808]">Titre</label>
-                  <input 
-                    type="text" 
-                    id="event-title" 
-                    formControlName="titre"
-                    placeholder="Titre de l'événement"
-                    class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-
-                <!-- Description -->
-                <div class="space-y-2">
-                  <label for="event-description" class="block text-sm font-medium font-poppins text-[#080808]">Description</label>
-                  <textarea 
-                    id="event-description" 
-                    formControlName="description"
-                    placeholder="Description de l'événement" 
-                    class="flex min-h-[100px] w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  ></textarea>
-                </div>
-
-                <!-- Date -->
-                <div class="space-y-2">
-                  <label for="event-date" class="block text-sm font-medium font-poppins text-[#080808]">Date</label>
-                  <input 
-                    type="date" 
-                    id="event-date" 
-                    formControlName="date"
-                    class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-
-                <!-- Time and Duration -->
-                <div class="grid grid-cols-2 gap-4">
-                  <div class="space-y-2">
-                    <label for="event-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de début</label>
-                    <input 
-                      type="time" 
-                      id="event-time" 
-                      formControlName="heure_debut"
-                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                  <div class="space-y-2">
-                    <label for="event-duration" class="block text-sm font-medium font-poppins text-[#080808]">Durée (minutes)</label>
-                    <input 
-                      type="number" 
-                      id="event-duration" 
-                      formControlName="duree"
-                      placeholder="60" 
-                      min="15" 
-                      step="15"
-                      class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                    />
-                  </div>
-                </div>
-
-                <!-- Capacity -->
-                <div class="space-y-2">
-                  <label for="event-capacity" class="block text-sm font-medium font-poppins text-[#080808]">Capacité</label>
-                  <input 
-                    type="number" 
-                    id="event-capacity" 
-                    formControlName="capacite"
-                    placeholder="10" 
-                    min="1"
-                    class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                  />
-                </div>
-
-                <!-- Submit Button -->
-                <div class="pt-4">
-                  <button 
-                    type="submit" 
-                    class="flex items-center justify-center w-full h-10 px-4 py-2 bg-[#04789d] text-white font-medium font-poppins text-sm rounded-md hover:bg-[#04789d]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    [disabled]="eventForm.invalid"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
-                      <line x1="12" y1="5" x2="12" y2="19"></line>
-                      <line x1="5" y1="12" x2="19" y2="12"></line>
-                    </svg>
-                    Créer l'événement
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <!-- Contenu des sous-routes -->
+    <router-outlet></router-outlet>
   </div>
 </div>
+</body>

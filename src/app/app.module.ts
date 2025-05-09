@@ -10,13 +10,17 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
 import { SocialFeedComponent } from './pages/social-feed/social-feed.component';
-import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { HttpClientModule } from '@angular/common/http';
 import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from './pages/sidebar/sidebar.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
+import { AvailabilityComponent } from './pages/disp-event/availability/availability.component';
+import { EventsComponent } from './pages/disp-event/events/events.component';
+import { DispEventComponent } from './pages/disp-event/disp-event.component';
+import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
+
 
 
 @NgModule({
@@ -33,7 +37,11 @@ import { ListuserComponent } from './pages/listuser/listuser.component';
     DispEventComponent,
     RendzInscriComponent,
     SidebarComponent,
-    ListuserComponent
+    ListuserComponent,
+    AvailabilityComponent,
+    EventsComponent,
+    AnalyseGraphiqueComponent,
+    
   ],
   imports: [
     BrowserModule,

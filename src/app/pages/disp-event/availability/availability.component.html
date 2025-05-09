@@ -1,0 +1,94 @@
+<!-- Error Message -->
+<div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md font-poppins">
+  {{ errorMessage }}
+</div>
+
+<div class="mt-6">
+
+  <!-- Formulaire d'ajout -->
+  <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+    <div class="p-6 border-b border-[#cfd0d4]">
+      <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Ajouter une disponibilité</h2>
+      <p class="text-sm text-[#66676b] font-poppins">Définissez vos heures de disponibilité pour les rendez-vous</p>
+    </div>
+    <div class="p-6 space-y-4">
+      <form [formGroup]="availabilityForm" (ngSubmit)="submitAvailability()">
+        <!-- Date -->
+        <div class="space-y-2">
+          <label for="availability-date" class="block text-sm font-medium font-poppins text-[#080808]">Date</label>
+          <div class="relative">
+            <input 
+              type="date" 
+              id="availability-date" 
+              formControlName="date"
+              class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <div *ngIf="availabilityForm.get('date')?.invalid && availabilityForm.get('date')?.touched" class="text-red-500 text-sm font-poppins">
+              La date est requise.
+            </div>
+          </div>
+        </div>
+
+        <!-- Time Range -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label for="start-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de début</label>
+            <input 
+              type="time" 
+              id="start-time" 
+              formControlName="heure_debut"
+              class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <div *ngIf="availabilityForm.get('heure_debut')?.invalid && availabilityForm.get('heure_debut')?.touched" class="text-red-500 text-sm font-poppins">
+              L'heure de début est requise (format HH:MM).
+            </div>
+          </div>
+          <div class="space-y-2">
+            <label for="end-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de fin</label>
+            <input 
+              type="time" 
+              id="end-time" 
+              formControlName="heure_fin"
+              class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+            />
+            <div *ngIf="availabilityForm.get('heure_fin')?.invalid && availabilityForm.get('heure_fin')?.touched" class="text-red-500 text-sm font-poppins">
+              L'heure de fin est requise (format HH:MM).
+            </div>
+          </div>
+        </div>
+
+        <!-- Status -->
+        <div class="space-y-2">
+          <label for="status" class="block text-sm font-medium font-poppins text-[#080808]">Statut</label>
+          <select
+            id="status"
+            formControlName="statut"
+            class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            <option value="disponible">Disponible</option>
+            <option value="occupé">Occupé</option>
+            <option value="absent">Absent</option>
+          </select>
+          <div *ngIf="availabilityForm.get('statut')?.invalid && availabilityForm.get('statut')?.touched" class="text-red-500 text-sm font-poppins">
+            Le statut est requis.
+          </div>
+        </div>
+
+        <!-- Submit Button -->
+        <div class="pt-6">
+          <button 
+            type="submit" 
+            class="flex items-center justify-center w-full h-10 px-6 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            [disabled]="availabilityForm.invalid"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 h-4 w-4">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Ajouter la disponibilité
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

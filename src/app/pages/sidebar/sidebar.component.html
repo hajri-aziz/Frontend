@@ -62,6 +62,44 @@
                     <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
                     <span>Liste Utilisateurs</span>
                 </a>
+
+                <!-- dispo-event -->
+                <a routerLink="dispo-event"
+                class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+        'text-[#04789d] font-semibold': router.url === '/dispo-event',
+        'text-gray-600': router.url !== '/dispo-event'
+      }">
+                <ng-container *ngIf="router.url === '/dispo-event'">
+                    <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                </ng-container>
+                <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
+                <span>Tableau bord planning </span>
+            </a> 
+                 <!-- Patient sélection plannig  -->
+                <a routerLink="rendz-inscri"
+                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+                    'text-[#04789d] font-semibold': router.url === '/rendz-inscri',
+                    'text-gray-600': router.url !== '/rendz-inscri'
+                  }">
+                    <ng-container *ngIf="router.url === '/rendz-inscri'">
+                            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                     </ng-container>
+                        <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
+                        <span> Espace planning Patient  </span>
+                </a> 
+                <!-- Forum   -->
+                            <a routerLink="social-feed"
+                            class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
+                    'text-[#04789d] font-semibold': router.url === '/social-feed',
+                    'text-gray-600': router.url !== '/social-feed'
+                  }">
+                            <ng-container *ngIf="router.url === '/social-feed'">
+                                <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+                            </ng-container>
+                            <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
+                            <span> Forum  </span>
+                        </a> 
+
             </nav>
 
             <!-- Logout -->

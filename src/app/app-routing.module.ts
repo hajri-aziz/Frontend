@@ -8,23 +8,32 @@ import { SignupComponent } from './pages/signup/signup.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { CreateAccountComponent } from './pages/create-account/create-account.component';
 import { SocialFeedComponent } from './pages/social-feed/social-feed.component';
-import { DispEventComponent } from  './pages/disp-event/disp-event.component';
 import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
-
 import { SidebarComponent } from './pages/sidebar/sidebar.component';
 import { ListuserComponent } from './pages/listuser/listuser.component';
+import { DispEventComponent } from './pages/disp-event/disp-event.component';
+import { AvailabilityComponent } from './pages/disp-event/availability/availability.component';
+import { EventsComponent } from './pages/disp-event/events/events.component';
+import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
 
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
+  { path: 'home', component: HomeComponent },
   { path: 'services', component: ServiceComponent },
   { path: 'about', component: AboutUsComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
-  //{ path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
   {path: 'social-feed', component: SocialFeedComponent },
-  {path: 'dispo-event', component: DispEventComponent },
+  { path: 'dispo-event', component: DispEventComponent, children: [
+    { path: '', redirectTo: 'availability', pathMatch: 'full' },
+    { path: 'availability', component: AvailabilityComponent },
+    { path: 'events', component: EventsComponent },
+  { path: 'dashboard', component: AnalyseGraphiqueComponent },]
+    
+  },
   {path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
 
