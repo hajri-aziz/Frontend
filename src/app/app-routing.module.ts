@@ -33,12 +33,10 @@ const routes: Routes = [
     { path: 'availability', component: AvailabilityComponent },
     { path: 'events', component: EventsComponent },
   { path: 'dashboard', component: AnalyseGraphiqueComponent },]
-    
   },
   {path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
-
 
   { path: '**', redirectTo: '' },
   

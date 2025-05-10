@@ -70,7 +70,9 @@ export class SocialFeedComponent {
     },
   ]
 
-  newPostContent = ""
+  newPostContent: string = '';
+  selectedImage: File | null = null;
+  imagePreview: string | null = null;
   newCommentContents: { [postId: number]: string } = {}
   selectedUser: User | null = null
   messageContent = ""
@@ -80,22 +82,35 @@ export class SocialFeedComponent {
     return this.users.find((user) => user.id === id) || this.users[0]
   }
 
-  addPost() {
-    if (!this.newPostContent.trim()) return
-
+  onImageSelected(event: any): void {
+  const file = event.target.files[0];
+  if (file) {
+    this.selectedImage = file;
+    
+    const reader = new FileReader();
+    reader.onload = e => this.imagePreview = reader.result as string;
+    reader.readAsDataURL(file);
+  }
+}
+addPost(): void {
+  const formData = new FormData();
+  formData.append('content', this.newPostContent);
+  if (this.selectedImage) {
+    formData.append('image', this.selectedImage);
+  }
     const newPost: Post = {
       id: this.posts.length + 1,
       userId: this.currentUser.id,
       content: this.newPostContent,
+      image: this.imagePreview || undefined,
       likes: 0,
       comments: [],
       timestamp: new Date(),
       hasLiked: false,
-    }
-
-    this.posts.unshift(newPost)
+    };
+    this.posts.unshift(newPost);
     this.newPostContent = ""
-  }
+}
 
   toggleLike(post: Post) {
     if (post.hasLiked) {
