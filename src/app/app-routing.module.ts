@@ -39,6 +39,7 @@ const routes: Routes = [
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
 
+
   { path: '**', redirectTo: '' },
   
 ];
