@@ -19,28 +19,44 @@
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Main Feed -->
             <div class="w-full lg:w-2/3">
-                <!-- Create Post -->
-                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
-                    <div class="flex items-center space-x-2 mb-4">
-                        <img [src]="currentUser.avatar" alt="Profile" class="w-10 h-10 rounded-full">
-                        <span class="font-medium font-poppins text-[#080808]">{{ currentUser.name }}</span>
-                    </div>
-                    <textarea 
-                        [(ngModel)]="newPostContent"
-                        class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
-                        placeholder="Qu'avez-vous en tête?"
-                        rows="3"
-                    ></textarea>
-                    <div class="flex justify-end">
-                        <button 
-                            (click)="addPost()"
-                            class="flex items-center justify-center w-full sm:w-[160px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
-                        >
-                            Publier
-                        </button>
-                    </div>
-                </div>
+<!-- Create Post -->
+<div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
+    <div class="flex items-center space-x-2 mb-4">
+        <img [src]="currentUser.avatar" alt="Profile" class="w-10 h-10 rounded-full">
+        <span class="font-medium font-poppins text-[#080808]">{{ currentUser.name }}</span>
+    </div>
 
+    <textarea 
+        [(ngModel)]="newPostContent"
+        class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+        placeholder="Qu'avez-vous en tête?"
+        rows="3"
+    ></textarea>
+
+    <!-- Image upload -->
+    <input 
+        type="file" 
+        (change)="onImageSelected($event)"
+        accept="image/*"
+        class="mb-3 block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+               file:rounded-full file:border-0 file:text-sm file:font-semibold
+               file:bg-gradient-to-br file:from-[#56e0e0] file:to-[#007299] file:text-white hover:file:opacity-90"
+    >
+
+    <!-- Preview -->
+    <div *ngIf="imagePreview" class="mb-3">
+        <img [src]="imagePreview" alt="Preview" class="w-full h-48 object-cover rounded-lg">
+    </div>
+
+    <div class="flex justify-end">
+        <button 
+            (click)="addPost()"
+            class="flex items-center justify-center w-full sm:w-[160px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
+        >
+            Publier
+        </button>
+    </div>
+</div>
                 <!-- Posts -->
                 <div class="space-y-6">
                     <div *ngFor="let post of posts" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] overflow-hidden">

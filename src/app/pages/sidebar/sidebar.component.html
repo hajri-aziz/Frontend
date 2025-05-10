@@ -25,12 +25,12 @@
             <!-- Navigation -->
             <nav class="flex flex-col space-y-4">
                 <!-- Dashboard -->
-                <a routerLink="/dashboard"
+                <a routerLink="/editprofil"
                     class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-            'text-[#04789d] font-semibold': router.url === '/dashboard',
-            'text-gray-600': router.url !== '/dashboard'
+            'text-[#04789d] font-semibold': router.url === '/editprofil',
+            'text-gray-600': router.url !== '/editprofil'
           }">
-                    <ng-container *ngIf="router.url === '/dashboard'">
+                    <ng-container *ngIf="router.url === '/editprofil'">
                         <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
                     </ng-container>
                     <img src="assets/Vector.svg" alt="Dashboard Icon" class="w-5 h-5" />

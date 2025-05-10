@@ -18,6 +18,7 @@ export class DisponibiliteService {
       'Authorization': `Bearer ${token}`
     });
   }
+  
   // Ajouter une disponibilité
   addDisponibilite(disponibilite: Partial<Disponibilite>): Observable<{ message: string; disponibilite: Disponibilite }> {
     return this.http.post<{ message: string; disponibilite: Disponibilite }>(`${this.apiUrl}/disponibilite`, disponibilite, { headers: this.getAuthHeaders() }).pipe(
