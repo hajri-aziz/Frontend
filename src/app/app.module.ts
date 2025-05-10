@@ -26,6 +26,8 @@ import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 import { MatDialogModule } from '@angular/material/dialog';
 
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -57,6 +59,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     FormsModule, 
     FormsModule, 
     MatDialogModule,
+    
   ],
   providers: [],
   bootstrap: [AppComponent]

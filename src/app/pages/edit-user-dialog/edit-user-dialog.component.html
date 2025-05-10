@@ -1,75 +1,98 @@
-<!-- Boîte de dialogue -->
+<!-- Boîte de dialogue améliorée -->
 <div style="
-    background: white;
-    padding: 24px;
-    width: 450px;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    background: #fff;
+    padding: 20px;
+    width: 500px; /* Réduit la taille du formulaire */
+    max-width: 95%;
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
+    font-family: 'Segoe UI', sans-serif;
+    animation: fadeIn 0.3s ease-out;
 ">
 
-    <!-- Entête avec bouton de fermeture -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <div style="width: 100%; display: flex; justify-content: center; margin-bottom: 20px;">
-        <h2 style="font-family: 'Inter', sans-serif; color: #53709e; font-size: 1.25rem; font-weight: bold;">
+    <!-- En-tête -->
+    <!-- En-tête -->
+    <div style="position: relative; margin-bottom: 24px;">
+        <button (click)="onCancel()"
+            style="position: absolute; right: 0; top: 0; background: none; border: none; font-size: 26px; color: #999; cursor: pointer;">
+            ×
+        </button>
+        <h2 style="
+            color: #000000;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            width: 100%;
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        ">
             Modifier l'utilisateur
         </h2>
     </div>
 
-        <button (click)="onCancel()"
-            style="background: none; border: none; font-size: 20px; cursor: pointer;">×</button>
-    </div>
 
-    <form [formGroup]="editForm" (ngSubmit)="onSave()">
-        <div style="margin-bottom: 12px;">
-            <label>Nom:</label><br />
-            <input formControlName="nom"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+    <!-- Formulaire -->
+    <form [formGroup]="editForm" (ngSubmit)="onSave()" style="display: flex; flex-wrap: wrap; gap: 15px;">
+        <!-- Réduit l'écart entre les inputs -->
+
+    
+
+        <div style="flex: 1 1 45%;">
+            <label>Email:</label>
+            <input formControlName="email" placeholder="Email"
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem;" />
         </div>
 
-        <div style="margin-bottom: 12px;">
-            <label>Prénom:</label><br />
-            <input formControlName="prenom"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+        <div style="flex: 1 1 45%;">
+            <label>Rôle:</label>
+            <select formControlName="role"
+                    style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; background-color: #fff;">
+                <option value="" disabled selected hidden>-- Sélectionnez un rôle --</option>
+                <option value="admin">Admin</option>
+                <option value="moderator">Modérateur</option>
+                <option value="user">Utilisateur</option>
+                <option value="invite">Invité</option>
+            </select>
         </div>
 
-        <div style="margin-bottom: 12px;">
-            <label>Email:</label><br />
-            <input formControlName="email"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
+        
 
-        <div style="margin-bottom: 12px;">
-            <label>Rôle:</label><br />
-            <input formControlName="role"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-
-        <div style="margin-bottom: 12px;">
-            <label>Téléphone:</label><br />
-            <input formControlName="telephone"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
-        </div>
-
-        <div style="margin-bottom: 20px;">
-            <label>isApproved:</label><br />
+        <div style="flex: 1 1 45%;">
+            <label>Statut d'approbation:</label>
             <select formControlName="isApproved"
-                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 0.9rem; background-color: #fff;">
                 <option [value]="true">Oui</option>
                 <option [value]="false">Non</option>
             </select>
         </div>
 
-        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-            <button type="button" (click)="onCancel()"
-                style="background-color: #ccc; padding: 8px 16px; border: none; border-radius: 4px;">Annuler</button>
-            <button type="submit"
-                style="background-color: #2196F3; color: white; padding: 8px 16px; border: none; border-radius: 4px;">Enregistrer</button>
-        </div>
+        <!-- Boutons -->
+        <div style="width: 100%; display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px;">
+            <!-- Bouton Annuler -->
+            <button type="button" (click)="onCancel()" style="height: 36px; padding: 0 20px; border: none; border-radius: 16px;
+                               font-size: 0.9rem; font-family: 'Poppins', sans-serif;
+                               background-color: #f0f0f0; color: #333; cursor: pointer;
+                               box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.1);
+                               transition: all 0.3s ease;">
+                Annuler
+            </button>
+        
+            <!-- Bouton Enregistrer -->
+            <button type="submit" style="height: 36px; padding: 0 20px; border: none; border-radius: 16px;
+                               font-size: 0.9rem; font-family: 'Poppins', sans-serif;
+                               background: linear-gradient(to bottom right, #56e0e0, #007299);
+                               color: #fff; cursor: pointer;
+                               box-shadow: 0px 3px 6px rgba(1,115,153,0.20);
+                               transition: all 0.3s ease;">
+                Enregistrer
+            </button>  </div>
     </form>
 </div>
 
@@ -82,3 +105,18 @@
             background: rgba(0, 0, 0, 0.4);
             z-index: 999;">
 </div>
+
+<!-- Animation -->
+<style>
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -60%);
+        }
+
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+</style>
