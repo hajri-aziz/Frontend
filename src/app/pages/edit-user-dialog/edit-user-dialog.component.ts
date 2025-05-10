@@ -20,11 +20,13 @@ export class EditUserDialogComponent implements OnInit {
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
-      nom: [this.data.nom],
-      prenom: [this.data.prenom],
+      
       email: [this.data.email],
+      role: [this.data.role],
+      isApproved: [this.data.isApproved]
     });
   }
+  
 
   onSave(): void {
     const updatedUser: User = { ...this.data, ...this.editForm.value };
@@ -35,7 +37,7 @@ export class EditUserDialogComponent implements OnInit {
         formData.append(key, (updatedUser as any)[key]); // 👈 cast en any ici
       }
     }
-
+    console.log("Données envoyées :", this.editForm.value);
     this.userService.updateUser(this.data._id!, formData).subscribe({
       next: () => {
         this.dialogRef.close(updatedUser);

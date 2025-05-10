@@ -11,7 +11,7 @@ export interface User {
     otpCode?: string;
     otpExpires?: Date;
     isApproved?: boolean;
-    telephone?: number;
+    telephone?: Number;
     status?: 'autorisé' | 'non autorisé';
     profileImage?: string;
   }
