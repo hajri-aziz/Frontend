@@ -9,8 +9,10 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class EditprofilComponent implements OnInit {
   userForm: FormGroup;
-  profileImageUrl: string | null = null; // Pour stocker l'URL de l'image actuelle
-  user: any; // Déclaration de la propriété user pour stocker les données de l'utilisateur
+  profileImageUrl: string | null = null;
+  user: any;
+  selectedFile: File | null = null;
+  defaultImage = 'assets/images/default-avatar.png'; // Chemin vers une image par défaut
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +26,7 @@ export class EditprofilComponent implements OnInit {
       password: [''],
       dateNaissance: [''],
       telephone: [''],
-      profileImage: [null] // Champ pour l'image
+      profileImage: ['']
     });
   }
 
@@ -40,7 +42,7 @@ export class EditprofilComponent implements OnInit {
 
     this.userService.getUserById(userId).subscribe({
       next: (user) => {
-        this.user = user; // Initialisation de la propriété user avec les données récupérées
+        this.user = user;
         const dateNaissanceFormatted = new Date(user.dateNaissance).toISOString().split('T')[0];
         this.userForm.patchValue({
           nom: user.nom,
@@ -50,67 +52,96 @@ export class EditprofilComponent implements OnInit {
           telephone: user.telephone
         });
 
-        // Afficher l'image actuelle
-        this.profileImageUrl = `http://localhost:3000/uploads/${user.profileImage}`;
+        // Gestion améliorée de l'image de profil
+        this.profileImageUrl = user.profileImage 
+          ? this.normalizeImageUrl(user.profileImage) 
+          : this.defaultImage;
       },
       error: (err) => {
-        console.error('Erreur lors de la récupération des données de l\'utilisateur :', err);
-        alert('Une erreur est survenue lors de la récupération des données.');
+        console.error('Erreur lors de la récupération des données:', err);
+        alert('Erreur lors de la récupération des données.');
       }
     });
   }
 
-  // Gérer la sélection d'un fichier image
   onFileSelected(event: any) {
     const file: File = event.target.files[0];
     if (file) {
+      this.selectedFile = file;
+      
+      // Afficher un aperçu immédiat de la nouvelle image
       const reader = new FileReader();
-      reader.onload = () => {
-        this.profileImageUrl = reader.result as string; // Mise à jour de l'image à afficher
+      reader.onload = (e: any) => {
+        this.profileImageUrl = e.target.result;
       };
-      reader.readAsDataURL(file);  // Lire le fichier comme URL de données
-      this.userForm.patchValue({ profileImage: file }); // Ajouter le fichier sélectionné au formulaire
+      reader.readAsDataURL(file);
     }
   }
-  
 
   onSubmit() {
+    if (this.userForm.invalid) {
+      alert('Veuillez remplir correctement le formulaire');
+      return;
+    }
+
     const formData = new FormData();
     const formValue = this.userForm.value;
   
-    // Ajout des autres données du formulaire
-    formData.append('nom', formValue.nom);
-    formData.append('prenom', formValue.prenom);
-    formData.append('email', formValue.email);
-    formData.append('password', formValue.password);
-    formData.append('dateNaissance', formValue.dateNaissance);
-    formData.append('telephone', formValue.telephone);
+    // Ajout des champs au FormData
+    Object.keys(formValue).forEach(key => {
+      if (formValue[key] && key !== 'profileImage') {
+        formData.append(key, formValue[key]);
+      }
+    });
   
-    // Ajout de l'image si elle est sélectionnée
-    if (formValue.profileImage) {
-      formData.append('profileImage', formValue.profileImage);
+    if (this.selectedFile) {
+      formData.append('profileImage', this.selectedFile);
     }
   
     const token = localStorage.getItem('token');
-    const userId = this.getUserIdFromToken(token!);
+    if (!token) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const userId = this.getUserIdFromToken(token);
   
     this.userService.updateUser(userId, formData).subscribe({
       next: (response) => {
-        console.log('Profil mis à jour avec succès !');
+        console.log('Profil mis à jour avec succès !', response);
         alert('Votre profil a été mis à jour.');
-  
-        // Mise à jour de l'image de profil
-        this.profileImageUrl = response.profileImage ? `http://localhost:3000/uploads/${response.profileImage}` : this.profileImageUrl;
+        
+        // Mise à jour de l'image après upload
+        if (response.profileImage) {
+          this.profileImageUrl = this.normalizeImageUrl(response.profileImage);
+        }
       },
       error: (err) => {
-        console.error('Erreur lors de la mise à jour du profil :', err);
-        alert('Une erreur est survenue lors de la mise à jour.');
+        console.error('Erreur lors de la mise à jour:', err);
+        alert(`Erreur lors de la mise à jour: ${err.error?.message || err.message}`);
       }
     });
   }
   
   private getUserIdFromToken(token: string): string {
-    const payload = JSON.parse(atob(token.split('.')[1]));
-    return payload.id;
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      return payload.id;
+    } catch (e) {
+      console.error('Erreur de décodage du token', e);
+      this.router.navigate(['/login']);
+      return '';
+    }
+  }
+
+  private normalizeImageUrl(imagePath: string): string {
+    if (!imagePath) return this.defaultImage;
+    
+    // Si l'image est déjà une URL complète
+    if (imagePath.startsWith('http')) return imagePath;
+    
+    // Nettoyage du chemin et construction de l'URL
+    const cleanPath = imagePath.replace(/^\/+/, '').replace(/\\/g, '/');
+    return `http://localhost:3000/${cleanPath}`;
   }
 }

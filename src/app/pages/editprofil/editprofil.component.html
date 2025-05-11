@@ -40,14 +40,21 @@
                 <input type="number" formControlName="telephone" class="w-full p-2 border rounded-lg" />
             </div>
 
-            <!-- Image de profil  -->
-            <div class="md:col-span-2">
-                <label class="block text-[#444] font-medium mb-1">Image de profil</label>
-                <input type="file" formControlName="profileImage" accept="image/*" class="w-full p-2 border rounded-lg" />
+            <div class="flex justify-center" *ngIf="profileImageUrl">
+                <img [src]="profileImageUrl" alt="Photo de profil" class="w-32 h-32 rounded-full object-cover">
             </div>
-            <div *ngIf="user">
-                <img [src]="user.profileImage" alt="Profile Image">
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- ... autres champs ... -->
+            
+                <!-- Image de profil -->
+                <div class="md:col-span-2">
+                    <label class="block text-[#444] font-medium mb-1">Image de profil</label>
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full p-2 border rounded-lg" />
+                </div>
             </div>
+    
+            
               
 
         </div>
