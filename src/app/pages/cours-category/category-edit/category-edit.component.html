@@ -1,0 +1,28 @@
+<div class="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
+  <h2 class="text-2xl font-semibold text-zenaura-text mb-4">Modifier la catégorie</h2>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Formulaire -->
+  <form [formGroup]="form" (ngSubmit)="submitForm()" *ngIf="!loading">
+    <div class="mb-4">
+      <label class="block text-zenaura-gray mb-1">Titre</label>
+      <input formControlName="title" type="text" class="w-full p-2 border rounded focus:ring-zenaura-teal">
+    </div>
+
+    <div class="mb-4">
+      <label class="block text-zenaura-gray mb-1">Description</label>
+      <textarea formControlName="description" rows="4" class="w-full p-2 border rounded focus:ring-zenaura-teal"></textarea>
+    </div>
+
+    <button type="submit" class="bg-zenaura-teal text-white px-6 py-2 rounded hover:bg-teal-700 transition">
+      Mettre à jour
+    </button>
+  </form>
+</div>
