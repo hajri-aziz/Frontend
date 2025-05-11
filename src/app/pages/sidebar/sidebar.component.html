@@ -1,3 +1,12 @@
+<style>
+ .sidebar a {
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  text-decoration: none; /* Assure-toi qu'il n'y a pas de soulignement au survol */
+}
+</style>
 <div class="flex flex-col md:flex-row max-w-7xl mx-auto font-sans">
   <!-- Sidebar -->
   <div class="w-full md:w-64 bg-[#f4feff] md:h-screen md:fixed border-r border-gray-300 shadow-md">
@@ -26,8 +35,9 @@
       <nav class="flex flex-col space-y-4">
 
         <!-- Dashboard -->
-        <a routerLink="/editprofil" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/editprofil', 'text-gray-600': router.url !== '/editprofil' }">
+        <a routerLink="/editprofil"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/editprofil', 'text-gray-600': router.url !== '/editprofil' }">
           <ng-container *ngIf="router.url === '/editprofil'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
@@ -36,8 +46,9 @@
         </a>
 
         <!-- Créer un compte -->
-        <a routerLink="/create-account" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/create-account', 'text-gray-600': router.url !== '/create-account' }">
+        <a routerLink="/create-account"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/create-account', 'text-gray-600': router.url !== '/create-account' }">
           <ng-container *ngIf="router.url === '/create-account'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
@@ -46,8 +57,9 @@
         </a>
 
         <!-- Liste Utilisateurs -->
-        <a routerLink="/list-user" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/list-user', 'text-gray-600': router.url !== '/list-user' }">
+        <a routerLink="/list-user"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/list-user', 'text-gray-600': router.url !== '/list-user' }">
           <ng-container *ngIf="router.url === '/list-user'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
@@ -66,8 +78,9 @@
         </a> 
 
         <!-- Espace planning Patient -->
-        <a routerLink="/rendz-inscri" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/rendz-inscri', 'text-gray-600': router.url !== '/rendz-inscri' }">
+        <a routerLink="/rendz-inscri"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/rendz-inscri', 'text-gray-600': router.url !== '/rendz-inscri' }">
           <ng-container *ngIf="router.url === '/rendz-inscri'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
@@ -76,8 +89,9 @@
         </a>
 
         <!-- Forum -->
-        <a routerLink="/social-feed" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/social-feed', 'text-gray-600': router.url !== '/social-feed' }">
+        <a routerLink="/social-feed"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/social-feed', 'text-gray-600': router.url !== '/social-feed' }">
           <ng-container *ngIf="router.url === '/social-feed'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
@@ -87,8 +101,9 @@
 
         <!-- Catégories avec sous-menu -->
         <div>
-          <button (click)="toggleCategoryMenu()" class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
-                  [ngClass]="{
+          <button (click)="toggleCategoryMenu()"
+            class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
+            [ngClass]="{
                     'text-[#04789d] font-semibold': router.url.startsWith('/categories'),
                     'text-gray-600': !router.url.startsWith('/categories')
                   }">
@@ -98,7 +113,8 @@
             <img src="assets/folder.svg" alt="Catégorie Icon" class="w-5 h-5" />
             <span>Catégories</span>
             <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path [attr.d]="isCategoryMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+              <path [attr.d]="isCategoryMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" />
             </svg>
           </button>
 
@@ -108,12 +124,36 @@
             <a routerLink="/categories/create" class="hover:text-zenaura-teal">➕ Ajouter</a>
           </div>
         </div>
-
+        
+        <!-- 🎓 Cours -->
+        <div>
+          <button (click)="toggleCoursMenu()"
+            class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
+            [ngClass]="{
+                    'text-[#04789d] font-semibold': router.url.startsWith('/courses'),
+                    'text-gray-600': !router.url.startsWith('/courses')
+                  }">
+            <ng-container *ngIf="router.url.startsWith('/courses')">
+              <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+            </ng-container>
+            <img src="assets/courses.svg" alt="Cours Icon" class="w-5 h-5" />
+            <span>Cours</span>
+            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path [attr.d]="isCoursMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round"
+                stroke-linejoin="round" stroke-width="2" />
+            </svg>
+          </button>
+          <div *ngIf="isCoursMenuOpen" class="ml-8 mt-2 flex flex-col space-y-2 text-sm">
+            <a routerLink="/courses" class="hover:text-zenaura-teal">📚 Voir tous</a>
+            <a routerLink="/courses/create" class="hover:text-zenaura-teal">➕ Ajouter</a>
+          </div>
+        </div>
       </nav>
 
       <!-- Logout -->
       <div class="mt-auto pt-10 border-t border-gray-300">
-        <a routerLink="/home" class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
+        <a routerLink="/home"
+          class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
           <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
           <span>Se déconnecter</span>
         </a>

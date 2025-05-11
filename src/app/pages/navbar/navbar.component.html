@@ -1,24 +1,27 @@
-<nav class="bg-[#f4feff] shadow-md w-full z-10">
-  <!-- Mobile Menu Button -->
-  <div class="md:hidden p-4 flex justify-between items-center">
+<nav class="bg-[#f4feff] shadow-md w-full fixed top-0 z-10">
+  <!-- Mobile Menu Header -->
+  <div class="md:hidden p-4 flex justify-between items-center max-w-7xl mx-auto">
     <button class="text-[#172048] focus:outline-none" (click)="toggleMenu()">
       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
       </svg>
     </button>
-    <img src="assets/logo.png" alt="Zenaura Logo" class="w-10 h-10" />
+    <div class="flex items-center space-x-2">
+      <img src="assets/logo.png" alt="Zenaura Logo" class="w-10 h-10" />
+      <span class="text-lg font-semibold text-[#172048]">Zenaura</span>
+    </div>
   </div>
 
   <!-- Desktop and Mobile Menu -->
-  <div class="md:flex md:items-center md:justify-between max-w-7xl mx-auto px-4 py-2" [ngClass]="{'hidden': !isMobileMenuOpen && !isMobileMenuOpen}">
+  <div class="md:flex md:items-center max-w-7xl mx-auto px-4 py-2" [ngClass]="{'hidden': !isMobileMenuOpen, 'md:flex': true}">
     <!-- Logo (Desktop) -->
-    <div class="flex items-center space-x-3 mb-4 md:mb-0">
-      <img src="assets/logo.png" alt="Zenaura Logo" class="w-12 h-12 hidden md:block" />
-      <span class="text-xl font-semibold text-[#172048] hidden md:block">Zenaura</span>
+    <div class="hidden md:flex items-center space-x-3 mr-8">
+      <img src="assets/logo.png" alt="Zenaura Logo" class="w-12 h-12" />
+      <span class="text-xl font-semibold text-[#172048]">Zenaura</span>
     </div>
 
     <!-- Navigation Links -->
-    <div class="flex flex-col md:flex-row md:space-x-6">
+    <div class="flex flex-col md:flex-row md:items-center md:space-x-8 w-full md:justify-center">
       <!-- Profile -->
       <a routerLink="/editprofil"
          class="flex items-center space-x-2 font-medium text-base hover:text-[#035e7d] transition py-2 md:py-0" [ngClass]="{
@@ -28,7 +31,7 @@
         <ng-container *ngIf="router.url === '/editprofil'">
           <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
         </ng-container>
-        <img src="assets/utilisateur.png" alt="Planning Icon" class="w-5 h-5" />
+        <img src="assets/utilisateur.png" alt="Profile Icon" class="w-5 h-5" />
         <span>Mon Profil</span>
       </a>
 
@@ -36,7 +39,7 @@
       <a routerLink="/rendz-inscri"
          class="flex items-center space-x-2 font-medium text-base hover:text-[#035e7d] transition py-2 md:py-0" [ngClass]="{
            'text-[#04789d] font-semibold': router.url === '/rendz-inscri',
-           'text-gray-600': router.url !== '/dispo-event'
+           'text-gray-600': router.url !== '/rendz-inscri'
          }">
         <ng-container *ngIf="router.url === '/rendz-inscri'">
           <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
@@ -58,12 +61,13 @@
         <span>Forum</span>
       </a>
 
-      <!-- Logout -->
+  
+    </div>
+        <!-- Logout -->
       <a routerLink="/home"
-         class="flex items-center space-x-2 text-gray-600 font-medium text-base hover:text-red-600 transition py-2 md:py-0">
+         class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition py-2 md:py-0">
         <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
         <span>Se déconnecter</span>
       </a>
-    </div>
   </div>
 </nav>

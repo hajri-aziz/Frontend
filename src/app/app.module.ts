@@ -91,7 +91,9 @@ import { DispEventComponent } from './pages/disp-event/disp-event.component';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    MatDialogModule
+    FormsModule, 
+    FormsModule, 
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
