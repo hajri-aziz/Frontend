@@ -80,4 +80,18 @@ export class UserService {
   getUserActivities(userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/activities/${userId}`, { headers: this.getAuthHeaders() });
   }
+    // Nouvelle méthode pour obtenir le rôle à partir du token
+  getUserRole(): string | null {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1])); // Décode la payload du JWT
+        return payload.role || null; // Retourne le rôle (ex. 'admin', 'user')
+      } catch (e) {
+        console.error('Erreur de décodage du token', e);
+        return null;
+      }
+    }
+    return null;
+  }
 }

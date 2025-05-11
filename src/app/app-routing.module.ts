@@ -16,6 +16,7 @@ import { AvailabilityComponent } from './pages/disp-event/availability/availabil
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
+import { NavbarComponent } from './pages/navbar/navbar.component';
 
 
 const routes: Routes = [
@@ -37,6 +38,8 @@ const routes: Routes = [
   {path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
+  { path: 'navbar', component: NavbarComponent },
+
   { path: '**', redirectTo: '' },
   
 ];

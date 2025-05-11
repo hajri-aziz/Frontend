@@ -24,6 +24,7 @@ import { EditUserDialogComponent } from './pages/edit-user-dialog/edit-user-dial
 import { DeleteConfirmationDialogComponent } from './pages/delete-confirmation-dialog/delete-confirmation-dialog.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 import { MatDialogModule } from '@angular/material/dialog';
+import { NavbarComponent } from './pages/navbar/navbar.component';
 
 
 
@@ -49,7 +50,8 @@ import { MatDialogModule } from '@angular/material/dialog';
     
     EditUserDialogComponent,
     DeleteConfirmationDialogComponent,
-    EditprofilComponent
+    EditprofilComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,

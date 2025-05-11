@@ -36,7 +36,7 @@ console.log(credentials);
         console.log('Token enregistré :', res.token);
         console.log('ID de l\'utilisateur enregistré :', res.user.id);
         alert('Connexion réussie.');
-        this.router.navigate(['/dashboard']); // Redirige vers une autre page
+        this.router.navigate(['/editprofil']); // Redirige vers une autre page
       },
       error: (err:any) => {
         console.error('Erreur :', err);
