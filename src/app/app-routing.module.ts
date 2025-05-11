@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+
 import { HomeComponent } from './pages/home/home.component';
 import { ServiceComponent } from './pages/service/service.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
@@ -17,6 +18,10 @@ import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 
+import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component'; // ✅ Ajout ici
+import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component'; // ✅
+import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component'; // ✅
+import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component'; // ✅
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -27,18 +32,31 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
-  {path: 'social-feed', component: SocialFeedComponent },
-  { path: 'dispo-event', component: DispEventComponent, children: [
-    { path: '', redirectTo: 'availability', pathMatch: 'full' },
-    { path: 'availability', component: AvailabilityComponent },
-    { path: 'events', component: EventsComponent },
-  { path: 'dashboard', component: AnalyseGraphiqueComponent },]
-  },
-  {path: 'rendz-inscri', component: RendzInscriComponent },
+  { path: 'social-feed', component: SocialFeedComponent },
+  { path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
-  { path: '**', redirectTo: '' },
-  
+
+  // 📦 DISP-EVENT avec enfants
+  {
+    path: 'dispo-event',
+    component: DispEventComponent,
+    children: [
+      { path: '', redirectTo: 'availability', pathMatch: 'full' },
+      { path: 'availability', component: AvailabilityComponent },
+      { path: 'events', component: EventsComponent },
+      { path: 'dashboard', component: AnalyseGraphiqueComponent }
+    ]
+  },
+
+  // ✅ Ajout de la route pour créer une catégorie de cours
+
+  { path: 'categories/create', component: CategoryCreateComponent },
+  { path: 'categories/:id', component: CategoryDetailComponent }, 
+  { path: 'categories', component: CategoryListComponent },
+  { path: 'categories/edit/:id', component: CategoryEditComponent },
+  // Redirection en cas d'URL inconnue
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({
