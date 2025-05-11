@@ -9,6 +9,7 @@ import { PostService } from "../../services/post.service"
 import type { Subscription } from "rxjs"
  import { forkJoin } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { HttpClient } from "@angular/common/http"
 
 @Component({
   selector: "app-social-feed",
@@ -28,13 +29,15 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   selectedUser: User | null = null
   messages: Message[] = []
   messageContent = ""
-  groups: Group[] = []
-
+groups: any[] = [];
   private subscriptions: Subscription[] = []
+newGroup: any
 
   constructor(
     private postService: PostService,
     private userService: UserService,
+    private groupService: PostService, // Remplacez par le
+    private http: HttpClient,
   ) {}
 
   // Ajoutez cette méthode pour vérifier si le serveur est accessible
@@ -59,6 +62,7 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
     console.log("Current User:", this.currentUser) // Vérifiez les données
     this.loadPosts()
     this.loadUsers()
+    this.loadGroups();
 
     console.log('Users initial:', this.users); // Vérifiez dans la console
     // Si vous récupérez les utilisateurs via un service ou une API :
@@ -471,18 +475,7 @@ private loadPosts(): void {
     alert(`Post partagé: ${post.contenu.substring(0, 30)}...`)
   }
 
-  createGroup(): void {
-    const name = prompt("Nom du groupe :")
-    if (!name?.trim() || !this.currentUser?._id) return
-
-    const group = this.createGroupData(name)
-    this.subscriptions.push(
-      this.postService.createGroup(group).subscribe({
-        next: () => this.loadGroups(),
-        error: (error) => this.handleGroupError(error),
-      }),
-    )
-  }
+ 
 
   private createGroupData(name: string): Partial<Group> {
     return {
@@ -493,11 +486,7 @@ private loadPosts(): void {
     }
   }
 
-  private loadGroups(): void {
-    this.postService.getUserConversations(this.currentUser!._id!).subscribe({
-      next: (groups) => (this.groups = groups),
-    })
-  }
+ 
 
   private handleGroupError(error: any): void {
     console.error("Error creating group:", error)
@@ -629,4 +618,35 @@ private loadPosts(): void {
       }
     });
   }
+
+
+  loadGroups() {
+    this.http.get<any[]>('http://localhost:3000/group/getallGroupByUser', {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } // Ajoutez le token si nécessaire
+    }).subscribe(
+      (data: any[]) => {
+        this.groups = data;
+        console.log('Groupes chargés :', data);
+      },
+      (error: any) => {
+        console.error('Erreur lors du chargement des groupes :', error);
+      }
+    );
+  }
+
+  createGroup() {
+    // Logique pour créer un groupe (par exemple, ouvrir un formulaire)
+    console.log('Création d’un groupe');
+    // Implémentez la logique ici (appel API, etc.)
+  }
+  openGroup(groupId: string) {
+    console.log('Ouverture du groupe avec ID :', groupId);
+    // Logique pour ouvrir ou afficher les détails du groupe
+    // Exemple : navigation vers une page de détails du groupe
+    //this.router.navigate(['/group-details', groupId]);
+    // Ou, si vous avez une logique côté frontend pour afficher les détails :
+    // const selectedGroup = this.groups.find(group => group._id === groupId);
+    // this.selectedGroup = selectedGroup; // Mettez à jour une variable pour afficher les détails
+  }
+  
 }

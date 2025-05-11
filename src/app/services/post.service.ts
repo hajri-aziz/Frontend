@@ -154,6 +154,10 @@ export class PostService {
       })
     );
   }
+   // Récupérer les groupes d'un utilisateur spécifique
+  getUserGroups(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
+  }
 
   // Conversations et Messages
   getUserConversations(userId: string): Observable<Group[]> {
