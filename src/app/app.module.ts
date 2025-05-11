@@ -38,7 +38,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     SignupComponent,
     DashboardComponent,
     CreateAccountComponent,
-    SocialFeedComponent,
+    // SocialFeedComponent is standalone and imported below
     DispEventComponent,
     RendzInscriComponent,
     SidebarComponent,
@@ -46,7 +46,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     AvailabilityComponent,
     EventsComponent,
     AnalyseGraphiqueComponent,
-    
     EditUserDialogComponent,
     DeleteConfirmationDialogComponent,
     EditprofilComponent
@@ -57,7 +56,7 @@ import { MatDialogModule } from '@angular/material/dialog';
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule, 
-    FormsModule, 
+    SocialFeedComponent, // Importing standalone component
     MatDialogModule,
     
   ],

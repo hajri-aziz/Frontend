@@ -14,71 +14,78 @@
         <nav class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] mb-6">
             <div class="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
                 <div class="text-2xl font-bold font-['Helvetica_Neue'] text-[#04789d]">SocialFeed</div>
+                <button *ngIf="currentUser" (click)="logout()" class="text-sm text-[#04789d] font-poppins">Déconnexion</button>
             </div>
         </nav>
         <div class="flex flex-col lg:flex-row gap-6">
             <!-- Main Feed -->
             <div class="w-full lg:w-2/3">
-<!-- Create Post -->
-<div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
-    <div class="flex items-center space-x-2 mb-4">
-        <img [src]="currentUser.avatar" alt="Profile" class="w-10 h-10 rounded-full">
-        <span class="font-medium font-poppins text-[#080808]">{{ currentUser.name }}</span>
-    </div>
+                <!-- Create Post -->
+                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
+                    <div class="flex items-center space-x-2 mb-4">
+                        <img [src]="currentUser?.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-10 h-10 rounded-full">
+                        <span class="font-medium font-poppins text-[#080808]">{{ currentUser?.nom }} {{ currentUser?.prenom }}</span>
+                    </div>
 
-    <textarea 
-        [(ngModel)]="newPostContent"
-        class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
-        placeholder="Qu'avez-vous en tête?"
-        rows="3"
-    ></textarea>
+                    <input 
+                        [(ngModel)]="newPost.titre"
+                        class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+                        placeholder="Titre du post"
+                    >
+                    <textarea 
+                        [(ngModel)]="newPost.contenu"
+                        class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+                        placeholder="Qu'avez-vous en tête ?"
+                        rows="3"
+                    ></textarea>
 
-    <!-- Image upload -->
-    <input 
-        type="file" 
-        (change)="onImageSelected($event)"
-        accept="image/*"
-        class="mb-3 block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
-               file:rounded-full file:border-0 file:text-sm file:font-semibold
-               file:bg-gradient-to-br file:from-[#56e0e0] file:to-[#007299] file:text-white hover:file:opacity-90"
-    >
+                    <!-- Image upload -->
+                    <input 
+                        type="file" 
+                        (change)="onImageSelected($event)"
+                        accept="image/*"
+                        class="mb-3 block text-sm text-gray-500 file:mr-4 file:py-2 file:px-4
+                               file:rounded-full file:border-0 file:text-sm file:font-semibold
+                               file:bg-gradient-to-br file:from-[#56e0e0] file:to-[#007299] file:text-white hover:file:opacity-90"
+                    >
 
-    <!-- Preview -->
-    <div *ngIf="imagePreview" class="mb-3">
-        <img [src]="imagePreview" alt="Preview" class="w-full h-48 object-cover rounded-lg">
-    </div>
+                    <!-- Preview -->
+                    <div *ngIf="imagePreview" class="mb-3">
+                        <img [src]="imagePreview" alt="Preview" class="w-full h-48 object-cover rounded-lg">
+                    </div>
 
-    <div class="flex justify-end">
-        <button 
-            (click)="addPost()"
-            class="flex items-center justify-center w-full sm:w-[160px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
-        >
-            Publier
-        </button>
-    </div>
-</div>
+                    <div class="flex justify-end">
+                        <button 
+                            (click)="addPost()"
+                            class="flex items-center justify-center w-full sm:w-[160px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
+                        >
+                            Publier
+                        </button>
+                    </div>
+                </div>
                 <!-- Posts -->
                 <div class="space-y-6">
                     <div *ngFor="let post of posts" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] overflow-hidden">
                         <!-- Post Header -->
                         <div class="p-4 flex items-center space-x-2 border-b border-[#cfd0d4]">
-                            <img [src]="getUserById(post.userId).avatar" alt="Profile" class="w-10 h-10 rounded-full">
+                            <img [src]="post.idAuteur.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-10 h-10 rounded-full">
                             <div>
-                                <div class="font-medium font-poppins text-[#080808]">{{ getUserById(post.userId).name }}</div>
-                                <div class="text-xs text-[#66676b] font-poppins">{{ post.timestamp | date:'medium' }}</div>
+                                <div class="font-medium font-poppins text-[#080808]">{{ post.idAuteur.nom }} {{ post.idAuteur.prenom }}</div>
+                                <div class="text-xs text-[#66676b] font-poppins">{{ post.date_creation | date:'medium' }}</div>
                             </div>
                         </div>
 
                         <!-- Post Content -->
                         <div class="px-4 py-2">
-                            <p class="mb-3 text-sm font-poppins text-[#080808]">{{ post.content }}</p>
-                            <img *ngIf="post.image" [src]="post.image" alt="Post image" class="w-full h-64 object-cover rounded-lg">
+                            <h3 class="text-lg font-poppins text-[#080808] mb-2">{{ post.titre }}</h3>
+                            <p class="mb-3 text-sm font-poppins text-[#080808]">{{ post.contenu }}</p>
+                            <img *ngIf="post.image" [src]="'http://localhost:3000' + post.image" alt="Post image" class="w-full h-64 object-cover rounded-lg">
                         </div>
 
                         <!-- Post Stats -->
                         <div class="px-4 py-2 border-t border-b border-[#cfd0d4] flex justify-between text-sm text-[#66676b] font-poppins">
-                            <div>{{ post.likes }} j'aime</div>
-                            <div>{{ post.comments.length }} commentaires</div>
+                            <div>{{ post.likes.length }} j'aime</div>
+                            <div>{{ post.comments?.length || 0 }} commentaires</div>
                         </div>
 
                         <!-- Post Actions -->
@@ -86,7 +93,7 @@
                             <button 
                                 (click)="toggleLike(post)"
                                 class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition"
-                                [class.text-[#04789d]]="post.hasLiked"
+                                [class.text-[#04789d]="post.likes.includes(currentUser?._id || '')"
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
@@ -113,26 +120,26 @@
                         <!-- Comments -->
                         <div class="p-4 space-y-3">
                             <div *ngFor="let comment of post.comments" class="flex space-x-2">
-                                <img [src]="getUserById(comment.userId).avatar" alt="Profile" class="w-8 h-8 rounded-full">
+                                <img [src]="comment.idAuteur.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-8 h-8 rounded-full">
                                 <div class="bg-[#f1f2f5] rounded-lg px-3 py-2 flex-1">
-                                    <div class="font-medium text-sm font-poppins text-[#080808]">{{ getUserById(comment.userId).name }}</div>
-                                    <p class="text-sm font-poppins text-[#080808]">{{ comment.content }}</p>
-                                    <div class="text-xs text-[#66676b] font-poppins">{{ comment.timestamp | date:'short' }}</div>
+                                    <div class="font-medium text-sm font-poppins text-[#080808]">{{ comment.idAuteur.nom }} {{ comment.idAuteur.prenom }}</div>
+                                    <p class="text-sm font-poppins text-[#080808]">{{ comment.contenu }}</p>
+                                    <div class="text-xs text-[#66676b] font-poppins">{{ comment.date_creation | date:'short' }}</div>
                                 </div>
                             </div>
 
                             <!-- Add Comment -->
-                            <div class="flex space-x-2 mt-3">
-                                <img [src]="currentUser.avatar" alt="Profile" class="w-8 h-8 rounded-full">
+                            <div class="flex space-x-2 mt-3" *ngIf="post._id">
+                                <img [src]="currentUser?.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-8 h-8 rounded-full">
                                 <div class="flex-1 flex">
                                     <input 
-                                        [(ngModel)]="newCommentContents[post.id]"
+                                        [(ngModel)]="newCommentContents[post._id]"
                                         class="flex-1 bg-[#f1f2f5] rounded-l-full px-4 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
                                         placeholder="Écrire un commentaire..."
                                     >
                                     <button 
                                         (click)="addComment(post)"
-                                        class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-full px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
+                                        class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-full px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
                                     >
                                         Envoyer
                                     </button>
@@ -153,17 +160,17 @@
                             *ngFor="let user of users" 
                             (click)="selectUser(user)"
                             class="flex items-center space-x-2 p-2 rounded-lg hover:bg-[#f1f2f5] cursor-pointer"
-                            [class.bg-[#f1f2f5]]="selectedUser?.id === user.id"
+                            [class.bg-[#f1f2f5]="selectedUser?._id === user._id"
                         >
                             <div class="relative">
-                                <img [src]="user.avatar" alt="Profile" class="w-10 h-10 rounded-full">
+                                <img [src]="user.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-10 h-10 rounded-full">
                                 <div 
                                     class="absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white"
-                                    [class.bg-green-500]="user.isOnline"
-                                    [class.bg-gray-400]="!user.isOnline"
+                                    [class.bg-green-500]="user"
+                                    [class.bg-gray-400]="!user"
                                 ></div>
                             </div>
-                            <span class="font-medium font-poppins text-[#080808]">{{ user.name }}</span>
+                            <span class="font-medium font-poppins text-[#080808]">{{ user.nom }} {{ user.prenom }}</span>
                         </div>
                     </div>
                 </div>
@@ -171,22 +178,25 @@
                 <!-- Messages -->
                 <div *ngIf="selectedUser" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] flex flex-col h-96">
                     <div class="p-4 border-b border-[#cfd0d4] flex items-center space-x-2">
-                        <img [src]="selectedUser.avatar" alt="Profile" class="w-8 h-8 rounded-full">
-                        <span class="font-medium font-poppins text-[#080808]">{{ selectedUser.name }}</span>
+                        <img [src]="selectedUser.profileImage || 'https://i.pravatar.cc/150'" alt="Profile" class="w-8 h-8 rounded-full">
+                        <span class="font-medium font-poppins text-[#080808]">{{ selectedUser.nom }} {{ selectedUser.prenom }}</span>
                     </div>
                     
                     <div class="flex-1 p-4 overflow-y-auto space-y-3">
                         <div *ngFor="let message of messages" 
-                             [class.flex-row-reverse]="message.fromMe"
-                             [class.justify-end]="message.fromMe"
+                             [class.flex-row-reverse]="message.sender === currentUser?._id"
+                             [class.justify-end]="message.sender === currentUser?._id"
                              class="flex">
                             <div 
-                                [class.bg-[#04789d]]="message.fromMe"
-                                [class.text-white]="message.fromMe"
-                                [class.bg-[#f1f2f5]]="!message.fromMe"
+                                [class.bg-[#04789d]="message.sender === currentUser?._id"
+                                [class.text-white]="message.sender === currentUser?._id"
+                                [class.bg-[#f1f2f5]="message.sender !== currentUser?._id"
                                 class="max-w-[70%] rounded-lg px-3 py-2 font-poppins text-sm"
                             >
                                 {{ message.content }}
+                                <div *ngIf="message.reactions?.length" class="text-xs mt-1">
+                                    <span *ngFor="let r of message.reactions">{{ r.reaction }}</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -199,10 +209,32 @@
                         >
                         <button 
                             (click)="sendMessage()"
-                            class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-lg px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
+                            class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-lg px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
                         >
                             Envoyer
                         </button>
+                    </div>
+                </div>
+
+                <!-- Groups -->
+                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
+                    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Groupes</h2>
+                    <button 
+                        (click)="createGroup()"
+                        class="mb-3 w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                    >
+                        Créer un groupe
+                    </button>
+                    <div class="space-y-2">
+                        <div *ngFor="let group of groups" class="flex items-center justify-between p-2 rounded-lg hover:bg-[#f1f2f5]">
+                            <span class="font-medium font-poppins text-[#080808]">{{ group.name }}</span>
+                            <button 
+                                (click)="group._id && addMemberToGroup(group._id)"
+                                class="text-sm text-[#04789d] font-poppins"
+                            >
+                                Ajouter membre
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
