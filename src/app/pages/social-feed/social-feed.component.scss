@@ -23,3 +23,11 @@
 .profile-name {
     font-size: 1rem;
 }
+/* Masquer le modale par défaut */
+.showModal {
+  display: block;
+}
+
+.hideModal {
+  display: none;
+}

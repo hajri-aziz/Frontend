@@ -30,8 +30,15 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   messages: Message[] = []
   messageContent = ""
 groups: any[] = [];
-  private subscriptions: Subscription[] = []
+newGroupName: string = ''; // Champ pour le nom du groupe
+invitedEmail: string = ''; // Champ pour l'email de l'utilisateur à inviter
+private subscriptions: Subscription[] = []
 newGroup: any
+showModal: boolean = false;
+currentUserId: string = ''; 
+tempEmail: string = ''; // Email temporaire saisi dans le modale
+  tempUsers: { email: string, id: string }[] = []; // Liste temporaire des utilisateurs
+  showCreateGroupModal: boolean = false; // Modale pour créer un groupe
 
   constructor(
     private postService: PostService,
@@ -634,11 +641,7 @@ private loadPosts(): void {
     );
   }
 
-  createGroup() {
-    // Logique pour créer un groupe (par exemple, ouvrir un formulaire)
-    console.log('Création d’un groupe');
-    // Implémentez la logique ici (appel API, etc.)
-  }
+ 
   openGroup(groupId: string) {
     console.log('Ouverture du groupe avec ID :', groupId);
     // Logique pour ouvrir ou afficher les détails du groupe
@@ -648,5 +651,103 @@ private loadPosts(): void {
     // const selectedGroup = this.groups.find(group => group._id === groupId);
     // this.selectedGroup = selectedGroup; // Mettez à jour une variable pour afficher les détails
   }
+
+openCreateGroupModal() {
+    this.showCreateGroupModal = true;
+    this.newGroupName = '';
+    this.tempEmail = '';
+    this.tempUsers = [];
+  }
+
+  closeCreateGroupModal() {
+    this.showCreateGroupModal = false;
+    this.newGroupName = '';
+    this.tempEmail = '';
+    this.tempUsers = [];
+  }
+
+addUserToTempList() {
+  if (!this.tempEmail) {
+    alert('Veuillez entrer un email.');
+    return;
+  }
+
+  const normalizedEmail = this.tempEmail.trim().toLowerCase();
+  console.log('Email saisi (normalisé) :', normalizedEmail); // Log pour déboguer
+
+  // Vérifier si l'email existe déjà dans la liste temporaire
+  if (this.tempUsers.some(user => user.email === normalizedEmail)) {
+    alert('Cet email a déjà été ajouté.');
+    return;
+  }
+
+  // Vérifier si l'email existe dans la base de données
+  this.groupService.getUserByEmail(normalizedEmail).subscribe(
+    (user) => {
+      console.log('Utilisateur trouvé (frontend) :', user); // Log pour déboguer
+      if (user && user._id) {
+        this.tempUsers.push({ email: normalizedEmail, id: user._id });
+        this.tempEmail = ''; // Réinitialiser le champ email
+      } else {
+        alert('Utilisateur non trouvé avec cet email.');
+      }
+    },
+    (error) => {
+      console.error('Erreur lors de la recherche de l\'utilisateur (frontend) :', error);
+      alert('Utilisateur non trouvé avec cet email.');
+    }
+  );
+}
+  removeUserFromTempList(email: string) {
+    this.tempUsers = this.tempUsers.filter(user => user.email !== email);
+  }
+
+  createGroup() {
+    if (!this.newGroupName) {
+      alert('Veuillez entrer un nom pour le groupe.');
+      return;
+    }
+
+    if (this.tempUsers.length < 3) {
+      alert('Vous devez ajouter au moins 3 utilisateurs pour créer un groupe.');
+      return;
+    }
+
+    if (!this.currentUserId) {
+      alert('Utilisateur non authentifié. Veuillez vous connecter.');
+      return;
+    }
+
+    const groupData = {
+      name: this.newGroupName,
+      creator: this.currentUserId,
+      members: this.tempUsers.map(user => user.id),
+      admins: [this.currentUserId],
+      
+    };
+
+    this.http.post('http://localhost:3000/group/create', groupData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).subscribe(
+      (response: any) => {
+        console.log('Groupe créé avec succès :', response.group);
+        this.groups.push(response.group);
+        this.closeCreateGroupModal();
+        this.showModal = true; // Afficher le modale de confirmation
+      },
+      (error) => {
+        console.error('Erreur lors de la création du groupe :', error);
+        alert('Erreur lors de la création du groupe.');
+      }
+    );
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.newGroupName = '';
+    this.tempUsers = [];
+  }
+
+
   
 }
