@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';  // Importer le service Router
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,17 +9,9 @@ import { Router } from '@angular/router';  // Importer le service Router
 export class SidebarComponent {
   isMobileMenuOpen = false;
 
-  // Injecter le service Router dans le constructeur
   constructor(public router: Router) {}
 
   toggleMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-    isCategoryMenuOpen = false;
-
-    toggleCategoryMenu() {
-      this.isCategoryMenuOpen = !this.isCategoryMenuOpen;
-    }
-
-
 }

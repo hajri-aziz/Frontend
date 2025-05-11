@@ -23,6 +23,11 @@ import { CategoryDetailComponent } from './pages/cours-category/category-detail/
 import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component';
 import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component';
 
+import { CoursCreateComponent } from './pages/cours/cours-create/cours-create.component';
+import { CoursListComponent } from './pages/cours/cours-list/cours-list.component';
+import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.component';
+import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
@@ -54,6 +59,13 @@ const routes: Routes = [
   { path: 'categories/create', component: CategoryCreateComponent },
   { path: 'categories/edit/:id', component: CategoryEditComponent },
   { path: 'categories/:id', component: CategoryDetailComponent },
+
+  // 🆕 Cours
+  { path: 'courses', component: CoursListComponent },
+  { path: 'courses/create', component: CoursCreateComponent },
+  { path: 'courses/edit/:id', component: CoursEditComponent },
+  { path: 'courses/:id', component: CoursDetailComponent },
+  { path: 'courses/detail/:id', component: CoursDetailComponent },
 
   // Redirection si aucune route ne correspond
   { path: '**', redirectTo: '' }

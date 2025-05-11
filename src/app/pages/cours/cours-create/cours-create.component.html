@@ -1,1 +1,108 @@
-<p>cours-create works!</p>
+<div class="max-w-3xl mx-auto p-6 bg-white shadow rounded-lg mt-8">
+  <h2 class="text-2xl font-bold text-zenaura-text mb-4">🎓 Création d'un cours</h2>
+
+  <form [formGroup]="coursForm" (ngSubmit)="submit()" enctype="multipart/form-data" class="space-y-4">
+
+    <!-- Titre -->
+    <div>
+      <label for="title" class="block text-sm font-medium text-zenaura-text">Titre du cours</label>
+      <input
+        id="title"
+        type="text"
+        formControlName="title"
+        class="mt-1 block w-full rounded border p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+        [ngClass]="{ 'border-red-500': coursForm.get('title')?.invalid && coursForm.get('title')?.touched }"
+      />
+    </div>
+
+    <!-- Description -->
+    <div>
+      <label for="description" class="block text-sm font-medium text-zenaura-text">Description</label>
+      <textarea
+        id="description"
+        rows="3"
+        formControlName="description"
+        class="mt-1 block w-full rounded border p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+        [ngClass]="{ 'border-red-500': coursForm.get('description')?.invalid && coursForm.get('description')?.touched }"
+      ></textarea>
+    </div>
+
+    <!-- Prix et Devise -->
+    <div class="grid grid-cols-2 gap-4">
+      <div>
+        <label for="price" class="block text-sm font-medium text-zenaura-text">Prix</label>
+        <input
+          id="price"
+          type="number"
+          formControlName="price"
+          class="mt-1 block w-full rounded border p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+        />
+      </div>
+
+      <div>
+        <label for="currency" class="block text-sm font-medium text-zenaura-text">Devise</label>
+        <select
+          id="currency"
+          formControlName="currency"
+          class="mt-1 block w-full rounded border p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+        >
+          <option value="TND">TND</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Catégorie -->
+    <div>
+      <label for="category_id" class="block text-sm font-medium text-zenaura-text">Catégorie</label>
+      <select
+        id="category_id"
+        formControlName="category_id"
+        class="mt-1 block w-full rounded border p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+      >
+        <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
+      </select>
+    </div>
+
+    <!-- Instructeur -->
+    <div>
+      <label for="instructor_id" class="block text-sm font-medium text-zenaura-text">Instructeur</label>
+      <select
+        id="instructor_id"
+        formControlName="instructor_id"
+        class="mt-1 block w-full rounded border border-gray-300 p-2 shadow-sm focus:border-zenaura-teal focus:ring focus:ring-teal-200"
+      >
+        <option *ngIf="instructors.length === 0" disabled>Aucun instructeur disponible</option>
+        <option *ngFor="let inst of instructors" [value]="inst._id">
+          {{ inst.nom }} {{ inst.prenom }}
+        </option>
+      </select>
+
+    </div>
+
+    <!-- Image -->
+    <div>
+      <label for="image" class="block text-sm font-medium text-zenaura-text">Image (facultative)</label>
+      <input
+        id="image"
+        type="file"
+        (change)="onFileChange($event)"
+        class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-zenaura-teal file:text-white hover:file:bg-teal-600"
+      />
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div class="pt-4">
+      <button
+        type="submit"
+        [disabled]="loading || coursForm.invalid"
+        class="w-full bg-zenaura-teal text-white py-2 px-4 rounded hover:bg-teal-700 transition"
+      >
+        {{ loading ? 'Création en cours...' : 'Créer le cours' }}
+      </button>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="error" class="text-red-600 mt-2">{{ error }}</div>
+    <div *ngIf="success" class="text-green-600 mt-2">Cours créé avec succès !</div>
+  </form>
+</div>

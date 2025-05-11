@@ -1,1 +1,122 @@
-<p>cours-list works!</p>
+<div class="max-w-6xl mx-auto p-6">
+  <!-- Header -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-2xl font-bold text-zenaura-text">📚 Liste des cours</h2>
+    <div class="flex gap-2">
+      <button routerLink="/categories" class="bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/>
+        </svg>
+        Catégories
+      </button>
+      <button (click)="addCours()" class="bg-zenaura-teal text-white px-4 py-2 rounded hover:bg-teal-700 transition flex items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+        </svg>
+        Ajouter
+      </button>
+    </div>
+  </div>
+
+  <!-- 🔍 Recherche & filtres -->
+  <div class="mb-6 flex flex-col md:flex-row gap-4">
+    <!-- Recherche -->
+    <div class="relative flex-grow">
+      <input 
+        type="text" 
+        placeholder="Rechercher un cours..." 
+        [(ngModel)]="searchTerm"
+        class="w-full px-4 py-2 border border-zenaura-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-zenaura-teal"
+      >
+      <button 
+        (click)="searchCours()" 
+        class="absolute right-2 top-1/2 transform -translate-y-1/2 text-zenaura-gray hover:text-zenaura-teal"
+        aria-label="Rechercher"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Catégorie -->
+    <select [(ngModel)]="selectedCategory" (change)="filterByCategory()"
+      class="px-3 py-2 border border-zenaura-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-zenaura-teal text-sm">
+      <option value="">Toutes les catégories</option>
+      <option *ngFor="let cat of categories" [value]="cat._id">{{ cat.title }}</option>
+    </select>
+
+    <!-- Prix -->
+    <div class="flex items-center gap-2">
+      <input type="number" [(ngModel)]="minPrice" placeholder="Min"
+        class="w-20 px-2 py-2 border border-zenaura-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-zenaura-teal text-sm">
+      <span>-</span>
+      <input type="number" [(ngModel)]="maxPrice" placeholder="Max"
+        class="w-20 px-2 py-2 border border-zenaura-divider rounded-lg focus:outline-none focus:ring-2 focus:ring-zenaura-teal text-sm">
+      <button (click)="filterByPrice()" class="px-3 py-2 bg-zenaura-teal text-white rounded-lg hover:bg-teal-700 text-sm">
+        Filtrer
+      </button>
+    </div>
+
+    <!-- Populaires -->
+    <button (click)="loadPopularCourses()" class="px-3 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 text-sm">
+      ⭐ Populaires
+    </button>
+
+    <!-- Réinitialiser -->
+    <button (click)="loadCours()" class="px-3 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm">
+      🔁 Réinitialiser
+    </button>
+  </div>
+
+  <!-- Alertes -->
+  <div *ngIf="loading" class="text-zenaura-gray">Chargement des cours...</div>
+  <div *ngIf="error" class="text-red-600 mb-2">{{ error }}</div>
+  <div *ngIf="success" class="text-green-600 mb-2">{{ success }}</div>
+  <div *ngIf="showPopular" class="mb-4 px-3 py-2 bg-amber-100 text-amber-800 rounded-md">
+    📈 Affichage des cours les plus populaires
+  </div>
+
+  <!-- Aucun résultat -->
+  <div *ngIf="!loading && coursList?.length === 0" class="text-zenaura-gray mt-4">
+    Aucun cours disponible.
+  </div>
+
+  <!-- Liste des cours -->
+<div *ngIf="coursList && coursList.length > 0" class="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+    <div *ngFor="let cours of coursList" class="bg-white shadow-custom-card rounded-lg p-4 flex flex-col justify-between">
+      
+      <!-- Image -->
+      <div class="mb-3 w-full h-48 rounded-lg overflow-hidden">
+        <img [src]="getImageUrl(cours)" alt="{{ cours.title }}" class="w-full h-full object-cover" (error)="onImageError($event)">
+      </div>
+
+      <!-- Infos cours -->
+      <div>
+        <h3 class="text-lg font-semibold text-zenaura-text mb-2">{{ cours.title }}</h3>
+        <p class="text-sm text-zenaura-gray mb-2">{{ cours.description }}</p>
+        <div class="flex flex-wrap gap-2 mb-4 text-sm text-zenaura-gray">
+          <span>💰 {{ cours.price }} {{ cours.currency }}</span>
+          <span>👤 {{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</span>
+          <span>🏷️ {{ cours.category_id?.title }}</span>
+          <span>🗓️ {{ cours.created_at | date:'short' }}</span>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-between items-center pt-2 border-t border-zenaura-divider mt-auto">
+        <button (click)="viewCours(cours._id)" class="text-zenaura-teal hover:underline text-sm flex items-center gap-1">
+          👁️ Voir
+        </button>
+        <button (click)="editCours(cours._id)" class="text-blue-600 hover:underline text-sm flex items-center gap-1">
+          ✏️ Modifier
+        </button>
+        <button (click)="goToDeleteConfirmation(cours._id)" class="text-red-600 hover:underline text-sm flex items-center gap-1">
+          🗑️ Supprimer
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
