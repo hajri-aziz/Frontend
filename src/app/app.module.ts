@@ -69,10 +69,7 @@ import { SessionDetailComponent } from './pages/cours-session/session-detail/ses
     AvailabilityComponent,
     EventsComponent,
     AnalyseGraphiqueComponent,
-<<<<<<< HEAD
-=======
 
->>>>>>> d843928670e213f7e8fd46f5c9b18723cfc0bfd5
     EditUserDialogComponent,
     DeleteConfirmationDialogComponent,
 
@@ -97,13 +94,9 @@ import { SessionDetailComponent } from './pages/cours-session/session-detail/ses
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-<<<<<<< HEAD
     FormsModule, 
     FormsModule, 
     MatDialogModule,
-=======
-    MatDialogModule
->>>>>>> d843928670e213f7e8fd46f5c9b18723cfc0bfd5
   ],
   providers: [],
   bootstrap: [AppComponent]
