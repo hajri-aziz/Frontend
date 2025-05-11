@@ -209,28 +209,29 @@
 
             <!-- Sidebar - User List & Messages -->
             <div class="w-full lg:w-1/3 space-y-6">
-                <!-- User List -->
+                <!-- User List - MODIFIÉ AVEC HAUTEUR FIXE ET DÉFILEMENT -->
                 <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
-                    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Liste des utilisateurs</h2>
-                    <div class="row">
-                        <div class="col-md-3" *ngFor="let user of users">
-                            <div class="profile-card">
-                                <div class="flex-shrink-0">
-                                    <ng-container *ngIf="user.profileImage; else defaultIcon">
-                                        <img [src]="'http://localhost:3000' + user.profileImage" alt="Photo de profil" class="profile-img">
-                                    </ng-container>
-                                    <ng-template #defaultIcon>
-                                        <img src="assets/profil.png" class="profile-img">
-                                    </ng-template>  
-                                </div>
-                                
-                                <h5 class="profile-name">{{ user.nom }} {{ user.prenom }}</h5>
-
-                              
-                               
-
-
-                               
+                    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Utilisateurs en ligne</h2>
+                    <div class="h-60 overflow-y-auto pr-2" style="scrollbar-width: thin;">
+                        <div *ngIf="users?.length === 0" class="text-center text-[#66676b] py-2">
+                            <p>Aucun utilisateur trouvé.</p>
+                        </div>
+                        <div *ngFor="let user of users" class="flex items-center mb-4">
+                            <div class="relative">
+                                <ng-container *ngIf="user.profileImage; else defaultIcon">
+                                    <img [src]="getProfileImageUrl(user.profileImage)" alt="Photo de profil" 
+                                         class="w-10 h-10 rounded-full object-cover" 
+                                         (error)="handleImageError($event)">
+                                </ng-container>
+                                <ng-template #defaultIcon>
+                                    <img src="assets/profil.png" alt="Photo de profil par défaut" 
+                                         class="w-10 h-10 rounded-full object-cover">
+                                </ng-template>
+                                <!-- Indicateur de statut en ligne -->
+                                <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+                            </div>
+                            <div class="ml-3">
+                                <h5 class="font-medium text-[#080808]">{{ user.prenom }} {{ user.nom }}</h5>
                             </div>
                         </div>
                     </div>

@@ -59,6 +59,24 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
     console.log("Current User:", this.currentUser) // Vérifiez les données
     this.loadPosts()
     this.loadUsers()
+
+    console.log('Users initial:', this.users); // Vérifiez dans la console
+    // Si vous récupérez les utilisateurs via un service ou une API :
+    this.userService.getAllUsers().subscribe(data => {
+     this.users = data;
+      console.log('Users loaded:', this.users); // Vérifiez après chargement
+    });
+    this.loadGroups()
+    this.verifyUserData()
+    console.log("Vérification des données utilisateur terminée")
+    console.log("Current User après vérification:", this.currentUser) // Vérifiez les données
+    this.checkServerConnection()
+    this.loadUser()
+    console.log("Vérification de la connexion au serveur terminée")
+    console.log("Vérification de la connexion au serveur terminée")
+    this.checkServerConnection()
+    console.log("Vérification de la connexion au serveur terminée")
+    this.checkServerConnection()
   }
 
   // Ajoutez cette méthode pour vérifier les données utilisateur
@@ -599,5 +617,16 @@ private loadPosts(): void {
     const imgElement = event.target as HTMLImageElement;
     console.warn('Failed to load post image, falling back to placeholder');
     imgElement.src = 'https://via.placeholder.com/300x200?text=Image+non+disponible';
+  }
+  loadUser(): void {
+    this.userService.getAllUsers().subscribe({
+      next: (data: any) => {
+        this.users = data.users;  // Assurez-vous que l'API renvoie la liste complète des utilisateurs
+        console.log('Users récupérés :', this.users);
+      },
+      error: (err: any) => {
+        console.error('Erreur lors de la récupération des utilisateurs :', err);
+      }
+    });
   }
 }
