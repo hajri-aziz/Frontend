@@ -1,115 +1,123 @@
 <div class="flex flex-col md:flex-row max-w-7xl mx-auto font-sans">
-    <!-- Sidebar -->
-    <div class="w-full md:w-64 bg-[#f4feff] md:h-screen md:fixed border-r border-gray-300 shadow-md">
-        <!-- Mobile Menu Button -->
-        <button class="md:hidden p-4 text-[#172048] focus:outline-none" (click)="toggleMenu()">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+  <!-- Sidebar -->
+  <div class="w-full md:w-64 bg-[#f4feff] md:h-screen md:fixed border-r border-gray-300 shadow-md">
+    <!-- Mobile Menu Button -->
+    <button class="md:hidden p-4 text-[#172048] focus:outline-none" (click)="toggleMenu()">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
+
+    <!-- Sidebar Content -->
+    <div class="hidden md:flex flex-col h-full p-6">
+      <!-- Logo -->
+      <div class="flex items-center space-x-3 mb-6">
+        <img src="assets/logo.png" alt="Zenaura Logo" class="w-14 h-14" />
+        <span class="text-xl font-semibold text-[#172048]">Zenaura</span>
+      </div>
+
+      <!-- Profile -->
+      <div class="flex flex-col items-center my-10">
+        <img src="assets/Ellipse 23.png" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
+        <p class="text-gray-700 text-lg font-semibold mt-4">Admin</p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="flex flex-col space-y-4">
+
+        <!-- Dashboard -->
+        <a routerLink="/editprofil" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/editprofil', 'text-gray-600': router.url !== '/editprofil' }">
+          <ng-container *ngIf="router.url === '/editprofil'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/Vector.svg" alt="Dashboard Icon" class="w-5 h-5" />
+          <span>Dashboard</span>
+        </a>
+
+        <!-- Créer un compte -->
+        <a routerLink="/create-account" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/create-account', 'text-gray-600': router.url !== '/create-account' }">
+          <ng-container *ngIf="router.url === '/create-account'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/person_raised_hand.svg" alt="Create Account Icon" class="w-5 h-5" />
+          <span>Créer un compte</span>
+        </a>
+
+        <!-- Liste Utilisateurs -->
+        <a routerLink="/list-user" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/list-user', 'text-gray-600': router.url !== '/list-user' }">
+          <ng-container *ngIf="router.url === '/list-user'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
+          <span>Liste Utilisateurs</span>
+        </a>
+
+        <!-- Tableau bord planning -->
+        <a routerLink="/dispo-event" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/dispo-event', 'text-gray-600': router.url !== '/dispo-event' }">
+          <ng-container *ngIf="router.url === '/dispo-event'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/Vector (1).svg" alt="Planning Icon" class="w-5 h-5" />
+          <span>Tableau bord planning</span>
+        </a>
+
+        <!-- Espace planning Patient -->
+        <a routerLink="/rendz-inscri" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/rendz-inscri', 'text-gray-600': router.url !== '/rendz-inscri' }">
+          <ng-container *ngIf="router.url === '/rendz-inscri'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/Vector (1).svg" alt="Planning Icon" class="w-5 h-5" />
+          <span>Espace planning Patient</span>
+        </a>
+
+        <!-- Forum -->
+        <a routerLink="/social-feed" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/social-feed', 'text-gray-600': router.url !== '/social-feed' }">
+          <ng-container *ngIf="router.url === '/social-feed'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/Vector (1).svg" alt="Forum Icon" class="w-5 h-5" />
+          <span>Forum</span>
+        </a>
+
+        <!-- Catégories avec sous-menu -->
+        <div>
+          <button (click)="toggleCategoryMenu()" class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
+                  [ngClass]="{
+                    'text-[#04789d] font-semibold': router.url.startsWith('/categories'),
+                    'text-gray-600': !router.url.startsWith('/categories')
+                  }">
+            <ng-container *ngIf="router.url.startsWith('/categories')">
+              <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+            </ng-container>
+            <img src="assets/folder.svg" alt="Catégorie Icon" class="w-5 h-5" />
+            <span>Catégories</span>
+            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path [attr.d]="isCategoryMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
             </svg>
-        </button>
+          </button>
 
-        <!-- Sidebar Content -->
-        <div class="hidden md:flex flex-col h-full p-6">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3 mb-6">
-                <img src="assets/logo.png" alt="Zenaura Logo" class="w-14 h-14" />
-                <span class="text-xl font-semibold text-[#172048]">Zenaura</span>
-            </div>
-
-            <!-- Profile -->
-            <div class="flex flex-col items-center my-10">
-                <img src="assets/Ellipse 23.png" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
-                <p class="text-gray-700 text-lg font-semibold mt-4">Admin</p>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="flex flex-col space-y-4">
-                <!-- Dashboard -->
-                <a routerLink="/editprofil"
-                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-            'text-[#04789d] font-semibold': router.url === '/editprofil',
-            'text-gray-600': router.url !== '/editprofil'
-          }">
-                    <ng-container *ngIf="router.url === '/editprofil'">
-                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                    </ng-container>
-                    <img src="assets/Vector.svg" alt="Dashboard Icon" class="w-5 h-5" />
-                    <span>Dashboard</span>
-                </a>
-
-                <!-- Créer un compte -->
-                <a routerLink="/create-account"
-                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-            'text-[#04789d] font-semibold': router.url === '/create-account',
-            'text-gray-600': router.url !== '/create-account'
-          }">
-                    <ng-container *ngIf="router.url === '/create-account'">
-                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                    </ng-container>
-                    <img src="assets/person_raised_hand.svg" alt="Create Account Icon" class="w-5 h-5" />
-                    <span>Créer un compte</span>
-                </a>
-
-                <!-- Liste Utilisateurs -->
-                <a routerLink="list-user"
-                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-            'text-[#04789d] font-semibold': router.url === '/user-list',
-            'text-gray-600': router.url !== '/user-list'
-          }">
-                    <ng-container *ngIf="router.url === '/user-list'">
-                        <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                    </ng-container>
-                    <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
-                    <span>Liste Utilisateurs</span>
-                </a>
-
-                <!-- dispo-event -->
-                <a routerLink="dispo-event"
-                class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-        'text-[#04789d] font-semibold': router.url === '/dispo-event',
-        'text-gray-600': router.url !== '/dispo-event'
-      }">
-                <ng-container *ngIf="router.url === '/dispo-event'">
-                    <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                </ng-container>
-                <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
-                <span>Tableau bord planning </span>
-            </a> 
-                 <!-- Patient sélection plannig  -->
-                <a routerLink="rendz-inscri"
-                    class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-                    'text-[#04789d] font-semibold': router.url === '/rendz-inscri',
-                    'text-gray-600': router.url !== '/rendz-inscri'
-                  }">
-                    <ng-container *ngIf="router.url === '/rendz-inscri'">
-                            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                     </ng-container>
-                        <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
-                        <span> Espace planning Patient  </span>
-                </a> 
-                <!-- Forum   -->
-                            <a routerLink="social-feed"
-                            class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition" [ngClass]="{
-                    'text-[#04789d] font-semibold': router.url === '/social-feed',
-                    'text-gray-600': router.url !== '/social-feed'
-                  }">
-                            <ng-container *ngIf="router.url === '/social-feed'">
-                                <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-                            </ng-container>
-                            <img src="assets/Vector (1).svg" alt="User List Icon" class="w-5 h-5" />
-                            <span> Forum  </span>
-                        </a> 
-
-            </nav>
-
-            <!-- Logout -->
-            <div class="mt-auto pt-10 border-t border-gray-300">
-                <a routerLink="/home"
-                    class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
-                    <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
-                    <span>Se déconnecter</span>
-                </a>
-            </div>
+          <!-- Sous-menu Catégories -->
+          <div *ngIf="isCategoryMenuOpen" class="ml-8 mt-2 flex flex-col space-y-2 text-sm">
+            <a routerLink="/categories" class="hover:text-zenaura-teal">📁 Voir toutes</a>
+            <a routerLink="/categories/create" class="hover:text-zenaura-teal">➕ Ajouter</a>
+          </div>
         </div>
+
+      </nav>
+
+      <!-- Logout -->
+      <div class="mt-auto pt-10 border-t border-gray-300">
+        <a routerLink="/home" class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
+          <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
+          <span>Se déconnecter</span>
+        </a>
+      </div>
     </div>
+  </div>
 </div>

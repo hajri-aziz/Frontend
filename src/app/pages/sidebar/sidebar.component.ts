@@ -15,4 +15,11 @@ export class SidebarComponent {
   toggleMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
+    isCategoryMenuOpen = false;
+
+    toggleCategoryMenu() {
+      this.isCategoryMenuOpen = !this.isCategoryMenuOpen;
+    }
+
+
 }

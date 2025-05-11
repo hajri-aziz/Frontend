@@ -14,4 +14,5 @@ export class AppComponent {
     const hiddenRoutes = ['/login', '/signup','/','/about','/services','/home'];
     return !hiddenRoutes.includes(this.router.url);
   }
+  
 }
