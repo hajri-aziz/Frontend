@@ -46,7 +46,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     AvailabilityComponent,
     EventsComponent,
     AnalyseGraphiqueComponent,
-    
     EditUserDialogComponent,
     DeleteConfirmationDialogComponent,
     EditprofilComponent
@@ -59,7 +58,6 @@ import { MatDialogModule } from '@angular/material/dialog';
     FormsModule, 
     FormsModule, 
     MatDialogModule,
-    
   ],
   providers: [],
   bootstrap: [AppComponent]

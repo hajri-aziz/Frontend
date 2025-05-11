@@ -39,7 +39,7 @@ export class UserService {
   // 👤 Utilisateur
   getAllUsers(): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/showusers`, { headers: this.getAuthHeaders() });
-  }
+  } 
 
   getUserById(id: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/showusers/${id}`, { headers: this.getAuthHeaders() });
