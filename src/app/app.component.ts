@@ -12,7 +12,7 @@ export class AppComponent {
 
   // Méthode pour déterminer le layout à afficher
   getLayoutType(): 'sidebar' | 'navbar' | 'simple' {
-    const hiddenRoutes = ['/login', '/signup', '/', '/about', '/services', '/home', '/contact'];
+    const hiddenRoutes = ['/login', '/signup', '/', '/about', '/services', '/home', '/contact','/forget-password','/verify-otp','/reset-password'];
     const isHiddenRoute = hiddenRoutes.includes(this.router.url);
 
     if (isHiddenRoute) {

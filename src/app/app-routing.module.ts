@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { HomeComponent } from './pages/home/home.component';
 import { ServiceComponent } from './pages/service/service.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
@@ -18,6 +17,8 @@ import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component';
 import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component';
@@ -50,6 +51,9 @@ const routes: Routes = [
   { path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
+  { path: 'forget-password', component: ForgotPasswordComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
+
   // 📦 DISP-EVENT avec enfants
   {
     path: 'dispo-event',
