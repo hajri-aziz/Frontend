@@ -1,8 +1,11 @@
 <!-- Bootstrap CSS -->
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <style>
+
+  @import url('https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css');
+
 .profile-card {
   margin-top: 40px;
   width: 100%;
@@ -92,8 +95,9 @@
 <!-- HTML -->
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<h2 class="text-center mt-4 mb-4 fw-bold">Liste des utilisateurs</h2>
-<div class="container mt-5">
+<h2 class="text-center mt-4 mb-4  text-[#04789d] fw-bold">Liste des utilisateurs</h2>
+<div class="container mt-5 md:ml-64">
+
   <div class="row g-4 justify-content-center">
     <div class="col-md-3" *ngFor="let user of users">
       <div class="profile-card">
@@ -103,7 +107,7 @@
               <img [src]="'http://localhost:3000' + user.profileImage" alt="Photo de profil" class="profile-img">
             </ng-container>
             <ng-template #defaultIcon>
-              <img src="assets/profil.png" class="profile-img">
+              <img src="assets/user.png" class="profile-img">
             </ng-template>  
           </div>
         

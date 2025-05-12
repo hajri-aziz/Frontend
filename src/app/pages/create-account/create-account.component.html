@@ -1,79 +1,144 @@
-<div class="max-w-4xl mx-auto bg-white p-10 rounded-xl shadow-md">
-    <h1 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center " style="font-family: 'Inter', sans-serif; color : #53709e	;">Ajouter un utilisateur</h1>
-    <p class="text-gray-500 mb-8">Remplissez le formulaire ci-dessous :</p>
+<h1 class="text-3xl font-bold font-['Helvetica_Neue'] text-[#04789d] mb-6 text-center">Nouveau Compte Zenaura </h1>
+<div class="bg-[#f4feff] flex items-center justify-center font-poppins p-4">
+    <div class="w-full max-w-xl">
+        <!-- Formulaire de création d'utilisateur -->
+        <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] mb-6">
+            <div class="p-6 border-b border-[#cfd0d4]">
+                <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300">
+                    Création d'un Nouvel Utilisateur
+                </h2>
+                <p class="text-sm text-[#66676b] font-poppins">
+                    Remplissez le formulaire pour ajouter un utilisateur
+                </p>
+            </div>
+            <div class="p-6 space-y-4">
+                <form [formGroup]="createAccountForm" (ngSubmit)="onAddUserSubmit()">
+                    <!-- Grille 2 colonnes -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Nom -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Nom
+                            </label>
+                            <input formControlName="nom" type="text" placeholder="Entrez le nom"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div *ngIf="
+                    createAccountForm.get('nom')?.invalid &&
+                    createAccountForm.get('nom')?.touched
+                  " class="text-red-500 text-xs">
+                                Le nom est requis.
+                            </div>
+                        </div>
 
-    <form [formGroup]="createAccountForm" (ngSubmit)="onAddUserSubmit()" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Prénom -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Prénom
+                            </label>
+                            <input formControlName="prenom" type="text" placeholder="Entrez le prénom"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div *ngIf="
+                    createAccountForm.get('prenom')?.invalid &&
+                    createAccountForm.get('prenom')?.touched
+                  " class="text-red-500 text-xs">
+                                Le prénom est requis.
+                            </div>
+                        </div>
 
-        <!-- Nom -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
-            <input formControlName="nom" type="text"  placeholder="Entrez le nom"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
+                        <!-- Email -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Email
+                            </label>
+                            <input formControlName="email" type="email" placeholder="exemple@domaine.com"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div *ngIf="
+                    createAccountForm.get('email')?.invalid &&
+                    createAccountForm.get('email')?.touched
+                  " class="text-red-500 text-xs">
+                                Veuillez entrer un email valide.
+                            </div>
+                        </div>
+
+                        <!-- Mot de passe -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Mot de passe
+                            </label>
+                            <input formControlName="password" type="password" placeholder="***********"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                            <div *ngIf="
+                    createAccountForm.get('password')?.invalid &&
+                    createAccountForm.get('password')?.touched
+                  " class="text-red-500 text-xs">
+                                Le mot de passe doit contenir au moins 8 caractères.
+                            </div>
+                        </div>
+
+                        <!-- Date de naissance -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Date de naissance
+                            </label>
+                            <input formControlName="dateNaissance" type="date"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                        </div>
+
+                        <!-- Téléphone -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Téléphone
+                            </label>
+                            <input formControlName="telephone" type="text" placeholder="Entrez le téléphone"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                        </div>
+
+                        <!-- Rôle -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">
+                                Rôle
+                            </label>
+                            <select formControlName="role"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
+                                <option value="" disabled selected hidden>
+                                    Sélectionnez un rôle
+                                </option>
+                                <option value="Utilisateur">Utilisateur</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+                            <div *ngIf="
+                    createAccountForm.get('role')?.invalid &&
+                    createAccountForm.get('role')?.touched
+                  " class="text-red-500 text-xs">
+                                Veuillez sélectionner un rôle.
+                            </div>
+                        </div>
+
+                        <!-- Checkbox Approuvé -->
+                        <div class="flex items-center space-x-2 mt-6">
+                            <input formControlName="isApproved" type="checkbox"
+                                class="h-4 w-4 text-[#04789d] border-[#c4c4c4] rounded focus:ring-[#04789d]" />
+                            <label class="text-sm text-[#080808] font-poppins">
+                                Utilisateur approuvé
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <div class="pt-6">
+                        <button type="submit"
+                            class="flex items-center justify-center w-full h-10 px-6 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            [disabled]="createAccountForm.invalid">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="mr-2 h-4 w-4">
+                                <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                            Ajouter l'utilisateur
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <!-- Prénom -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
-            <input formControlName="prenom" type="text"  placeholder="Entrez le prenom"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
-        </div>
-
-        <!-- Email -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input formControlName="email" type="email"  placeholder="Entrez l'email"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
-        </div>
-
-        <!-- Mot de passe -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-            <input formControlName="password" type="password"  placeholder="Entrez le mot de passe"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
-        </div>
-
-        <!-- Date de naissance -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Date de naissance</label>
-            <input formControlName="dateNaissance" type="date"  
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
-        </div>
-
-        <!-- Téléphone -->
-        <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Téléphone</label>
-            <input formControlName="telephone" type="text" placeholder="Entrez le téléphone"
-                class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200" />
-        </div>
-
-    <!-- Rôle -->
-    <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
-        <select formControlName="role"
-            class="w-full px-4 py-3 rounded-lg border border-gray-300 bg-gray-50 text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-200">
-            <option value="" disabled selected hidden>Sélectionnez un rôle</option>
-            <option value="Utilisateur">Utilisateur</option>
-            <option value="Admin">Admin</option>
-        </select>
     </div>
-
-
-        <!-- Checkbox -->
-        <!-- Checkbox -->
-        <div class="flex items-center mt-2">
-            <input formControlName="isApproved" type="checkbox"
-                class="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded mr-2" />
-            <label class="text-gray-700">Utilisateur approuvé</label>
-        </div>
-
-
-    <!-- Bouton -->
-    <div class="md:col-span-2 flex justify-center">
-        <button type="submit"
-            class="w-1/3 px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-            Ajouter un utilisateur
-        </button>
     </div>
-
-    </form>
-</div>

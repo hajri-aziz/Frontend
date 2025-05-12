@@ -1,5 +1,5 @@
 export interface User {
-    _id?: string; // facultatif pour la création
+    _id?: string; // Facultatif pour les opérations en lecture ou création temporaire
     nom: string;
     prenom: string;
     email: string;
@@ -11,7 +11,7 @@ export interface User {
     otpCode?: string;
     otpExpires?: Date;
     isApproved?: boolean;
-    telephone?: Number;
+    telephone?: number;
     status?: 'autorisé' | 'non autorisé';
     profileImage?: string;
   }
