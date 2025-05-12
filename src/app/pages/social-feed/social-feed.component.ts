@@ -64,12 +64,13 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
 
   // Modifiez ngOnInit pour appeler cette méthode
   ngOnInit() {
-    this.checkServerConnection()
-    this.loadCurrentUser()
-    console.log("Current User:", this.currentUser) // Vérifiez les données
-    this.loadPosts()
-    this.loadUsers()
+   this.checkServerConnection();
+    this.loadCurrentUser();
+    this.currentUserId = localStorage.getItem('userId') || '';
+    this.loadPosts();
+    this.loadUsers();
     this.loadGroups();
+    this.verifyUserData();
 
     console.log('Users initial:', this.users); // Vérifiez dans la console
     // Si vous récupérez les utilisateurs via un service ou une API :
@@ -659,6 +660,13 @@ openCreateGroupModal() {
     this.tempUsers = [];
   }
 
+ 
+
+
+ 
+
+ 
+
   closeCreateGroupModal() {
     this.showCreateGroupModal = false;
     this.newGroupName = '';
@@ -666,38 +674,37 @@ openCreateGroupModal() {
     this.tempUsers = [];
   }
 
-addUserToTempList() {
-  if (!this.tempEmail) {
-    alert('Veuillez entrer un email.');
-    return;
-  }
+  addUserToTempList() {
+    if (!this.tempEmail) {
+      alert('Veuillez entrer un email.');
+      return;
+    }
 
-  const normalizedEmail = this.tempEmail.trim().toLowerCase();
-  console.log('Email saisi (normalisé) :', normalizedEmail); // Log pour déboguer
+    const normalizedEmail = this.tempEmail.trim().toLowerCase();
+    console.log('Email saisi (normalisé) :', normalizedEmail);
 
-  // Vérifier si l'email existe déjà dans la liste temporaire
-  if (this.tempUsers.some(user => user.email === normalizedEmail)) {
-    alert('Cet email a déjà été ajouté.');
-    return;
-  }
+    if (this.tempUsers.some(user => user.email === normalizedEmail)) {
+      alert('Cet email a déjà été ajouté.');
+      return;
+    }
 
-  // Vérifier si l'email existe dans la base de données
-  this.groupService.getUserByEmail(normalizedEmail).subscribe(
-    (user) => {
-      console.log('Utilisateur trouvé (frontend) :', user); // Log pour déboguer
-      if (user && user._id) {
-        this.tempUsers.push({ email: normalizedEmail, id: user._id });
-        this.tempEmail = ''; // Réinitialiser le champ email
-      } else {
+    this.postService.getUserByEmail(normalizedEmail).subscribe(
+      (user) => {
+        console.log('Utilisateur trouvé (frontend) :', user);
+        if (user && user._id) {
+          this.tempUsers.push({ email: normalizedEmail, id: user._id });
+          this.tempEmail = '';
+        } else {
+          alert('Utilisateur non trouvé avec cet email.');
+        }
+      },
+      (error) => {
+        console.error('Erreur lors de la recherche de l\'utilisateur (frontend) :', error);
         alert('Utilisateur non trouvé avec cet email.');
       }
-    },
-    (error) => {
-      console.error('Erreur lors de la recherche de l\'utilisateur (frontend) :', error);
-      alert('Utilisateur non trouvé avec cet email.');
-    }
-  );
-}
+    );
+  }
+
   removeUserFromTempList(email: string) {
     this.tempUsers = this.tempUsers.filter(user => user.email !== email);
   }
@@ -723,7 +730,6 @@ addUserToTempList() {
       creator: this.currentUserId,
       members: this.tempUsers.map(user => user.id),
       admins: [this.currentUserId],
-      
     };
 
     this.http.post('http://localhost:3000/group/create', groupData, {
@@ -731,9 +737,25 @@ addUserToTempList() {
     }).subscribe(
       (response: any) => {
         console.log('Groupe créé avec succès :', response.group);
-        this.groups.push(response.group);
-        this.closeCreateGroupModal();
-        this.showModal = true; // Afficher le modale de confirmation
+        const groupId = response.group._id;
+
+        // Add members individually using addMemberByEmail
+        const addMemberRequests = this.tempUsers.map(user =>
+          this.postService.addMemberByEmail(groupId, user.email)
+        );
+        forkJoin(addMemberRequests).subscribe({
+          next: () => {
+            console.log('Tous les membres ont été ajoutés avec succès.');
+            this.groups.push(response.group);
+            this.closeCreateGroupModal();
+            this.showModal = true;
+            this.loadGroups(); // Refresh the groups list
+          },
+          error: (error) => {
+            console.error('Erreur lors de l\'ajout des membres :', error);
+            alert('Erreur lors de l\'ajout des membres.');
+          },
+        });
       },
       (error) => {
         console.error('Erreur lors de la création du groupe :', error);
@@ -747,6 +769,10 @@ addUserToTempList() {
     this.newGroupName = '';
     this.tempUsers = [];
   }
+
+  // ... (other existing methods remain unchanged)
+
+
 
 
   

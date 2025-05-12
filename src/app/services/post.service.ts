@@ -154,7 +154,7 @@ export class PostService {
 
   // Récupérer un utilisateur par email
  getUserByEmail(email: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/user/email/${email}`, {
+    return this.http.get<any>(`${this.apiUrl}/group/email/${email}`, {
       headers: this.getHeaders()
     }).pipe(
       catchError((error) => {
@@ -208,6 +208,16 @@ export class PostService {
       catchError((error) => {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
         return throwError(() => new Error('Erreur lors de la récupération des utilisateurs'));
+      })
+    );
+  }
+
+  // Add member by email
+  addMemberByEmail(groupId: string, email: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/group/add-member`, { groupId, email }, { headers: this.getHeaders() }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de l\'ajout du membre par email:', error);
+        return throwError(() => new Error('Erreur lors de l\'ajout du membre par email'));
       })
     );
   }
