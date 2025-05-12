@@ -50,6 +50,8 @@ import { SessionEditComponent } from './pages/cours-session/session-edit/session
 import { SessionDetailComponent } from './pages/cours-session/session-detail/session-detail.component';
 import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -89,7 +91,9 @@ import { ContactComponent } from './pages/contact/contact.component';
     SessionEditComponent,
     SessionDetailComponent,
     NavbarComponent,
-    ContactComponent
+    ContactComponent,
+    ForgotPasswordComponent,
+    VerifyOtpComponent,
   ],
   imports: [
     BrowserModule,

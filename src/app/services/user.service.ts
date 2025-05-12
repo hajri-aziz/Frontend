@@ -32,7 +32,7 @@ export class UserService {
     return this.http.post(`${this.apiUrl}/user/forgot-password`, { email });
   }
 
-  verifyOtp(data: any): Observable<any> {
+  verifyOtp(data: { email: string, otp: string, newPassword: string }): Observable<any> {
     return this.http.post(`${this.apiUrl}/user/verify-otp`, data);
   }
 

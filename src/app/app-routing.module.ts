@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
 import { HomeComponent } from './pages/home/home.component';
 import { ServiceComponent } from './pages/service/service.component';
 import { AboutUsComponent } from './pages/about-us/about-us.component';
@@ -23,6 +22,8 @@ import { CategoryEditComponent } from './pages/cours-category/category-edit/cate
 import { NavbarComponent } from './pages/navbar/navbar.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 import { ContactComponent } from './pages/contact/contact.component';
+import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -46,8 +47,13 @@ const routes: Routes = [
   { path: 'editprofil', component: EditprofilComponent },
 
 
+
   { path: '**', redirectTo: '' },
   
+
+  { path: 'forget-password', component: ForgotPasswordComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
+
 
   // 📦 DISP-EVENT avec enfants
 
