@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenaura - Services</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+</head>
+<body class="bg-white min-h-screen">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Navbar -->
+            <nav class="flex items-center justify-between py-4">
+                <div class="flex items-center space-x-4">
+                    <img src="assets/logo.png" alt="Logo" class="w-16 h-16 sm:w-20 sm:h-20">
+                    <span class="text-indigo-950 text-lg sm:text-xl font-medium font-poppins">Zenaura</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <div class="flex space-x-6 text-zinc-500 text-base font-semibold font-poppins">
+                        <a href="/" class="hover:text-teal-500">Accueil</a>
+                        <a href="/services" class="hover:text-teal-500">Services</a>
+                        <a href="/contact" class="hover:text-teal-500">Contact</a>
+                        <a href="/about" class="hover:text-teal-500">À propos de nous</a>
+                    </div>
+                    <button (click)="navigateToLogin()" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden text-indigo-950 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </nav>
+            <!-- Mobile Menu (Hidden by Default) -->
+            <div class="md:hidden hidden flex-col space-y-2 text-zinc-500 text-base font-semibold font-poppins bg-white p-4 rounded-lg">
+                <a href="/" class="hover:text-teal-500">Accueil</a>
+                <a href="/services" class="hover:text-teal-500">Services</a>
+                <a href="#" class="hover:text-teal-500">Contact</a>
+                <a href="/about" class="hover:text-teal-500">À propos de nous</a>
+                <button (click)="navigateToLogin()" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
+            </div>
+
+        <!-- Header Section -->
+        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
+            <div class="flex items-center space-x-4">
+                <div class="w-1 h-32 sm:h-40 bg-sky-800"></div>
+                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">Contactez-nous</h1>
+            </div>
+            <p class="mt-6 text-sky-800 text-base sm:text-lg font-normal font-poppins max-w-4xl">
+                Nous sommes là pour vous aider ! Remplissez le formulaire ci-dessous ou utilisez nos coordonnées pour nous contacter directement. Votre bien-être est notre priorité.
+            </p>
+        </section>
+
+        <!-- Contact Form Section -->
+        <section class="mt-12 sm:mt-16 bg-white py-12 sm:py-16 px-4 sm:px-6">
+            <h2 class="text-center text-3xl sm:text-4xl md:text-3xl font-bold font-poppins max-w-3xl mx-auto">
+                <span class="text-zinc-900">Envoyez-nous un</span>
+                <span class="text-teal-300"> Message</span>
+            </h2>
+            <div class="mt-12 max-w-2xl mx-auto">
+                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 p-6 sm:p-8">
+                    <div class="space-y-6">
+                        <!-- Name -->
+                        <div>
+                            <label for="name" class="block text-zinc-900 text-base font-semibold font-poppins">Nom</label>
+                            <input type="text" id="name" placeholder="Votre nom" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
+                        </div>
+                        <!-- Email -->
+                        <div>
+                            <label for="email" class="block text-zinc-900 text-base font-semibold font-poppins">Email</label>
+                            <input type="email" id="email" placeholder="Votre email" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
+                        </div>
+                        <!-- Subject -->
+                        <div>
+                            <label for="subject" class="block text-zinc-900 text-base font-semibold font-poppins">Sujet</label>
+                            <input type="text" id="subject" placeholder="Sujet de votre message" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
+                        </div>
+                        <!-- Message -->
+                        <div>
+                            <label for="message" class="block text-zinc-900 text-base font-semibold font-poppins">Message</label>
+                            <textarea id="message" placeholder="Votre message" rows="5" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300"></textarea>
+                        </div>
+                        <!-- Submit Button -->
+                        <div class="flex justify-center">
+                            <button class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
+                                Envoyer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Info Section -->
+        <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <img src="assets/contact us.png" alt="Contact Us" class="w-full max-w-md h-auto mb-8 md:mb-0 md:mr-8">
+                <div class="flex flex-col space-y-6 max-w-lg">
+                    <h2 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-bold font-poppins text-center md:text-left">Nous Contacter</h2>
+                    <div class="text-sky-800 text-base sm:text-lg font-normal font-poppins space-y-2">
+                        <p><strong>Téléphone :</strong> +14 5464 8272</p>
+                        <p><strong>Email :</strong> support@zenaura.com</p>
+                        <p><strong>Adresse :</strong> Lazyy Tower 192, Burn Swiss</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-50 py-12">
+            <div class="flex flex-col md:flex-row justify-between space-y-8 md:space-y-0 px-4 sm:px-6">
+                <div class="flex flex-col items-center md:items-start">
+                    <div class="flex items-center space-x-4">
+                        <img src="assets/logo.png" alt="Logo" class="w-16 h-16">
+                        <span class="text-indigo-950 text-xl font-medium font-poppins">Zenaura</span>
+                    </div>
+                    <p class="mt-4 text-neutral-400 text-base font-medium font-poppins text-center md:text-left max-w-xs">
+                        Vous êtes arrivé à la fin, mais ce n’est pas la fin ! Rappelez-vous, vous n’êtes pas seul. Cherchez du soutien, ouvrez-vous et donnez la priorité à votre bien-être mental.
+                    </p>
+                </div>
+                <div class="flex flex-col md:flex-row space-y-8 md:space-y-0 md:space-x-12">
+                    <div>
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Services</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
+                            <li>Psychothérapie</li>
+                            <li>Conseil en santé mentale</li>
+                            <li>Groupes de soutien</li>
+                            <li>Gestion de cas</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Contact</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
+                            <li>+14 5464 8272</li>
+                            <li>support@zenaura.com</li>
+                            <li>Lazyy Tower 192, Burn Swiss</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-indigo-950 text-xl font-bold font-manrope text-center md:text-left">Liens</h3>
+                        <ul class="mt-4 space-y-2 text-indigo-950 text-base font-normal font-poppins text-center md:text-left">
+                            <li>Politique de confidentialité</li>
+                            <li>Conditions d'utilisation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-8 border-t-2 border-gray-50">
+            <p class="text-center text-indigo-950 text-base font-normal font-poppins">Droits d’auteur 2025 @Zenaura Tous droits réservés</p>
+        </footer>

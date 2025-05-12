@@ -49,6 +49,7 @@ import { SessionCreateComponent } from './pages/cours-session/session-create/ses
 import { SessionEditComponent } from './pages/cours-session/session-edit/session-edit.component';
 import { SessionDetailComponent } from './pages/cours-session/session-detail/session-detail.component';
 import { DispEventComponent } from './pages/disp-event/disp-event.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -83,7 +84,8 @@ import { DispEventComponent } from './pages/disp-event/disp-event.component';
     SessionCreateComponent,
     SessionEditComponent,
     SessionDetailComponent,
-    NavbarComponent
+    NavbarComponent,
+    ContactComponent
   ],
   imports: [
     BrowserModule,

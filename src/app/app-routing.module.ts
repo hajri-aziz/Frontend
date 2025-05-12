@@ -22,12 +22,14 @@ import { CategoryListComponent } from './pages/cours-category/category-list/cate
 import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component'; // ✅
 import { NavbarComponent } from './pages/navbar/navbar.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'services', component: ServiceComponent },
   { path: 'about', component: AboutUsComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
@@ -49,6 +51,7 @@ const routes: Routes = [
   { path: 'categories', component: CategoryListComponent },
   { path: 'categories/edit/:id', component: CategoryEditComponent },
   { path: 'navbar', component: NavbarComponent },
+
   // Redirection en cas d'URL inconnue
   { path: '**', redirectTo: '' }
 ];
