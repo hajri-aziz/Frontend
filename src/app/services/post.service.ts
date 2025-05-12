@@ -136,21 +136,40 @@ export class PostService {
     );
   }
 
-  // Groupes
-  createGroup(group: Partial<Group>): Observable<Group> {
-    return this.http.post<Group>(`${this.apiUrl}/group/create`, group, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la création du groupe:', error);
-        return throwError(() => new Error('Erreur lors de la création du groupe'));
-      })
-    );
-  }
+ 
 
   addMember(groupId: string, newMemberId: string): Observable<Group> {
     return this.http.post<Group>(`${this.apiUrl}/group/ajouterMember`, { groupId, newMemberId }, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
         console.error('Erreur lors de l\'ajout du membre:', error);
         return throwError(() => new Error('Erreur lors de l\'ajout du membre'));
+      })
+    );
+  }
+   // Récupérer les groupes d'un utilisateur spécifique
+  getUserGroups(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
+  }
+
+
+  // Récupérer un utilisateur par email
+ getUserByEmail(email: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/user/email/${email}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la récupération de l’utilisateur par email:', error);
+        return throwError(() => new Error('Utilisateur non trouvé'));
+      })
+    );
+  }
+
+  // Créer un groupe
+  createGroup(group: Partial<Group>): Observable<Group> {
+    return this.http.post<Group>(`${this.apiUrl}/group/create`, group, { headers: this.getHeaders() }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la création du groupe:', error);
+        return throwError(() => new Error('Erreur lors de la création du groupe'));
       })
     );
   }

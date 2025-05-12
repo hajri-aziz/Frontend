@@ -17,6 +17,7 @@ import { AvailabilityComponent } from './pages/disp-event/availability/availabil
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
+import { ContactComponent } from './pages/contact/contact.component';
 
 import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component';
 import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component';
@@ -27,12 +28,14 @@ import { CoursCreateComponent } from './pages/cours/cours-create/cours-create.co
 import { CoursListComponent } from './pages/cours/cours-list/cours-list.component';
 import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.component';
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
+import { NavbarComponent } from './pages/navbar/navbar.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
   { path: 'services', component: ServiceComponent },
   { path: 'about', component: AboutUsComponent },
+  { path: 'contact', component: ContactComponent },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
@@ -73,7 +76,11 @@ const routes: Routes = [
   { path: 'courses/detail/:id', component: CoursDetailComponent },
 
   // Redirection si aucune route ne correspond
+  { path: 'navbar', component: NavbarComponent },
+
+  // Redirection en cas d'URL inconnue
   { path: '**', redirectTo: '' }
+
 ];
 
 @NgModule({
