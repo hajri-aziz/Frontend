@@ -51,16 +51,8 @@ const routes: Routes = [
   { path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
-
-
-
-
-  { path: '**', redirectTo: '' },
-  
-
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },
-
 
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },
