@@ -22,6 +22,8 @@ import { CategoryCreateComponent } from './pages/cours-category/category-create/
 import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component'; // ✅
 import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component'; // ✅
 import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component'; // ✅
+import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -36,6 +38,8 @@ const routes: Routes = [
   { path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
+  { path: 'forget-password', component: ForgotPasswordComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
 
   // 📦 DISP-EVENT avec enfants
   {

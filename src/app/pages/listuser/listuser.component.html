@@ -16,7 +16,7 @@
   padding: 60px 15px 15px; /* réduit le padding */
   position: relative;
   text-align: center;
-  background: linear-gradient(to bottom, #ffffff, #f8f9fa);
+  background: linear-gradient(to bottom, #ffffff, #ecf2f7);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
 }
@@ -39,7 +39,7 @@
 }
 
 .profile-name {
-  font-size: 1.2rem; /* réduit la taille du nom */
+  font-size: 1rem; /* réduit la taille du nom */
   font-weight: 600;
   margin-bottom: 0.8rem;
   border-bottom: 1px solid #ddd;
@@ -107,26 +107,26 @@
               <img [src]="'http://localhost:3000' + user.profileImage" alt="Photo de profil" class="profile-img">
             </ng-container>
             <ng-template #defaultIcon>
-              <img src="assets/user.png" class="profile-img">
+              <img src="assets/profil.png" class="profile-img">
             </ng-template>  
           </div>
         
         <h5 class="profile-name">{{ user.nom }} {{ user.prenom }}</h5>
 
         <div class="profile-detail">
-          <span class="label"><strong>Email :</strong></span>
+          <span class="label">Email :</span>
           <span class="badge bg-secondary ms-1 user-email" [title]="user.email.length > 20 ? user.email : ''">
             {{ user.email || '-' }}
           </span>
         </div>
         
         <div class="profile-detail">
-          <strong>Rôle :</strong>
+            Rôle :
           <span class="badge bg-secondary ms-1">{{ user.role || '-' }}</span>
         </div>
 
         <div class="profile-detail">
-          <strong>État approuvé :</strong>
+          État approuvé :
           <span class="badge" [ngClass]="user.isApproved ? 'bg-success' : 'bg-danger'">
             {{ user.isApproved }}
           </span>

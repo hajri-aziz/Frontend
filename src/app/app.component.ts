@@ -11,7 +11,7 @@ export class AppComponent {
 
   // Méthode pour déterminer si on est sur une page sans sidebar
   shouldShowSidebar(): boolean {
-    const hiddenRoutes = ['/login', '/signup','/','/about','/services','/home'];
+    const hiddenRoutes = ['/login', '/signup','/','/about','/services','/home','/forget-password','/verify-otp','/reset-password'];
     return !hiddenRoutes.includes(this.router.url);
   }
 }

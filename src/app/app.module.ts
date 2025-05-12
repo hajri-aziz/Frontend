@@ -48,6 +48,8 @@ import { SessionListComponent } from './pages/cours-session/session-list/session
 import { SessionCreateComponent } from './pages/cours-session/session-create/session-create.component';
 import { SessionEditComponent } from './pages/cours-session/session-edit/session-edit.component';
 import { SessionDetailComponent } from './pages/cours-session/session-detail/session-detail.component';
+import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
+import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
 @NgModule({
   declarations: [
@@ -86,7 +88,9 @@ import { SessionDetailComponent } from './pages/cours-session/session-detail/ses
     SessionListComponent,
     SessionCreateComponent,
     SessionEditComponent,
-    SessionDetailComponent
+    SessionDetailComponent,
+    ForgotPasswordComponent,
+    VerifyOtpComponent,
   ],
   imports: [
     BrowserModule,
