@@ -22,7 +22,6 @@ import { ListuserComponent } from './pages/listuser/listuser.component';
 import { RendzInscriComponent } from './pages/rendz-inscri/rendz-inscri.component';
 
 // 📊 Gestion événements
-import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { AvailabilityComponent } from './pages/disp-event/availability/availability.component';
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
@@ -30,6 +29,7 @@ import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/
 // 🧑‍💻 Dialogues
 import { EditUserDialogComponent } from './pages/edit-user-dialog/edit-user-dialog.component';
 import { DeleteConfirmationDialogComponent } from './pages/delete-confirmation-dialog/delete-confirmation-dialog.component';
+import { NavbarComponent } from './pages/navbar/navbar.component';
 
 // 🎓 Cours
 import { CoursListComponent } from './pages/cours/cours-list/cours-list.component';
@@ -48,6 +48,7 @@ import { SessionListComponent } from './pages/cours-session/session-list/session
 import { SessionCreateComponent } from './pages/cours-session/session-create/session-create.component';
 import { SessionEditComponent } from './pages/cours-session/session-edit/session-edit.component';
 import { SessionDetailComponent } from './pages/cours-session/session-detail/session-detail.component';
+import { DispEventComponent } from './pages/disp-event/disp-event.component';
 
 @NgModule({
   declarations: [
@@ -63,29 +64,25 @@ import { SessionDetailComponent } from './pages/cours-session/session-detail/ses
     EditprofilComponent,
     ListuserComponent,
     RendzInscriComponent,
-
     DispEventComponent,
     AvailabilityComponent,
     EventsComponent,
     AnalyseGraphiqueComponent,
-
     EditUserDialogComponent,
     DeleteConfirmationDialogComponent,
-
     CoursListComponent,
     CoursCreateComponent,
     CoursEditComponent,
     CoursDetailComponent,
-
     CategoryListComponent,
     CategoryCreateComponent,
     CategoryEditComponent,
     CategoryDetailComponent,
-
     SessionListComponent,
     SessionCreateComponent,
     SessionEditComponent,
-    SessionDetailComponent
+    SessionDetailComponent,
+    NavbarComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +90,9 @@ import { SessionDetailComponent } from './pages/cours-session/session-detail/ses
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    MatDialogModule
+    FormsModule, 
+    FormsModule, 
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

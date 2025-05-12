@@ -1,71 +1,116 @@
-<div class="min-h-screen bg-[#f4feff] p-6 flex justify-center items-center">
-    <form (ngSubmit)="onSubmit()" [formGroup]="userForm" enctype="multipart/form-data"
-        class="bg-white p-8 rounded-3xl shadow-lg border border-[#56e0e0] w-full max-w-2xl space-y-6">
-        <h2 class="text-2xl font-bold text-[#444]">Modifier le profil</h2>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Nom -->
-            <div>
-                <label class="block text-[#444] font-medium mb-1">Nom</label>
-                <input type="text" formControlName="nom" class="w-full p-2 border rounded-lg" />
+<div class="min-h-screen bg-[#f4feff] flex items-center justify-center p-4 font-poppins">
+    <div class="w-full max-w-xl">
+        <!-- Edit Form Section -->
+        <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+            <!-- Title Section -->
+            <div class="p-6 border-b border-[#cfd0d4]">
+                <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Modifier le profil</h2>
+                <p class="text-sm text-[#66676b] font-poppins">Mettez à jour vos informations personnelles</p>
             </div>
 
-            <!-- Prénom -->
-            <div>
-                <label class="block text-[#444] font-medium mb-1">Prénom</label>
-                <input type="text" formControlName="prenom" class="w-full p-2 border rounded-lg" />
-            </div>
+            <!-- Form -->
+            <div class="p-6 space-y-4">
+                <form (ngSubmit)="onSubmit()" [formGroup]="userForm" enctype="multipart/form-data">
+                    <!-- Profile Image -->
+                    <div class="flex flex-col items-center space-y-4">
+                        <div class="relative">
+                            <img [src]="profileImageUrl || 'assets/default-profile.png'" alt="Photo de profil"
+                                class="w-24 h-24 rounded-full object-cover border-2 border-[#56e0e0]">
+                            <label for="file-upload"
+                                class="absolute bottom-0 right-0 bg-[#04789d] text-white p-2 rounded-full cursor-pointer hover:bg-[#035a75] transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                            </label>
+                            <input id="file-upload" type="file" (change)="onFileSelected($event)" accept="image/*"
+                                class="hidden">
+                        </div>
+                    </div>
 
-            <!-- Email -->
-            <div class="md:col-span-2">
-                <label class="block text-[#444] font-medium mb-1">Email</label>
-                <input type="email" formControlName="email" class="w-full p-2 border rounded-lg" />
-            </div>
+                    <!-- Grid 2 columns -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Nom -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Nom</label>
+                            <input type="text" id="nom" formControlName="nom"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                required />
+                        </div>
 
-            <!-- Mot de passe -->
-            <div class="md:col-span-2">
-                <label class="block text-[#444] font-medium mb-1">Nouveau mot de passe</label>
-                <input type="password" formControlName="password" class="w-full p-2 border rounded-lg" />
-            </div>
+                        <!-- Prénom -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Prénom</label>
+                            <input type="text" id="prenom" formControlName="prenom"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                required />
+                        </div>
 
-            <!-- Date de naissance -->
-            <div>
-                <label class="block text-[#444] font-medium mb-1">Date de naissance</label>
-                <input type="date" formControlName="dateNaissance" class="w-full p-2 border rounded-lg" />
-            </div>
+                        <!-- Email -->
+                        <div class="space-y-2 sm:col-span-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Email</label>
+                            <input type="email" id="email" formControlName="email" placeholder="aziz.hajri@esprit.tn"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                required />
+                        </div>
 
-            <!-- Téléphone -->
-            <div>
-                <label class="block text-[#444] font-medium mb-1">Téléphone</label>
-                <input type="number" formControlName="telephone" class="w-full p-2 border rounded-lg" />
-            </div>
+                        <!-- Mot de passe -->
+                        <div class="space-y-2 sm:col-span-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Nouveau mot de
+                                passe</label>
+                            <div class="relative">
+                                <input type="password" id="password" formControlName="password"
+                                    placeholder="***********"
+                                    class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" />
+                                <button type="button"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-[#8c939c] hover:text-[#04789d]">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z">
+                                        </path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
 
-            <div class="flex justify-center" *ngIf="profileImageUrl">
-                <img [src]="profileImageUrl" alt="Photo de profil" class="w-32 h-32 rounded-full object-cover">
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- ... autres champs ... -->
-            
-                <!-- Image de profil -->
-                <div class="md:col-span-2">
-                    <label class="block text-[#444] font-medium mb-1">Image de profil</label>
-                    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="w-full p-2 border rounded-lg" />
-                </div>
-            </div>
-    
-            
-              
+                        <!-- Date de naissance -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Date de
+                                naissance</label>
+                            <input type="date" id="dateNaissance" formControlName="dateNaissance"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                required />
+                        </div>
 
+                        <!-- Téléphone -->
+                        <div class="space-y-2">
+                            <label class="block text-sm font-medium font-poppins text-[#080808]">Numéro de
+                                téléphone</label>
+                            <input type="tel" id="telephone" formControlName="telephone" placeholder="12345678"
+                                class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                required />
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="pt-6">
+                        <button type="submit"
+                            class="flex items-center justify-center w-full h-10 px-6 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            [disabled]="userForm.invalid">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5 13l4 4L19 7" />
+                            </svg>
+                            Enregistrer les modifications
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-
-        <!-- Bouton Enregistrer les modifications -->
-        <div class="flex justify-center pt-4">
-            <button type="submit"
-                class="w-auto px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-sm font-semibold font-poppins rounded-2xl shadow-md hover:opacity-90 transition">
-                Enregistrer les modifications
-            </button>
-        </div>
-    </form>
-</div>
-  
+    </div>
+    </div>

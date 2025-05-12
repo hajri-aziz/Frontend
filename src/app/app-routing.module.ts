@@ -38,10 +38,15 @@ const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
   { path: 'social-feed', component: SocialFeedComponent },
+  { path: 'disp-event', component: DispEventComponent, children: [
+    { path: '', redirectTo: 'availability', pathMatch: 'full' },
+    { path: 'availability', component: AvailabilityComponent },
+    { path: 'events', component: EventsComponent },
+    { path: 'dashboard', component: AnalyseGraphiqueComponent },]
+  },
   { path: 'rendz-inscri', component: RendzInscriComponent },
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
-
   // 📦 DISP-EVENT avec enfants
   {
     path: 'dispo-event',
