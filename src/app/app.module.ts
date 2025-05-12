@@ -67,7 +67,6 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     // SocialFeedComponent is standalone and imported below
     DispEventComponent,
     RendzInscriComponent,
-
     SidebarComponent,
     EditprofilComponent,
     ListuserComponent,
@@ -99,11 +98,9 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    FormsModule,
     HttpClientModule,
     FormsModule, 
-    FormsModule,
-    SocialFeedComponent, // Ensure standalone component is imported here
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

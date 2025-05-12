@@ -15,15 +15,21 @@ import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { AvailabilityComponent } from './pages/disp-event/availability/availability.component';
 import { EventsComponent } from './pages/disp-event/events/events.component';
 import { AnalyseGraphiqueComponent } from './pages/disp-event/analyse-graphique/analyse-graphique.component';
-import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component'; // ✅ Ajout ici
-import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component'; // ✅
-import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component'; // ✅
-import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component'; // ✅
-import { NavbarComponent } from './pages/navbar/navbar.component';
 import { EditprofilComponent } from './pages/editprofil/editprofil.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+
+import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component';
+import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component';
+import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component';
+import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component';
+
+import { CoursCreateComponent } from './pages/cours/cours-create/cours-create.component';
+import { CoursListComponent } from './pages/cours/cours-list/cours-list.component';
+import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.component';
+import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
+import { NavbarComponent } from './pages/navbar/navbar.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -48,6 +54,7 @@ const routes: Routes = [
 
 
 
+
   { path: '**', redirectTo: '' },
   
 
@@ -55,12 +62,36 @@ const routes: Routes = [
   { path: 'verify-otp', component: VerifyOtpComponent },
 
 
-  // 📦 DISP-EVENT avec enfants
+  { path: 'forget-password', component: ForgotPasswordComponent },
+  { path: 'verify-otp', component: VerifyOtpComponent },
 
-  { path: 'categories/create', component: CategoryCreateComponent },
-  { path: 'categories/:id', component: CategoryDetailComponent }, 
+
+  // 📦 DISP-EVENT avec enfants
+  {
+    path: 'dispo-event',
+    component: DispEventComponent,
+    children: [
+      { path: '', redirectTo: 'availability', pathMatch: 'full' },
+      { path: 'availability', component: AvailabilityComponent },
+      { path: 'events', component: EventsComponent },
+      { path: 'dashboard', component: AnalyseGraphiqueComponent }
+    ]
+  },
+
+  // 📁 Cours - Catégories
   { path: 'categories', component: CategoryListComponent },
+  { path: 'categories/create', component: CategoryCreateComponent },
   { path: 'categories/edit/:id', component: CategoryEditComponent },
+  { path: 'categories/:id', component: CategoryDetailComponent },
+
+  // 🆕 Cours
+  { path: 'courses', component: CoursListComponent },
+  { path: 'courses/create', component: CoursCreateComponent },
+  { path: 'courses/edit/:id', component: CoursEditComponent },
+  { path: 'courses/:id', component: CoursDetailComponent },
+  { path: 'courses/detail/:id', component: CoursDetailComponent },
+
+  // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
 
   // Redirection en cas d'URL inconnue

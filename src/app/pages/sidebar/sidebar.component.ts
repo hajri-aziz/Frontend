@@ -14,15 +14,4 @@ export class SidebarComponent {
  
   toggleMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
-  }
-    isCategoryMenuOpen = false;
- 
-    toggleCategoryMenu() {
-      this.isCategoryMenuOpen = !this.isCategoryMenuOpen;
-    }
-    isCoursMenuOpen = false;
-    toggleCoursMenu() {
-      this.isCoursMenuOpen = !this.isCoursMenuOpen;
-    }
- 
-}
+  }}

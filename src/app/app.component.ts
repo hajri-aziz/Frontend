@@ -25,6 +25,6 @@ export class AppComponent {
     }
 
     return 'navbar'; // Navbar pour les autres utilisateurs
-
-}
+  }
+  
 }

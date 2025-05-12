@@ -1,1 +1,40 @@
-<p>cours-detail works!</p>
+<div class="max-w-4xl mx-auto p-6">
+  <button (click)="goBack()" class="text-blue-600 hover:underline mb-4">← Retour à la liste</button>
+
+  <div *ngIf="error" class="text-red-600">{{ error }}</div>
+
+  <div *ngIf="cours" class="bg-white shadow-md rounded-lg overflow-hidden">
+    <!-- Image du cours -->
+    <div class="w-full h-64 bg-gray-100">
+      <img 
+        [src]="getImageUrl()" 
+        (error)="onImageError($event)" 
+        alt="{{ cours.title }}" 
+        class="w-full h-full object-cover"
+      />
+    </div>
+
+    <!-- Détails du cours -->
+    <div class="p-6">
+      <h2 class="text-2xl font-bold text-zenaura-text mb-2">{{ cours.title }}</h2>
+      <p class="text-zenaura-gray mb-4">{{ cours.description }}</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-zenaura-gray mb-6">
+        <div><strong>Prix :</strong> {{ cours.price }} {{ cours.currency }}</div>
+        <div><strong>Catégorie :</strong> {{ cours.category_id?.title }}</div>
+        <div><strong>Instructeur :</strong> {{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</div>
+        <div><strong>Date de création :</strong> {{ cours.created_at | date:'medium' }}</div>
+      </div>
+
+      <!-- Bouton de suppression -->
+      <div class="flex justify-end">
+        <button 
+          (click)="confirmDelete()" 
+          class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition"
+        >
+          🗑️ Supprimer ce cours
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -99,55 +99,16 @@
           <span>Forum</span>
         </a>
 
-        <!-- Catégories avec sous-menu -->
-        <div>
-          <button (click)="toggleCategoryMenu()"
-            class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
-            [ngClass]="{
-                    'text-[#04789d] font-semibold': router.url.startsWith('/categories'),
-                    'text-gray-600': !router.url.startsWith('/categories')
-                  }">
-            <ng-container *ngIf="router.url.startsWith('/categories')">
-              <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-            </ng-container>
-            <img src="assets/folder.svg" alt="Catégorie Icon" class="w-5 h-5" />
-            <span>Catégories</span>
-            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path [attr.d]="isCategoryMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round"
-                stroke-linejoin="round" stroke-width="2" />
-            </svg>
-          </button>
+         <!-- Liste des Cours (simple lien sans sous-menu) -->
+        <a routerLink="/courses" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url.startsWith('/courses'), 'text-gray-600': !router.url.startsWith('/courses') }">
+          <ng-container *ngIf="router.url.startsWith('/courses')">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/courses.svg" alt="Cours Icon" class="w-5 h-5" />
+          <span>Liste des cours</span>
+        </a>
 
-          <!-- Sous-menu Catégories -->
-          <div *ngIf="isCategoryMenuOpen" class="ml-8 mt-2 flex flex-col space-y-2 text-sm">
-            <a routerLink="/categories" class="hover:text-zenaura-teal">📁 Voir toutes</a>
-            <a routerLink="/categories/create" class="hover:text-zenaura-teal">➕ Ajouter</a>
-          </div>
-        </div>
-        
-        <!-- 🎓 Cours -->
-        <div>
-          <button (click)="toggleCoursMenu()"
-            class="flex items-center space-x-3 font-medium text-base w-full text-left hover:text-[#035e7d] transition"
-            [ngClass]="{
-                    'text-[#04789d] font-semibold': router.url.startsWith('/courses'),
-                    'text-gray-600': !router.url.startsWith('/courses')
-                  }">
-            <ng-container *ngIf="router.url.startsWith('/courses')">
-              <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
-            </ng-container>
-            <img src="assets/courses.svg" alt="Cours Icon" class="w-5 h-5" />
-            <span>Cours</span>
-            <svg class="w-4 h-4 ml-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path [attr.d]="isCoursMenuOpen ? 'M5 15l7-7 7 7' : 'M19 9l-7 7-7-7'" stroke-linecap="round"
-                stroke-linejoin="round" stroke-width="2" />
-            </svg>
-          </button>
-          <div *ngIf="isCoursMenuOpen" class="ml-8 mt-2 flex flex-col space-y-2 text-sm">
-            <a routerLink="/courses" class="hover:text-zenaura-teal">📚 Voir tous</a>
-            <a routerLink="/courses/create" class="hover:text-zenaura-teal">➕ Ajouter</a>
-          </div>
-        </div>
       </nav>
 
       <!-- Logout -->
