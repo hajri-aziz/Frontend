@@ -19,6 +19,9 @@ import { HttpClient } from "@angular/common/http"
   styleUrls: ["./social-feed.component.scss"],
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
+
+
+  
   currentUser: User | null = null
   posts: Post[] = []
   newPost: Partial<Post> = { titre: "", contenu: "" }
@@ -502,7 +505,7 @@ private loadPosts(): void {
   }
 
   addMemberToGroup(groupId: string): void {
-    const newMemberId = prompt("ID du nouveau membre :")
+    const newMemberId = prompt("email du nouveau membre :")
     if (!newMemberId?.trim()) return
 
     this.subscriptions.push(
@@ -510,7 +513,7 @@ private loadPosts(): void {
         next: () => this.loadGroups(),
         error: (error) => {
           console.error("Error adding member:", error)
-          alert("Error adding member")
+          alert("l'utilisateur déjà membre du groupe")
         },
       }),
     )
@@ -709,60 +712,45 @@ openCreateGroupModal() {
     this.tempUsers = this.tempUsers.filter(user => user.email !== email);
   }
 
-  createGroup() {
-    if (!this.newGroupName) {
-      alert('Veuillez entrer un nom pour le groupe.');
-      return;
-    }
-
-    if (this.tempUsers.length < 3) {
-      alert('Vous devez ajouter au moins 3 utilisateurs pour créer un groupe.');
-      return;
-    }
-
-    if (!this.currentUserId) {
-      alert('Utilisateur non authentifié. Veuillez vous connecter.');
-      return;
-    }
-
-    const groupData = {
-      name: this.newGroupName,
-      creator: this.currentUserId,
-      members: this.tempUsers.map(user => user.id),
-      admins: [this.currentUserId],
-    };
-
-    this.http.post('http://localhost:3000/group/create', groupData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).subscribe(
-      (response: any) => {
-        console.log('Groupe créé avec succès :', response.group);
-        const groupId = response.group._id;
-
-        // Add members individually using addMemberByEmail
-        const addMemberRequests = this.tempUsers.map(user =>
-          this.postService.addMemberByEmail(groupId, user.email)
-        );
-        forkJoin(addMemberRequests).subscribe({
-          next: () => {
-            console.log('Tous les membres ont été ajoutés avec succès.');
-            this.groups.push(response.group);
-            this.closeCreateGroupModal();
-            this.showModal = true;
-            this.loadGroups(); // Refresh the groups list
-          },
-          error: (error) => {
-            console.error('Erreur lors de l\'ajout des membres :', error);
-            alert('Erreur lors de l\'ajout des membres.');
-          },
-        });
-      },
-      (error) => {
-        console.error('Erreur lors de la création du groupe :', error);
-        alert('Erreur lors de la création du groupe.');
-      }
-    );
+ createGroup() {
+  if (!this.newGroupName) {
+    alert('Veuillez entrer un nom pour le groupe.');
+    return;
   }
+
+  if (this.tempUsers.length < 3) {
+    alert('Vous devez ajouter au moins 3 utilisateurs pour créer un groupe.');
+    return;
+  }
+
+  if (!this.currentUserId) {
+    alert('Utilisateur non authentifié. Veuillez vous connecter.');
+    return;
+  }
+
+  const groupData = {
+    name: this.newGroupName,
+    creator: this.currentUserId,
+    members: this.tempUsers.map(user => user.id), // Les membres sont déjà ajoutés ici
+    admins: [this.currentUserId],
+  };
+
+  this.http.post('http://localhost:3000/group/create', groupData, {
+    headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+  }).subscribe(
+    (response: any) => {
+      console.log('Groupe créé avec succès :', response.group);
+      this.groups.push(response.group);
+     this.closeCreateGroupModal();
+      this.showModal = true;
+     // this.loadGroups(); // Refresh the groups list
+    },
+    (error) => {
+      console.error('Erreur lors de la création du groupe :', error);
+      alert('Erreur lors de la création du groupe.');
+    }
+  );
+}
 
   closeModal() {
     this.showModal = false;
