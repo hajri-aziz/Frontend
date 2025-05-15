@@ -52,15 +52,8 @@ const routes: Routes = [
   { path: 'list-user', component: ListuserComponent },
   { path: 'editprofil', component: EditprofilComponent },
 
-
-
-
-
-  
-
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },
-
 
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },

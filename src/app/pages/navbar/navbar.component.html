@@ -48,7 +48,19 @@
         <span>Mon Planning</span>
       </a>
 
-      <!-- Forum -->
+      <!-- cours -->
+      <a routerLink="/courses"
+         class="flex items-center space-x-2 font-medium text-base hover:text-[#035e7d] transition py-2 md:py-0" [ngClass]="{
+           'text-[#04789d] font-semibold': router.url === '/courses',
+           'text-gray-600': router.url !== '/courses'
+         }">
+        <ng-container *ngIf="router.url === '/courses'">
+          <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+        </ng-container>
+        <img src="assets/dictionnaire.png" alt="Forum Icon" class="w-5 h-5" />
+        <span>Liste cours </span>
+      </a>
+      <!-- forum -->
       <a routerLink="/social-feed"
          class="flex items-center space-x-2 font-medium text-base hover:text-[#035e7d] transition py-2 md:py-0" [ngClass]="{
            'text-[#04789d] font-semibold': router.url === '/social-feed',
@@ -58,8 +70,9 @@
           <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
         </ng-container>
         <img src="assets/reseaux-sociaux.png" alt="Forum Icon" class="w-5 h-5" />
-        <span>Forum</span>
+        <span> Forum </span>
       </a>
+
 
   
     </div>
