@@ -45,4 +45,3 @@ export interface Message {
   timestamp: string;
   reactions?: { userId: string; reaction: string }[];
 }
-

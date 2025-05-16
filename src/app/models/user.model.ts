@@ -14,5 +14,7 @@ export interface User {
     telephone?: number;
     status?: 'autorisé' | 'non autorisé';
     profileImage?: string;
+    isOnline?: boolean;
+    
   }
   

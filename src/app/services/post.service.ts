@@ -80,14 +80,7 @@ export class PostService {
     );
   }
 
-  toggleLike(postId: string, userId: string): Observable<Post> {
-    return this.http.post<Post>(`${this.apiUrl}/post/toggleLike/${postId}`, { userId }, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors du toggle like:', error);
-        return throwError(() => new Error('Erreur lors du toggle like'));
-      })
-    );
-  }
+
 
   // Commentaires
   addComment(comment: Partial<Comment>): Observable<Comment> {
@@ -153,32 +146,8 @@ export class PostService {
  
 
   // Conversations et Messages
-  getUserConversations(userId: string): Observable<Group[]> {
-    return this.http.get<Group[]>(`${this.apiUrl}/conversations/${userId}`, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la récupération des conversations:', error);
-        return throwError(() => new Error('Erreur lors de la récupération des conversations'));
-      })
-    );
-  }
 
-  getConversationMessages(conversationId: string): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.apiUrl}/conversations?conversationId=${conversationId}`, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la récupération des messages:', error);
-        return throwError(() => new Error('Erreur lors de la récupération des messages'));
-      })
-    );
-  }
 
-  toggleReaction(messageId: string, userId: string, reaction: string): Observable<any> {
-    return this.http.post(`${this.apiUrl}/reactions/${messageId}`, { userId, reaction }, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors du toggle de la réaction:', error);
-        return throwError(() => new Error('Erreur lors du toggle de la réaction'));
-      })
-    );
-  }
 
   // Utilisateurs
 getUsers(): Observable<User[]> {
@@ -212,5 +181,51 @@ addMember(groupId: string, newMemberEmail: string): Observable<Group> {
     })
   );
 }
+ getUserConversations(userId: string): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/messages/conversations/${userId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  }
 
+  getConversationMessages(groupId: string): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/messages/${groupId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  }
+
+  getGroupMessages(groupId: string): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/messages/group/${groupId}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+    });
+  }
+  sendMessage(message: Message, recipientId: string): Observable<Message> {
+    return this.http.post<Message>(
+      `${this.apiUrl}/messages`,
+      { ...message, recipientId },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+  }
+
+  sendGroupMessage(message: Message, groupId: string): Observable<Message> {
+    return this.http.post<Message>(
+      `${this.apiUrl}/messages/group/${groupId}`,
+      message,
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+  }
+
+  toggleReaction(messageId: string, userId: string, reaction: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/messages/${messageId}/reaction`,
+      { userId, reaction },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+  }
+toggleLike(postId: string, userId: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/posts/${postId}/like`,
+      { userId },
+      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+    );
+  }
 }

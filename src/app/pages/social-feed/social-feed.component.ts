@@ -19,9 +19,7 @@ import { HttpClient } from "@angular/common/http"
   styleUrls: ["./social-feed.component.scss"],
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
-
-
-  
+selectedGroup: any
   currentUser: User | null = null
   posts: Post[] = []
   newPost: Partial<Post> = { titre: "", contenu: "" }
@@ -31,7 +29,6 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   users: User[] = []
   selectedUser: User | null = null
   messages: Message[] = []
-  messageContent = ""
 groups: any[] = [];
 newGroupName: string = ''; // Champ pour le nom du groupe
 invitedEmail: string = ''; // Champ pour l'email de l'utilisateur à inviter
@@ -40,8 +37,10 @@ newGroup: any
 showModal: boolean = false;
 currentUserId: string = ''; 
 tempEmail: string = ''; // Email temporaire saisi dans le modale
-  tempUsers: { email: string, id: string }[] = []; // Liste temporaire des utilisateurs
-  showCreateGroupModal: boolean = false; // Modale pour créer un groupe
+tempUsers: { email: string, id: string }[] = []; // Liste temporaire des utilisateurs
+showCreateGroupModal: boolean = false; // Modale pour créer un groupe
+groupMessages: any[] = [];
+messageContent: string = '';
 
   constructor(
     private postService: PostService,
@@ -49,6 +48,15 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
     private groupService: PostService, // Remplacez par le
     private http: HttpClient,
   ) {}
+
+
+
+closeConversation(): void {
+    this.selectedUser = null; // Cela fermera la conversation car le *ngIf="selectedUser" ne sera plus satisfait
+    // Vous pouvez aussi ajouter d'autres logiques de nettoyage si nécessaire
+    this.messages = []; // Optionnel: vider les messages
+    this.messageContent = ''; // Optionnel: vider le champ de message
+}
 
   // Ajoutez cette méthode pour vérifier si le serveur est accessible
   private checkServerConnection(): void {
