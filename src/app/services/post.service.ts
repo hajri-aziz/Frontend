@@ -11,9 +11,7 @@ import { User } from '../models/user.model';
 })
 export class PostService {
   newGroupName: string | undefined;
-  getGroups(_id: string | undefined) {
-    throw new Error('Method not implemented.');
-  }
+ 
   private apiUrl = 'http://localhost:3000';
 
   constructor(private http: HttpClient) {}
@@ -137,16 +135,12 @@ export class PostService {
     );
   }
 
- 
+ //GROUP 
+  getGroups(_id: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
 
- addMember(groupId: string, newMemberEmail: string): Observable<Group> {
-  return this.http.post<Group>(`${this.apiUrl}/group/add-member`, { groupId, email: newMemberEmail }, { headers: this.getHeaders() }).pipe(
-    catchError((error) => {
-      console.error('Erreur lors de l\'ajout du membre:', error);
-      return throwError(() => new Error('Erreur lors de l\'ajout du membre'));
-    })
-  );
-}
+
    // Récupérer les groupes d'un utilisateur spécifique
   getUserGroups(userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
@@ -154,16 +148,6 @@ export class PostService {
 
 
   // Récupérer un utilisateur par email
- getUserByEmail(email: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/group/email/${email}`, {
-      headers: this.getHeaders()
-    }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la récupération de l’utilisateur par email:', error);
-        return throwError(() => new Error('Utilisateur non trouvé'));
-      })
-    );
-  }
 
   // Créer un groupe
  
@@ -197,7 +181,7 @@ export class PostService {
   }
 
   // Utilisateurs
-  getUsers(): Observable<User[]> {
+getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
         console.error('Erreur lors de la récupération des utilisateurs:', error);
@@ -205,12 +189,28 @@ export class PostService {
       })
     );
   }
-
-  // Add member by email
-// src/app/services/api.service.ts
 addMemberByEmail(groupId: string, email: string) {
   return this.http.post(`http://localhost:3000/group/add-member`, { groupId, email }, {
     headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
   });
 }
+getUserByEmail(email: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/group/email/${email}`, {
+      headers: this.getHeaders()
+    }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la récupération de l’utilisateur par email:', error);
+        return throwError(() => new Error('Utilisateur non trouvé'));
+      })
+    );
+  }
+addMember(groupId: string, newMemberEmail: string): Observable<Group> {
+  return this.http.post<Group>(`${this.apiUrl}/group/add-member`, { groupId, email: newMemberEmail }, { headers: this.getHeaders() }).pipe(
+    catchError((error) => {
+      console.error('Erreur lors de l\'ajout du membre:', error);
+      return throwError(() => new Error('Erreur lors de l\'ajout du membre'));
+    })
+  );
+}
+
 }

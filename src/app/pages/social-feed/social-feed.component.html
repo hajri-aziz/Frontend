@@ -21,25 +21,29 @@
             <!-- Main Feed -->
             <div class="w-full lg:w-2/3">
                 <!-- Create Post -->
-                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
-                    <!-- Affichage utilisateur corrigé -->
-                    <div *ngIf="currentUser; else userLoading" class="flex items-center space-x-2 mb-4">
-                        <img [src]="getProfileImageUrl(currentUser.profileImage)" 
-                             [alt]="'Photo de ' + (currentUser.prenom || 'utilisateur')"
-                             class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
-                             (error)="handleImageError($event)">
-                        
-                        <span class="font-medium font-poppins text-[#080808]">
-                            {{ (currentUser.prenom || 'Prénom') + ' ' + (currentUser.nom || 'Nom') }}
-                        </span>
-                    </div>
+              <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
+  <!-- Affichage utilisateur corrigé -->
+  <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
+  <!-- Affichage utilisateur corrigé -->
+  <div *ngIf="currentUser; else userLoading" class="flex items-center space-x-2 mb-4">
+    <img [src]="getProfileImageUrl(currentUser.profileImage)" 
+         [alt]="'Photo de ' + (currentUser.prenom || 'utilisateur')"
+         class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
+         (error)="handleImageError($event)">
+    
+    <span class="font-medium font-poppins text-[#080808]">
+      {{ (currentUser.prenom || 'Prénom') + ' ' + (currentUser.nom || 'Nom') }}
+    </span>
+  </div>
 
-                    <ng-template #userLoading>
-                        <div class="flex items-center space-x-2 mb-4 animate-pulse">
-                            <div class="w-10 h-10 rounded-full bg-gray-200"></div>
-                            <div class="h-4 bg-gray-200 rounded w-32"></div>
-                        </div>
-                    </ng-template>
+  <ng-template #userLoading>
+    <div class="flex items-center space-x-2 mb-4 animate-pulse">
+      <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+      <div class="h-4 bg-gray-200 rounded w-32"></div>
+    </div>
+  </ng-template>
+  <!-- Reste du code pour créer un post -->
+</div>
 
                     <input 
                         [(ngModel)]="newPost.titre"
@@ -105,7 +109,7 @@
 
                         <!-- Post Content -->
                         <div class="px-4 py-2">
-                            <h3 class="text-lg font-poppins text-[#080808] mb-2">{{ post.titre }}</h3>
+                            <h2 class="text-lg font-poppins text-[#080808] mb-2">{{ post.titre }}</h2>
                             <p class="mb-3 text-sm font-poppins text-[#080808]">{{ post.contenu }}</p>
                             <img *ngIf="post.image"
                                  [src]="getImageUrl(post.image)"

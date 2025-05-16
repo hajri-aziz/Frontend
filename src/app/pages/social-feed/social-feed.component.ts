@@ -73,7 +73,7 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
     this.loadPosts();
     this.loadUsers();
     this.loadGroups();
-    this.verifyUserData();
+   // this.verifyUserData();
 
     console.log('Users initial:', this.users); // Vérifiez dans la console
     // Si vous récupérez les utilisateurs via un service ou une API :
@@ -82,7 +82,7 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
       console.log('Users loaded:', this.users); // Vérifiez après chargement
     });
     this.loadGroups()
-    this.verifyUserData()
+    //this.verifyUserData()
     console.log("Vérification des données utilisateur terminée")
     console.log("Current User après vérification:", this.currentUser) // Vérifiez les données
     this.checkServerConnection()
@@ -96,32 +96,7 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
 
   // Ajoutez cette méthode pour vérifier les données utilisateur
 
-  private loadCurrentUser(): void {
-    // 1. Vérification des éléments essentiels
-    const token = localStorage.getItem("token")
-    const userId = localStorage.getItem("userId")
-
-    if (!token || !userId) {
-      console.warn("Token ou UserID manquant, redirection vers /login")
-      window.location.href = "/login"
-      return
-    }
-
-    // 2. Chargement avec validation complète
-    this.currentUser = {
-      _id: userId,
-      nom: this.getSanitizedLocalStorageItem("nom"),
-      prenom: this.getSanitizedLocalStorageItem("prenom"),
-      profileImage: this.getValidImageUrl(localStorage.getItem("profileImage")),
-      email: localStorage.getItem("email") || "",
-      role: localStorage.getItem("role") || "user",
-    }
-
-    // 3. Validation finale et fallback
-    this.validateUserData()
-    console.debug("Utilisateur chargé:", this.currentUser)
-  }
-
+ 
   private getSanitizedLocalStorageItem(key: string): string {
     try {
       const value = localStorage.getItem(key)
@@ -154,34 +129,7 @@ tempEmail: string = ''; // Email temporaire saisi dans le modale
     }
   }
 
-  private validateUserData(): void {
-    if (!this.currentUser) {
-      console.error("Erreur: currentUser est null")
-      return
-    }
-
-    // Fallback intelligent
-    if (!this.currentUser.nom && !this.currentUser.prenom) {
-      const emailPrefix = this.currentUser.email.split("@")[0]
-      this.currentUser = {
-        ...this.currentUser,
-        nom: emailPrefix || "Utilisateur",
-        prenom: "",
-      }
-      console.warn("Utilisation du fallback email pour le nom")
-    } else if (!this.currentUser.nom) {
-      this.currentUser.nom = this.currentUser.prenom
-      this.currentUser.prenom = ""
-    }
-
-    // Validation des types
-    if (typeof this.currentUser.nom !== "string") {
-      this.currentUser.nom = String(this.currentUser.nom)
-    }
-    if (typeof this.currentUser.prenom !== "string") {
-      this.currentUser.prenom = String(this.currentUser.prenom)
-    }
-  }
+ 
 
 
 // ...
@@ -200,8 +148,8 @@ private loadPosts(): void {
               post,
               user: user || {
                 _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
-                nom: 'Utilisateur',
-                prenom: 'Inconnu',
+                nom: post.idAuteur?.nom || 'Utilisateur',
+                prenom: post.idAuteur?.prenom || 'Inconnu',
                 profileImage: 'https://i.pravatar.cc/150?u=default',
               },
             }))
@@ -549,24 +497,7 @@ private loadPosts(): void {
   }
 
   // Ajoutez cette méthode pour vérifier les données utilisateur
-  private verifyUserData(): void {
-    if (!this.currentUser) {
-      console.error("CurrentUser is null!")
-      return
-    }
-
-    console.log("User data:", {
-      nom: this.currentUser.nom,
-      prenom: this.currentUser.prenom,
-      profileImage: this.currentUser.profileImage,
-    })
-
-    // Fallback si les données sont corrompues
-    if (!this.currentUser.nom || !this.currentUser.prenom) {
-      this.currentUser.nom = localStorage.getItem("nom") || "Invité"
-      this.currentUser.prenom = localStorage.getItem("prenom") || ""
-    }
-  }
+ 
 
   getSafeImageUrl(imagePath: string | undefined): string {
     if (!imagePath) {
@@ -760,7 +691,75 @@ openCreateGroupModal() {
 
   // ... (other existing methods remain unchanged)
 
+private validateUserData(): void {
+  if (!this.currentUser) {
+    console.error("Erreur: currentUser est null");
+    return;
+  }
 
+  // Fallback intelligent
+  if (!this.currentUser.nom && !this.currentUser.prenom) {
+    const emailPrefix = this.currentUser.email.split("@")[0];
+    this.currentUser = {
+      ...this.currentUser,
+      nom: emailPrefix || "Utilisateur",
+      prenom: "",
+    };
+    console.warn("Utilisation du fallback email pour le nom");
+  } else if (!this.currentUser.nom) {
+    this.currentUser.nom = this.currentUser.prenom;
+    this.currentUser.prenom = "";
+  }
+
+  // Validation des types
+  if (typeof this.currentUser.nom !== "string") {
+    this.currentUser.nom = String(this.currentUser.nom);
+  }
+  if (typeof this.currentUser.prenom !== "string") {
+    this.currentUser.prenom = String(this.currentUser.prenom);
+  }
+}
+private loadCurrentUser(): void {
+  // 1. Vérification des éléments essentiels
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
+
+  if (!token || !userId) {
+    console.warn("Token ou UserID manquant, redirection vers /login");
+    window.location.href = "/login";
+    return;
+  }
+
+  // 2. Chargement des données avec validation stricte
+  const prenom = this.getSanitizedLocalStorageItem("prenom");
+  const nom = this.getSanitizedLocalStorageItem("nom");
+  const email = localStorage.getItem("email") || "email@inconnu.com";
+  const profileImage = this.getValidImageUrl(localStorage.getItem("profileImage"));
+  const role = localStorage.getItem("role") || "user";
+
+  // 3. Création de l'objet currentUser
+  this.currentUser = {
+    _id: userId,
+    nom: nom || "Utilisateur", // Valeur par défaut si nom est vide
+    prenom: prenom || "Inconnu", // Valeur par défaut si prenom est vide
+    profileImage,
+    email,
+    role,
+  };
+
+  // 4. Validation supplémentaire
+  this.validateUserData();
+
+  // 5. Log pour déboguer
+  console.debug("Utilisateur chargé:", {
+    id: this.currentUser._id,
+    prenom: this.currentUser.prenom,
+    nom: this.currentUser.nom,
+    email: this.currentUser.email,
+    role: this.currentUser.role,
+    profileImage: this.currentUser.profileImage,
+  });
+}
 
 
   
