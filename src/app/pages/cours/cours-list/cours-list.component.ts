@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CoursService } from 'src/app/services/cours.service';
 import { Router } from '@angular/router';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-cours-list',
@@ -9,61 +10,81 @@ import { Router } from '@angular/router';
 })
 export class CoursListComponent implements OnInit {
   coursList: any[] = [];
+  filteredCoursList: any[] = [];
   categories: any[] = [];
   loading = true;
   error = '';
   success = '';
   searchTerm: string = '';
   selectedCategory: string = '';
+  userRole: string = '';
+  isAdmin: boolean = false;
   
-  // Nouveaux filtres
+  // Filtres de prix
   minPrice: number = 0;
   maxPrice: number = 1000;
+  maxPossiblePrice: number = 5000;
   showPopular: boolean = false;
 
   constructor(
     private coursService: CoursService,
-    private router: Router
+    private router: Router,
+    private userService: UserService,
   ) {}
 
   ngOnInit(): void {
-    this.loadCours();
-    this.loadCategories();
+    this.checkUserRole();
+    this.loadInitialData();
   }
 
-  loadCours(): void {
-  this.loading = true;
-  this.error = '';
+  private checkUserRole(): void {
+    this.userRole = this.userService.getUserRole() || '';
+    this.isAdmin = this.userRole === 'admin';
+  }
 
-  this.coursService.getAllCours().subscribe({
-    next: (data) => {
-      this.coursList = data;
-      this.loading = false;
-    },
-    error: () => {
-      this.error = 'Erreur lors du chargement des cours';
-      this.loading = false;
-    }
-  });
-}
-
-
-  loadCategories(): void {
-    this.coursService.getAllCategories().subscribe({
-      next: (data) => {
-        this.categories = data;
+  private loadInitialData(): void {
+    this.loading = true;
+    
+    this.coursService.getAllCours().subscribe({
+      next: (cours) => {
+        this.coursList = cours;
+        this.filteredCoursList = [...cours];
+        this.calculateMaxPrice();
+        this.loadCategories();
+        this.loading = false;
       },
-      error: () => {
-        this.error = 'Erreur lors du chargement des catégories';
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du chargement des cours';
+        this.loading = false;
       }
     });
   }
 
-goToDeleteConfirmation(id: string): void {
-  this.router.navigate(['/courses/detail', id]);
-}
+  private calculateMaxPrice(): void {
+    if (this.coursList.length > 0) {
+      this.maxPossiblePrice = Math.max(...this.coursList.map(c => c.price));
+      this.maxPrice = this.maxPossiblePrice;
+    }
+  }
+
+  private loadCategories(): void {
+    this.coursService.getAllCategories().subscribe({
+      next: (categories) => {
+        this.categories = categories;
+      },
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du chargement des catégories';
+      }
+    });
+  }
+
+  // Navigation
+  goToDeleteConfirmation(id: string): void {
+    this.router.navigate(['/courses/detail', id]);
+  }
 
   editCours(id: string): void {
+    if (!this.isAdmin) return;
     this.router.navigate(['/courses/edit', id]);
   }
 
@@ -72,24 +93,25 @@ goToDeleteConfirmation(id: string): void {
   }
 
   addCours(): void {
+    if (!this.isAdmin) return;
     this.router.navigate(['/courses/create']);
   }
 
+  // Filtres et recherche
   searchCours(): void {
     if (!this.searchTerm.trim()) {
-      this.loadCours();
+      this.resetFilters();
       return;
     }
+
     this.loading = true;
-    this.error = '';
-    
     this.coursService.searchCours(this.searchTerm).subscribe({
       next: (data) => {
-        this.coursList = data;
+        this.filteredCoursList = data;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Erreur lors de la recherche des cours';
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors de la recherche';
         this.loading = false;
       }
     });
@@ -97,68 +119,84 @@ goToDeleteConfirmation(id: string): void {
 
   filterByCategory(): void {
     if (!this.selectedCategory) {
-      this.loadCours();
+      this.resetFilters();
       return;
     }
+
     this.loading = true;
-    this.error = '';
-    
     this.coursService.getCoursByCategory(this.selectedCategory).subscribe({
       next: (data) => {
-        this.coursList = data;
+        this.filteredCoursList = data;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Erreur lors du filtrage par catégorie';
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du filtrage';
         this.loading = false;
       }
     });
   }
 
-  // Nouveau filtre par prix
   filterByPrice(): void {
     this.loading = true;
-    this.error = '';
-    
     this.coursService.getCoursByPrice(this.minPrice, this.maxPrice).subscribe({
       next: (data) => {
-        this.coursList = data;
+        this.filteredCoursList = data;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Erreur lors du filtrage par prix';
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du filtrage par prix';
         this.loading = false;
       }
     });
   }
 
-  // Nouveau filtre par popularité
   loadPopularCourses(): void {
     this.loading = true;
-    this.error = '';
     this.showPopular = true;
     
     this.coursService.getPopularCours().subscribe({
       next: (data) => {
-        this.coursList = data;
+        this.filteredCoursList = data;
         this.loading = false;
       },
-      error: () => {
-        this.error = 'Erreur lors du chargement des cours populaires';
+      error: (err) => {
+        this.error = err.error?.message || 'Erreur lors du chargement des cours populaires';
         this.loading = false;
       }
     });
   }
 
-  // Fonction robuste pour obtenir l'URL de l'image
+  resetFilters(): void {
+    this.searchTerm = '';
+    this.selectedCategory = '';
+    this.minPrice = 0;
+    this.maxPrice = this.maxPossiblePrice;
+    this.showPopular = false;
+    this.filteredCoursList = [...this.coursList];
+    this.error = '';
+  }
+
+  // Gestion des prix
+  validatePriceRange(): void {
+    if (this.minPrice < 0) this.minPrice = 0;
+    if (this.maxPrice > this.maxPossiblePrice) this.maxPrice = this.maxPossiblePrice;
+    if (this.minPrice > this.maxPrice) this.minPrice = this.maxPrice;
+  }
+  updatePriceFromSlider(): void {
+  this.validatePriceRange();
+  // Optionnel : déclencher automatiquement le filtrage
+  this.filterByPrice(); 
+}
+
+  // Gestion des images
   getImageUrl(cours: any): string {
-    if (!cours || !cours.image) {
+    if (!cours?.image) {
       return '/assets/images/default-course.jpg';
     }
 
-    // ✅ Extraire juste le nom du fichier depuis un chemin absolu
-    const imageFileName = cours.image.split('\\').pop()?.split('/').pop(); // cross-platform
-    return `http://localhost:3000/uploads/cours/${imageFileName}`;
+    const imagePath = cours.image.replace(/\\/g, '/');
+    const imageName = imagePath.split('/').pop();
+    return `http://localhost:3000/uploads/cours/${imageName}`;
   }
 
   onImageError(event: any): void {

@@ -31,6 +31,11 @@ import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.componen
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
 import { NavbarComponent } from './pages/navbar/navbar.component';
 
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
@@ -79,13 +84,15 @@ const routes: Routes = [
 
   // 🆕 Cours
   { path: 'courses', component: CoursListComponent },
-  { path: 'courses/create', component: CoursCreateComponent },
-  { path: 'courses/edit/:id', component: CoursEditComponent },
+  { path: 'courses/create', component: CoursCreateComponent, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'courses/edit/:id', component: CoursEditComponent, canActivate: [AuthGuard, AdminGuard]  },
   { path: 'courses/:id', component: CoursDetailComponent },
   { path: 'courses/detail/:id', component: CoursDetailComponent },
 
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
+
+  { path: 'unauthorized', component: UnauthorizedComponent },
 
   // Redirection en cas d'URL inconnue
   { path: '**', redirectTo: '' }

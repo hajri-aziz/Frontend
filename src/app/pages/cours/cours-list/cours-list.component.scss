@@ -1,0 +1,111 @@
+.slider {
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 2px;
+  outline: none;
+  margin-bottom: 8px; // 👈 espace entre les deux sliders
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #0d9488;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #0d9488;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+.cours-card {
+  width: 100%;
+  max-width: 240px;
+  background: linear-gradient(to bottom right, #e0f7fa, #b2ebf2);
+  border-radius: 15px;
+  padding: 55px 15px 20px;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease-in-out;
+  margin: 0 auto;
+  font-family: 'Poppins', sans-serif;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.cours-image {
+  position: absolute;
+  top: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid white;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.cours-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  color: #007299;
+}
+
+.cours-description {
+  font-size: 0.85rem;
+  color: #555;
+  margin-bottom: 10px;
+  min-height: 40px;
+}
+
+.cours-info {
+  font-size: 0.8rem;
+  color: #333;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+
+  .info-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.cours-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+
+  button {
+    background: none;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  }
+}
+
+

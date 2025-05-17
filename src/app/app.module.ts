@@ -37,6 +37,8 @@ import { CoursCreateComponent } from './pages/cours/cours-create/cours-create.co
 import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.component';
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
 
+import { AdminGuard } from './guards/admin.guard';
+
 // 📚 Catégories
 import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component';
 import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component';
@@ -52,6 +54,7 @@ import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 @NgModule({
   declarations: [
@@ -93,6 +96,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     ContactComponent,
     ForgotPasswordComponent,
     VerifyOtpComponent,
+    UnauthorizedComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,7 +106,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     FormsModule, 
     MatDialogModule,
   ],
-  providers: [],
+  providers: [AdminGuard,],
   bootstrap: [AppComponent]
 })
 export class AppModule {}
