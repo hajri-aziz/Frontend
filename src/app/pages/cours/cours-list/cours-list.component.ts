@@ -80,21 +80,21 @@ export class CoursListComponent implements OnInit {
 
   // Navigation
   goToDeleteConfirmation(id: string): void {
-    this.router.navigate(['/courses/detail', id]);
+    this.router.navigate(['/cours/detail', id]);
   }
 
   editCours(id: string): void {
     if (!this.isAdmin) return;
-    this.router.navigate(['/courses/edit', id]);
+    this.router.navigate(['/cours/edit', id]);
   }
 
   viewCours(id: string): void {
-    this.router.navigate(['/courses/detail', id]);
+    this.router.navigate(['/cours/detail', id]);
   }
 
   addCours(): void {
     if (!this.isAdmin) return;
-    this.router.navigate(['/courses/create']);
+    this.router.navigate(['/cours/create']);
   }
 
   // Filtres et recherche

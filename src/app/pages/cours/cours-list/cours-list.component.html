@@ -110,18 +110,23 @@
           <div class="flex items-center gap-2 justify-center"><i class="bi bi-tag-fill"></i> {{ cours.category_id?.title }}</div>
           <div class="flex items-center gap-2 justify-center"><i class="bi bi-calendar-event"></i> {{ cours.created_at | date:'shortDate' }}</div>
         </div>
+        
         <hr class="mb-3" />
+
         <!-- Actions -->
-        <div class="flex justify-between text-sm text-center px-2">
-          <button (click)="viewCours(cours._id)" class="text-[#007299] hover:underline flex items-center gap-1">
-            <i class="bi bi-eye"></i> Voir
+        <div class="grid grid-cols-1 gap-2">
+          <button (click)="viewCours(cours._id)" class="text-[#007299] hover:underline flex items-center justify-center gap-1">
+            <i class="bi bi-eye"></i> Voir le cours
           </button>
-          <button *ngIf="isAdmin" (click)="editCours(cours._id)" class="text-blue-600 hover:underline flex items-center gap-1">
-            <i class="bi bi-pencil-square"></i> Modifier
-          </button>
-          <button *ngIf="isAdmin" (click)="goToDeleteConfirmation(cours._id)" class="text-red-600 hover:underline flex items-center gap-1">
-            <i class="bi bi-x-circle"></i> Supprimer
-          </button>
+
+          <ng-container *ngIf="isAdmin">
+            <button (click)="editCours(cours._id)" class="text-yellow-600 hover:underline flex items-center justify-center gap-1">
+              <i class="bi bi-pencil-square"></i> Modifier
+            </button>
+            <button (click)="goToDeleteConfirmation(cours._id)" class="text-red-600 hover:underline flex items-center justify-center gap-1">
+              <i class="bi bi-trash-fill"></i> Supprimer
+            </button>
+          </ng-container>
         </div>
       </div>
     </div>

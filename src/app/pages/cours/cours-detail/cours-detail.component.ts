@@ -13,6 +13,7 @@ export class CoursDetailComponent implements OnInit {
   error: string = '';
   success: string = '';
   loading: boolean = false;
+  userRole: string = '';
   isAdmin: boolean = false;
 
   constructor(
@@ -70,7 +71,7 @@ export class CoursDetailComponent implements OnInit {
 
   editCours(id: string): void {
     if (!id) return;
-    this.router.navigate(['/courses/edit', id]);
+    this.router.navigate(['/cours/edit', id]);
   }
 
   confirmDelete(): void {
@@ -82,7 +83,7 @@ export class CoursDetailComponent implements OnInit {
     this.coursService.deleteCours(this.cours._id).subscribe({
       next: () => {
         this.success = 'Cours supprimé avec succès';
-        setTimeout(() => this.router.navigate(['/courses']), 1500);
+        setTimeout(() => this.router.navigate(['/cours']), 1500);
       },
       error: (err) => {
         this.error = err.error?.message || 'Erreur lors de la suppression';
@@ -92,6 +93,6 @@ export class CoursDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/courses']);
+    this.router.navigate(['/cours']);
   }
 }
