@@ -44,4 +44,5 @@ export interface Message {
   content: string;
   timestamp: string;
   reactions?: { userId: string; reaction: string }[];
+  status?: 'sent' | 'delivered' | 'read';
 }

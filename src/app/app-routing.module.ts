@@ -31,6 +31,7 @@ import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.componen
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
 import { NavbarComponent } from './pages/navbar/navbar.component';
 
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
@@ -41,7 +42,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
-  { path: 'social-feed', component: SocialFeedComponent },
+  
   { path: 'disp-event', component: DispEventComponent, children: [
     { path: '', redirectTo: 'availability', pathMatch: 'full' },
     { path: 'availability', component: AvailabilityComponent },
@@ -57,6 +58,10 @@ const routes: Routes = [
 
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },
+
+  //CHAT/FORUM 
+  { path: 'social-feed', component: SocialFeedComponent },
+ 
 
 
   // 📦 DISP-EVENT avec enfants

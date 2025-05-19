@@ -5,16 +5,26 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Post, Comment, Group, Message } from '../models/post.models';
 import { User } from '../models/user.model';
+import io from 'socket.io-client';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({providedIn: 'root'})
 export class PostService {
+  private socket: any; // Use 'any' or proper interface if available
+  private readonly SOCKET_URL = 'http://localhost:3000';
   newGroupName: string | undefined;
+  
  
   private apiUrl = 'http://localhost:3000';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {const options = {
+      transports: ['websocket'],
+      autoConnect: false,
+      query: {
+        token: localStorage.getItem('token')
+      }
+    };
+    this.socket = io(this.SOCKET_URL, options);
+  }
 
   private getHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
@@ -187,24 +197,18 @@ addMember(groupId: string, newMemberEmail: string): Observable<Group> {
     });
   }
 
-  getConversationMessages(groupId: string): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.apiUrl}/messages/${groupId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-  }
+ getConversationMessages(conversationId: string): Observable<Message[]> {
+  const token = localStorage.getItem('token');
+  const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+  return this.http.get<Message[]>(`${this.apiUrl}/messages/conversations/${conversationId}`, { headers });
+}
 
   getGroupMessages(groupId: string): Observable<Message[]> {
     return this.http.get<Message[]>(`${this.apiUrl}/messages/group/${groupId}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   }
-  sendMessage(message: Message, recipientId: string): Observable<Message> {
-    return this.http.post<Message>(
-      `${this.apiUrl}/messages`,
-      { ...message, recipientId },
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-  }
+  
 
   sendGroupMessage(message: Message, groupId: string): Observable<Message> {
     return this.http.post<Message>(
@@ -228,4 +232,43 @@ toggleLike(postId: string, userId: string): Observable<any> {
       { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
     );
   }
+
+
+  ///////***********************SOCKET************************* */
+  connect(userId: string): void {
+    if (!this.socket.connected) {
+      this.socket.auth = { userId };
+      this.socket.connect();
+    }
+  }
+
+  joinConversation(conversationId: string): void {
+    this.socket.emit('joinConversation', conversationId);
+  }
+
+  sendMessage(destinataireId: string, contenu: string): void {
+    this.socket.emit('sendMessage', {
+      destinataireId,
+      contenu
+    });
+  }
+
+  onNewMessage(callback: (message: any) => void): void {
+    this.socket.on('newMessage', (message: any) => {
+      console.log('New message received in SocketService:', message);
+      callback(message);
+    });
+  }
+
+  disconnect(): void {
+    if (this.socket) {
+      this.socket.disconnect();
+    }
+  }
+
+  // post.service.ts (ou chat.service.ts)
+notifyTyping(recipientId: string): void {
+  this.socket.emit('typing', { to: recipientId });
+}
+
 }

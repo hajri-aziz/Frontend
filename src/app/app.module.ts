@@ -53,6 +53,8 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 
+
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -63,8 +65,6 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     SignupComponent,
     DashboardComponent,
     CreateAccountComponent,
-
-    // SocialFeedComponent is standalone and imported below
     DispEventComponent,
     RendzInscriComponent,
     SidebarComponent,
@@ -93,6 +93,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     ContactComponent,
     ForgotPasswordComponent,
     VerifyOtpComponent,
+   
   ],
   imports: [
     BrowserModule,

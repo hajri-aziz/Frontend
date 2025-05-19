@@ -21,30 +21,23 @@
             <!-- Main Feed -->
             <div class="w-full lg:w-2/3">
                 <!-- Create Post -->
-              <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
-  <!-- Affichage utilisateur corrigé -->
-  <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
-  <!-- Affichage utilisateur corrigé -->
-  <div *ngIf="currentUser; else userLoading" class="flex items-center space-x-2 mb-4">
-    <img [src]="getProfileImageUrl(currentUser.profileImage)" 
-         [alt]="'Photo de ' + (currentUser.prenom || 'utilisateur')"
-         class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
-         (error)="handleImageError($event)">
-    
-    <span class="font-medium font-poppins text-[#080808]">
-      {{ (currentUser.prenom || 'Prénom') + ' ' + (currentUser.nom || 'Nom') }}
-    </span>
-  </div>
-
-  <ng-template #userLoading>
-    <div class="flex items-center space-x-2 mb-4 animate-pulse">
-      <div class="w-10 h-10 rounded-full bg-gray-200"></div>
-      <div class="h-4 bg-gray-200 rounded w-32"></div>
-    </div>
-  </ng-template>
-  <!-- Reste du code pour créer un post -->
-</div>
-
+                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
+                    <!-- Affichage utilisateur corrigé -->
+                    <div *ngIf="currentUser; else userLoading" class="flex items-center space-x-2 mb-4">
+                        <img [src]="getProfileImageUrl(currentUser.profileImage)" 
+                             [alt]="'Photo de ' + (currentUser.prenom || 'utilisateur')"
+                             class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
+                             (error)="handleImageError($event)">
+                        <span class="font-medium font-poppins text-[#080808]">
+                            {{ (currentUser.prenom || 'Prénom') + ' ' + (currentUser.nom || 'Nom') }}
+                        </span>
+                    </div>
+                    <ng-template #userLoading>
+                        <div class="flex items-center space-x-2 mb-4 animate-pulse">
+                            <div class="w-10 h-10 rounded-full bg-gray-200"></div>
+                            <div class="h-4 bg-gray-200 rounded w-32"></div>
+                        </div>
+                    </ng-template>
                     <input 
                         [(ngModel)]="newPost.titre"
                         class="w-full border border-[#c4c4c4] rounded-lg p-3 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
@@ -56,8 +49,6 @@
                         placeholder="Qu'avez-vous en tête ?"
                         rows="3"
                     ></textarea>
-
-                    <!-- Image upload -->
                     <input 
                         type="file" 
                         (change)="onImageSelected($event)"
@@ -66,12 +57,9 @@
                                file:rounded-full file:border-0 file:text-sm file:font-semibold
                                file:bg-gradient-to-br file:from-[#56e0e0] file:to-[#007299] file:text-white hover:file:opacity-90"
                     >
-
-                    <!-- Preview -->
                     <div *ngIf="imagePreview" class="mb-3">
                         <img [src]="imagePreview" alt="Preview" class="w-full h-48 object-cover rounded-lg">
                     </div>
-
                     <div class="flex justify-end">
                         <button 
                             (click)="addPost()"
@@ -85,7 +73,6 @@
                 <!-- Posts -->
                 <div class="space-y-6">
                     <div *ngFor="let post of posts" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] overflow-hidden">
-                        <!-- Post Header -->
                         <div class="p-4 flex items-center space-x-2 border-b border-[#cfd0d4]">
                             <ng-container *ngIf="post.idAuteur.profileImage; else defaultProfileIcon">
                                 <img [src]="getProfileImageUrl(post.idAuteur.profileImage)"
@@ -98,7 +85,6 @@
                                      alt="Photo de profil par défaut"
                                      class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]">
                             </ng-template>
-                            
                             <div>
                                 <div class="font-medium font-poppins text-[#080808]">
                                     {{ (post.idAuteur.prenom || 'Prénom') + ' ' + (post.idAuteur.nom || 'Nom') }}
@@ -106,8 +92,6 @@
                                 <div class="text-xs text-[#66676b] font-poppins">{{ post.date_creation | date:'medium' }}</div>
                             </div>
                         </div>
-
-                        <!-- Post Content -->
                         <div class="px-4 py-2">
                             <h2 class="text-lg font-poppins text-[#080808] mb-2">{{ post.titre }}</h2>
                             <p class="mb-3 text-sm font-poppins text-[#080808]">{{ post.contenu }}</p>
@@ -117,14 +101,10 @@
                                  class="w-full h-64 object-cover rounded-lg"
                                  (error)="handlePostImageError($event)">
                         </div>
-
-                        <!-- Post Stats -->
                         <div class="px-4 py-2 border-t border-b border-[#cfd0d4] flex justify-between text-sm text-[#66676b] font-poppins">
                             <div>{{ post.likes.length }} j'aime</div>
                             <div>{{ post.comments?.length || 0 }} commentaires</div>
                         </div>
-
-                        <!-- Post Actions -->
                         <div class="px-4 py-2 flex flex-col sm:flex-row justify-between border-b border-[#cfd0d4] gap-2">
                             <button 
                                 (click)="toggleLike(post)"
@@ -152,8 +132,6 @@
                                 <span class="font-poppins">Partager</span>
                             </button>
                         </div>
-
-                        <!-- Comments Section -->
                         <div class="p-4 space-y-3">
                             <div *ngFor="let comment of post.comments" class="flex space-x-2">
                                 <ng-container *ngIf="comment.idAuteur.profileImage; else defaultProfileIcon">
@@ -167,7 +145,6 @@
                                          alt="Photo de profil par défaut"
                                          class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]">
                                 </ng-template>
-                                
                                 <div class="bg-[#f1f2f5] rounded-lg px-3 py-2 flex-1">
                                     <div class="font-medium text-sm font-poppins text-[#080808]">
                                         {{ (comment.idAuteur.prenom || 'Prénom') + ' ' + (comment.idAuteur.nom || 'Nom') }}
@@ -176,8 +153,6 @@
                                     <div class="text-xs text-[#66676b] font-poppins">{{ comment.date_creation | date:'short' }}</div>
                                 </div>
                             </div>
-
-                            <!-- Add Comment -->
                             <div class="flex space-x-2 mt-3" *ngIf="post._id">
                                 <ng-container *ngIf="currentUser?.profileImage; else defaultProfileIcon">
                                     <img [src]="getProfileImageUrl(currentUser?.profileImage)"
@@ -190,7 +165,6 @@
                                          alt="Photo de profil par défaut"
                                          class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]">
                                 </ng-template>
-                                
                                 <div class="flex-1 flex">
                                     <input
                                         [(ngModel)]="newCommentContents[post._id]"
@@ -212,7 +186,7 @@
 
             <!-- Sidebar - User List & Messages -->
             <div class="w-full lg:w-1/3 space-y-6">
-                <!-- User List - MODIFIÉ AVEC HAUTEUR FIXE ET DÉFILEMENT -->
+                <!-- User List -->
                 <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
                     <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Utilisateurs en ligne</h2>
                     <div class="max-h-96 overflow-y-auto pr-2 space-y-2" style="scrollbar-width: thin;">
@@ -248,38 +222,47 @@
                     </div>
                 </div>
 
-                
-                <!-- Messages -->
-<div *ngIf="selectedUser" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] flex flex-col h-96">
-    <div class="p-4 border-b border-[#cfd0d4] flex items-center justify-between">
+              <!-- Messages -->
+
+<!-- Messages -->
+<div *ngIf="selectedUser" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.1)] flex flex-col h-96">
+    <div class="p-4 border-b border-[#e0e0e0] flex items-center justify-between bg-white">
         <div class="flex items-center space-x-2">
             <img [src]="getProfileImageUrl(selectedUser.profileImage)" 
                  [alt]="'Photo de ' + (selectedUser.prenom || 'utilisateur')"
                  class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]"
                  (error)="handleImageError($event)">
-            
-            <span class="font-medium font-poppins text-[#080808]">
+            <span class="font-medium font-poppins text-[#2d3748]">
                 {{ (selectedUser.prenom || 'Prénom') + ' ' + (selectedUser.nom || 'Nom') }}
             </span>
+            <!-- Indicateur "typing" -->
+            <div *ngIf="isTyping" class="flex items-center ml-2">
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <span class="text-xs text-[#718096] ml-1">en train d'écrire...</span>
+            </div>
         </div>
-        <button (click)="closeConversation()" class="text-gray-500 hover:text-gray-700">
+        <button (click)="closeConversation()" class="text-[#718096] hover:text-[#4a5568]">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
             </svg>
         </button>
     </div>
-    
-    <div class="flex-1 p-4 overflow-y-auto space-y-3">
-        <div *ngFor="let message of messages" 
+    <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#f8fafc]">
+        <div *ngFor="let message of messages"
              [class.flex-row-reverse]="message.sender === currentUser?._id"
-             [class.justify-end]="message.sender === currentUser?._id"
              class="flex">
-            <div 
-                [class.bg-[#04789d]]="message.sender === currentUser?._id"
-                [class.text-white]="message.sender === currentUser?._id"
-                [class.bg-[#f1f2f5]]="message.sender !== currentUser?._id"
-                class="max-w-[70%] rounded-lg px-3 py-2 font-poppins text-sm"
-            >
+            <div [class.bg-[#4fd1c5]="message.sender === currentUser?._id"
+                 [class.text-white]="message.sender === currentUser?._id"
+                 [class.bg-white]="message.sender !== currentUser?._id"
+                 [class.text-[#2d3748]]="message.sender !== currentUser?._id"
+                 [class.rounded-tr-none]="message.sender === currentUser?._id"
+                 [class.rounded-tl-none]="message.sender !== currentUser?._id"
+                 class="max-w-[70%] rounded-lg px-3 py-2 font-poppins text-sm shadow-sm relative"
+                 [style.border-radius]="message.sender === currentUser?._id ? '18px 18px 0 18px' : '18px 18px 18px 0'">
                 {{ message.content }}
                 <div *ngIf="message.reactions?.length" class="text-xs mt-1">
                     <span *ngFor="let r of message.reactions">{{ r.reaction }}</span>
@@ -287,146 +270,127 @@
             </div>
         </div>
     </div>
-    
-    <div class="p-3 border-t border-[#cfd0d4] flex">
-        <input 
-            [(ngModel)]="messageContent"
-            class="flex-1 border border-[#c4c4c4] rounded-l-lg px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
-            placeholder="Écrire un message..."
-        >
-        <button 
-            (click)="sendMessage()"
-            class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-lg px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
-        >
-            Envoyer
-        </button>
+    <div class="p-3 border-t border-[#e0e0e0] bg-white">
+        <input [(ngModel)]="messageContent" 
+               (keyup)="onTyping()"
+               (keyup.enter)="sendMessage()"
+               class="w-full p-2 border border-[#e0e0e0] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4fd1c5] focus:border-transparent"
+               placeholder="Écrire un message...">
     </div>
 </div>
 
                 <!-- Groups -->
-                <!-- Groups -->
-<div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
-    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Groupes</h2>
-    <div class="h-60 overflow-y-auto pr-2" style="scrollbar-width: thin;">
-        <div *ngIf="groups?.length === 0" class="text-center text-[#66676b] py-2">
-            <p>Aucun groupe trouvé.</p>
-        </div>
-        <div *ngFor="let group of groups" class="flex items-center mb-4">
-            <div class="relative">
-                <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-                    <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
-                        <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
-                             class="absolute w-full h-full object-cover" 
-                             (error)="handleImageError($event)">
-                    </ng-container>
-                    <ng-template #defaultIcon>
-                        <img src="assets/profil.png" alt="Photo de profil par défaut" 
-                             class="absolute w-full h-full object-cover">
-                    </ng-template>
-                    <ng-container *ngIf="group.members && group.members.length > 0 && group.members[0]?.profileImage">
-                        <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
-                             class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
-                             (error)="handleImageError($event)">
-                    </ng-container>
-                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
+                    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Groupes</h2>
+                    <div class="h-60 overflow-y-auto pr-2" style="scrollbar-width: thin;">
+                        <div *ngIf="groups?.length === 0" class="text-center text-[#66676b] py-2">
+                            <p>Aucun groupe trouvé.</p>
+                        </div>
+                        <div *ngFor="let group of groups" class="flex items-center mb-4">
+                            <div class="relative">
+                                <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+                                    <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
+                                        <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
+                                             class="absolute w-full h-full object-cover" 
+                                             (error)="handleImageError($event)">
+                                    </ng-container>
+                                    <ng-template #defaultIcon>
+                                        <img src="assets/profil.png" alt="Photo de profil par défaut" 
+                                             class="absolute w-full h-full object-cover">
+                                    </ng-template>
+                                    <ng-container *ngIf="group.members && group.members.length > 0 && group.members[0]?.profileImage">
+                                        <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
+                                             class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
+                                             (error)="handleImageError($event)">
+                                    </ng-container>
+                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+                                </div>
+                            </div>
+                            <div class="ml-3">
+                                <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
+                                <button 
+                                    (click)="group._id && addMemberToGroup(group._id)"
+                                    class="text-sm text-[#04789d] font-poppins"
+                                >
+                                    Ajouter membre
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button 
+                            (click)="openCreateGroupModal()"
+                            class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                        >
+                            Créer un groupe
+                        </button>
+                    </div>
+                    <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white rounded-lg p-6 w-96">
+                            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
+                            <input 
+                                [(ngModel)]="newGroupName"
+                                class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+                                placeholder="Nom du groupe"
+                            >
+                            <div class="flex flex-col space-y-2 mb-3">
+                                <div class="flex space-x-2">
+                                    <input 
+                                        [(ngModel)]="tempEmail"
+                                        class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
+                                        placeholder="Email de l'utilisateur à inviter"
+                                    >
+                                    <button 
+                                        (click)="addUserToTempList()"
+                                        class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                                    >
+                                        Ajouter
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="max-h-40 overflow-y-auto mb-3">
+                                <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
+                                <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
+                                    <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
+                                    <button 
+                                        (click)="removeUserFromTempList(user.email)"
+                                        class="text-sm text-red-500 font-poppins"
+                                    >
+                                        Supprimer
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="flex justify-end space-x-2">
+                                <button 
+                                    (click)="closeCreateGroupModal()"
+                                    class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
+                                >
+                                    Annuler
+                                </button>
+                                <button 
+                                    [disabled]="tempUsers.length < 3"
+                                    (click)="createGroup()"
+                                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
+                                >
+                                    Créer ({{ tempUsers.length }}/3)
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div class="bg-white rounded-lg p-6 w-96">
+                            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
+                            <div class="flex justify-end">
+                                <button 
+                                    (click)="closeModal()"
+                                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                                >
+                                    Fermer
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="ml-3">
-                <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
-                <button 
-                    (click)="group._id && addMemberToGroup(group._id)"
-                    class="text-sm text-[#04789d] font-poppins"
-                >
-                    Ajouter membre
-                </button>
-            </div>
-        </div>
-    </div>
-    <!-- Bouton pour ouvrir le modale -->
-    <div class="mt-3">
-        <button 
-            (click)="openCreateGroupModal()"
-            class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-        >
-            Créer un groupe
-        </button>
-    </div>
-
-    <!-- Modale pour créer un groupe -->
-    <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-96">
-            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
-            <!-- Champ pour le nom du groupe -->
-            <input 
-                [(ngModel)]="newGroupName"
-                class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
-                placeholder="Nom du groupe"
-            >
-            <!-- Champs pour ajouter un utilisateur -->
-            <div class="flex flex-col space-y-2 mb-3">
-                <div class="flex space-x-2">
-                    <input 
-                        [(ngModel)]="tempEmail"
-                        class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
-                        placeholder="Email de l'utilisateur à inviter"
-                    >
-                    <button 
-                        (click)="addUserToTempList()"
-                        class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-                    >
-                        Ajouter
-                    </button>
-                </div>
-            </div>
-            <!-- Liste des utilisateurs temporairement ajoutés -->
-            <div class="max-h-40 overflow-y-auto mb-3">
-                <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
-                <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
-                    <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
-                    <button 
-                        (click)="removeUserFromTempList(user.email)"
-                        class="text-sm text-red-500 font-poppins"
-                    >
-                        Supprimer
-                    </button>
-                </div>
-            </div>
-            <!-- Boutons du modale -->
-            <div class="flex justify-end space-x-2">
-                <button 
-                    (click)="closeCreateGroupModal()"
-                    class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
-                >
-                    Annuler
-                </button>
-                <button 
-                    [disabled]="tempUsers.length < 3"
-                    (click)="createGroup()"
-                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
-                >
-                    Créer ({{ tempUsers.length }}/3)
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modale de confirmation -->
-    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-        <div class="bg-white rounded-lg p-6 w-96">
-            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
-            
-           
-            <div class="flex justify-end">
-                <button 
-                    (click)="closeModal()"
-                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-                >
-                    Fermer
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
             </div>
         </div>
     </div>

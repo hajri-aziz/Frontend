@@ -1,0 +1,19 @@
+.typing-indicator {
+    display: flex;
+    padding: 8px 12px;
+    background-color: #f1f5f9;
+    border-radius: 18px;
+}
+.typing-indicator span {
+    width: 6px;
+    height: 6px;
+    background-color: #64748b;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 0 2px;
+    animation: typing 1s infinite ease-in-out;
+}
+@keyframes typing {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
