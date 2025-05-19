@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { User } from '../models/user.model';
-
 @Injectable({
   providedIn: 'root'
 })
@@ -62,8 +61,17 @@ export class CoursService {
   }
 
   deleteCours(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/api/cours/delete/${id}`, { headers: this.getHeaders() });
-  }
+  return this.http.delete(`${this.apiUrl}/api/cours/delete/${id}`, { 
+    headers: this.getHeaders() 
+  }).pipe(
+    catchError((error) => {
+      if (error.status === 403) {
+        alert('Action réservée aux administrateurs');
+      }
+      throw error;
+    })
+  );
+}
 
   // 🔎 Filtres et recherche
   getCoursByCategory(catId: string): Observable<any> {

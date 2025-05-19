@@ -1,0 +1,149 @@
+<div class="max-w-6xl mx-auto p-6">
+  <!-- En-tête -->
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-semibold tracking-tight bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text">
+      Sessions du cours
+    </h2>
+    <div class="flex gap-2">
+      <a 
+        [routerLink]="['/cours', coursId]" 
+        class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+      >
+        <i class="bi bi-arrow-left"></i> Retour au cours
+      </a>
+      <a 
+        [routerLink]="['/cours', coursId, 'sessions', 'new']" 
+        class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+      >
+        <i class="bi bi-plus-circle-fill"></i> Nouvelle session
+      </a>
+    </div>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="text-center mt-10">
+    <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#007299] mx-auto"></div>
+    <p class="mt-2 text-sm text-gray-600">Chargement des sessions...</p>
+  </div>
+
+  <!-- Sessions à venir -->
+  <div *ngIf="!isLoading && getSessionsByStatus().upcoming.length > 0" class="mb-8">
+    <h3 class="text-xl font-medium bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text mb-4">
+      Sessions à venir ({{ getSessionsByStatus().upcoming.length }})
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div 
+        *ngFor="let session of getSessionsByStatus().upcoming" 
+        class="rounded-lg overflow-hidden shadow-lg hover:shadow-xl bg-gradient-to-br from-[#ebf9fc] to-[#d5f1f9] transition-transform duration-200 hover:-translate-y-1"
+      >
+        <div class="p-4">
+          <h4 class="text-lg font-semibold text-center text-[#007299] mb-2">{{ session.title }}</h4>
+          
+          <div class="text-xs text-gray-600 space-y-2 mb-4">
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-calendar-event"></i> 
+              {{ session.startdate | date:'medium' }} - {{ session.enddate | date:'shortTime' }}
+            </div>
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-geo-alt-fill"></i> 
+              {{ session.location }}
+            </div>
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-people-fill"></i> 
+              {{ session.participants.length }}/{{ session.capacity }} participants
+            </div>
+          </div>
+          
+          <hr class="mb-3" />
+          
+          <div class="grid grid-cols-3 gap-2">
+            <a 
+              [routerLink]="['/sessions', session._id]" 
+              class="text-[#007299] hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-eye"></i> Détails
+            </a>
+            <a 
+              [routerLink]="['/sessions', session._id, 'edit']" 
+              class="text-yellow-600 hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-pencil-square"></i> Modifier
+            </a>
+            <button 
+              (click)="deleteSession(session._id)" 
+              class="text-red-600 hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-trash-fill"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sessions passées -->
+  <div *ngIf="!isLoading && getSessionsByStatus().past.length > 0" class="mb-8">
+    <h3 class="text-xl font-medium bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text mb-4">
+      Sessions passées ({{ getSessionsByStatus().past.length }})
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div 
+        *ngFor="let session of getSessionsByStatus().past" 
+        class="rounded-lg overflow-hidden shadow-lg hover:shadow-xl bg-gradient-to-br from-[#ebf9fc] to-[#d5f1f9] transition-transform duration-200 hover:-translate-y-1 opacity-80 hover:opacity-100"
+      >
+        <div class="p-4">
+          <h4 class="text-lg font-semibold text-center text-[#007299] mb-2">{{ session.title }}</h4>
+          
+          <div class="text-xs text-gray-600 space-y-2 mb-4">
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-calendar-event"></i> 
+              {{ session.startdate | date:'medium' }}
+            </div>
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-geo-alt-fill"></i> 
+              {{ session.location }}
+            </div>
+            <div class="flex items-center gap-2 justify-center">
+              <i class="bi bi-people-fill"></i> 
+              {{ session.participants.length }} participants
+            </div>
+          </div>
+          
+          <hr class="mb-3" />
+          
+          <div class="grid grid-cols-3 gap-2">
+            <a 
+              [routerLink]="['/sessions', session._id]" 
+              class="text-[#007299] hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-eye"></i> Détails
+            </a>
+            <a 
+              [routerLink]="['/sessions', session._id, 'edit']" 
+              class="text-yellow-600 hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-pencil-square"></i> Modifier
+            </a>
+            <button 
+              (click)="deleteSession(session._id)" 
+              class="text-red-600 hover:underline flex items-center justify-center gap-1 text-sm"
+            >
+              <i class="bi bi-trash-fill"></i> Supprimer
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Aucun résultat -->
+  <div *ngIf="!isLoading && sessions.length === 0" class="text-center text-gray-500 mt-10">
+    <p class="mb-4">Aucune session disponible pour ce cours.</p>
+    <a 
+      [routerLink]="['/cours', coursId, 'sessions', 'new']" 
+      class="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+    >
+      <i class="bi bi-plus-circle-fill"></i> Créer votre première session
+    </a>
+  </div>
+</div>

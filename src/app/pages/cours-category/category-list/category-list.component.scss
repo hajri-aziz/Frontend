@@ -1,0 +1,65 @@
+/* Style des cartes */
+.card-zenaura {
+  @apply bg-gradient-to-br from-[#f4fdff] to-[#d9f3ff] rounded-xl shadow-md p-5 transition-transform hover:-translate-y-1 hover:shadow-xl;
+}
+
+/* Titre principal dégradé */
+.title-gradient {
+  @apply text-3xl sm:text-4xl font-extrabold tracking-tight bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text drop-shadow-sm;
+}
+
+/* Boutons avec gradient bleu thème */
+.btn-zenaura {
+  @apply flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold text-sm rounded-xl shadow-md hover:from-[#56e0e0]/90 hover:to-[#007299]/90 transition;
+}
+
+.btn-secondary {
+  @apply bg-gray-100 text-zenaura-text hover:bg-gray-200 transition;
+}
+
+/* Slider plus fin */
+input[type="range"] {
+  appearance: none;
+  -webkit-appearance: none;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 3px;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #0d9488;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: #0d9488;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+}
+
+/* Icônes d’action (voir/modifier/supprimer) */
+.action-buttons {
+  @apply flex justify-between items-center text-sm border-t pt-3 mt-auto;
+}
+
+.action-buttons button {
+  @apply flex items-center gap-1 hover:underline;
+}
+
+button.text-zenaura-teal i {
+  color: #0d9488;
+}
+
+button.text-blue-600 i {
+  color: #2563eb;
+}
+
+button.text-red-600 i {
+  color: #dc2626;
+}

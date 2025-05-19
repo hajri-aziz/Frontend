@@ -99,10 +99,10 @@
           <span>Forum</span>
         </a>
 
-         <!-- Liste des Cours (simple lien sans sous-menu) -->
-        <a routerLink="/courses" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
-           [ngClass]="{ 'text-[#04789d] font-semibold': router.url.startsWith('/courses'), 'text-gray-600': !router.url.startsWith('/courses') }">
-          <ng-container *ngIf="router.url.startsWith('/courses')">
+         <!-- Liste des Cours -->
+        <a routerLink="/cours" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+           [ngClass]="{ 'text-[#04789d] font-semibold': router.url.startsWith('/cours'), 'text-gray-600': !router.url.startsWith('/cours') }">
+          <ng-container *ngIf="router.url.startsWith('/cours')">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
           <img src="assets/dictionnaire.png" alt="Cours Icon" class="w-5 h-5" />
