@@ -265,10 +265,5 @@ toggleLike(postId: string, userId: string): Observable<any> {
       this.socket.disconnect();
     }
   }
-
-  // post.service.ts (ou chat.service.ts)
-notifyTyping(recipientId: string): void {
-  this.socket.emit('typing', { to: recipientId });
-}
-
+  
 }

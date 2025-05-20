@@ -38,6 +38,7 @@ export interface Group {
 }
 
 export interface Message {
+[x: string]: any;
   _id?: string;
   conversationId: string;
   sender: string;

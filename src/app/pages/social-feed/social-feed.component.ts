@@ -20,6 +20,7 @@ import { HttpClient } from "@angular/common/http"
   styleUrls: ["./social-feed.component.scss"],
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
+
   selectedGroup: any
   currentUser: User | null = null
   posts: Post[] = []
@@ -43,8 +44,9 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   groupMessages: any[] = [];
   messageContent: string = '';
   newMessage = '';
-  isTyping = false;
+isTyping: boolean = false;
 typingTimeout: any;
+
 
   constructor(
     private postService: PostService,
@@ -54,6 +56,31 @@ typingTimeout: any;
     private cdr: ChangeDetectorRef,
    
   ) {}
+
+
+
+
+
+onTyping(): void {
+    if (!this.isTyping) {
+        this.isTyping = true;
+        // Envoyer la notification "typing" au serveur
+       
+    }
+    
+    clearTimeout(this.typingTimeout);
+    this.typingTimeout = setTimeout(() => {
+        this.isTyping = false;
+    }, 2000);
+}
+
+
+
+// Écouter les notifications de typing
+listenForTyping(): void {
+    
+}
+
 
   // Méthodes du SocketChatComponent intégrées
  
@@ -86,6 +113,7 @@ typingTimeout: any;
     this.loadPosts();
     this.loadUsers();
     this.loadGroups();
+    this.listenForTyping();
 
     this.userService.getAllUsers().subscribe(data => {
       this.users = data;
@@ -776,16 +804,4 @@ typingTimeout: any;
     }
     return isValid;
   }
-
-  onTyping() {
-    this.isTyping = true;
-    
-    // Réinitialiser le timeout à chaque frappe
-    clearTimeout(this.typingTimeout);
-    
-    // Masquer l'indicateur après 2 secondes d'inactivité
-    this.typingTimeout = setTimeout(() => {
-        this.isTyping = false;
-    }, 2000);
-}
 }
