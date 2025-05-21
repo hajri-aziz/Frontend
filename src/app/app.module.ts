@@ -63,8 +63,6 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     SignupComponent,
     DashboardComponent,
     CreateAccountComponent,
-
-    // SocialFeedComponent is standalone and imported below
     DispEventComponent,
     RendzInscriComponent,
     SidebarComponent,

@@ -19,11 +19,11 @@ export class AnalyseGraphiqueComponent implements OnInit, AfterViewInit {
   errorMessage: string | null = null;
 
   @ViewChild('availabilityBarChart') availabilityBarChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('availabilityDonutChart') availabilityDonutChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('availabilityPolarChart') availabilityPolarChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('eventChart') eventChartRef!: ElementRef<HTMLCanvasElement>;
 
   private availabilityBarChart?: Chart;
-  private availabilityDonutChart?: Chart;
+  private availabilityPolarChart?: Chart;
   private eventChart?: Chart;
 
   constructor(
@@ -68,14 +68,15 @@ export class AnalyseGraphiqueComponent implements OnInit, AfterViewInit {
 
   private applyFilterAndRender(): void {
     if (this.selectedDate) {
-      const selected = new Date(this.selectedDate).toDateString();
+      // Convert selected date to ISO format (YYYY-MM-DD) for comparison
+      const selected = new Date(this.selectedDate).toISOString().split('T')[0];
 
       this.filteredDisponibilites = this.disponibilites.filter(dispo =>
-        new Date(dispo.date).toDateString() === selected
+        new Date(dispo.date).toISOString().split('T')[0] === selected
       );
 
       this.filteredEvenements = this.evenements.filter(event =>
-        new Date(event.date).toDateString() === selected
+        event.date.split('T')[0] === selected
       );
     } else {
       this.filteredDisponibilites = [...this.disponibilites];
@@ -92,22 +93,24 @@ export class AnalyseGraphiqueComponent implements OnInit, AfterViewInit {
     }, { disponible: 0, occupé: 0, absent: 0 });
   }
 
-  private getEventCountsByDate(): { [key: string]: number } {
+  private getEventParticipantCounts(): { [key: string]: number } {
     return this.filteredEvenements.reduce((acc, event) => {
-      const dateStr = new Date(event.date).toLocaleDateString('fr-FR');
-      acc[dateStr] = (acc[dateStr] || 0) + 1;
+      if (event.titre) { // Ensure event title exists
+        acc[event.titre] = (acc[event.titre] || 0) + (event.participants?.length || 0);
+      }
       return acc;
     }, {} as { [key: string]: number });
   }
 
   private initOrUpdateCharts(): void {
     const statusCounts = this.getAvailabilityStatusCounts();
-    const eventCounts = this.getEventCountsByDate();
+    const eventParticipantCounts = this.getEventParticipantCounts();
 
     if (this.availabilityBarChart) this.availabilityBarChart.destroy();
-    if (this.availabilityDonutChart) this.availabilityDonutChart.destroy();
+    if (this.availabilityPolarChart) this.availabilityPolarChart.destroy();
     if (this.eventChart) this.eventChart.destroy();
 
+    // Bar Chart
     const barCtx = this.availabilityBarChartRef.nativeElement.getContext('2d');
     this.availabilityBarChart = new Chart(barCtx!, {
       type: 'bar',
@@ -119,35 +122,116 @@ export class AnalyseGraphiqueComponent implements OnInit, AfterViewInit {
           backgroundColor: ['#56e0e0', '#ff6384', '#ffcd56']
         }]
       },
-      options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { font: { family: 'Poppins', size: 14 } } },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleFont: { family: 'Poppins' },
+            bodyFont: { family: 'Poppins' }
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeInOutQuad'
+        }
+      }
     });
 
-    const donutCtx = this.availabilityDonutChartRef.nativeElement.getContext('2d');
-    this.availabilityDonutChart = new Chart(donutCtx!, {
-      type: 'doughnut',
+    // Polar Area Chart (Disponibilités)
+    const polarCtx = this.availabilityPolarChartRef.nativeElement.getContext('2d');
+    this.availabilityPolarChart = new Chart(polarCtx!, {
+      type: 'polarArea',
       data: {
         labels: ['Disponible', 'Occupé', 'Absent'],
         datasets: [{
           label: 'Disponibilités',
           data: [statusCounts['disponible'], statusCounts['occupé'], statusCounts['absent']],
-          backgroundColor: ['#56e0e0', '#ff6384', '#ffcd56']
+          backgroundColor: [
+            'rgba(86, 224, 224, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 205, 86, 0.6)'
+          ],
+          borderColor: ['#56e0e0', '#ff6384', '#ffcd56'],
+          borderWidth: 2
         }]
       },
-      options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { font: { family: 'Poppins', size: 14 } } },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleFont: { family: 'Poppins' },
+            bodyFont: { family: 'Poppins' }
+          }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+          duration: 1200,
+          easing: 'easeOutBounce'
+        },
+        scales: {
+          r: {
+            ticks: { display: false },
+            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+          }
+        }
+      }
     });
 
+    // Polar Area Chart (Participants par événement)
     const eventCtx = this.eventChartRef.nativeElement.getContext('2d');
     this.eventChart = new Chart(eventCtx!, {
-      type: 'pie',
+      type: 'polarArea',
       data: {
-        labels: Object.keys(eventCounts),
+        labels: Object.keys(eventParticipantCounts),
         datasets: [{
-          label: 'Événements',
-          data: Object.values(eventCounts),
-          backgroundColor: ['#56e0e0', '#ff6384', '#ffcd56', '#4bc0c0', '#36a2eb']
+          label: 'Participants',
+          data: Object.values(eventParticipantCounts),
+          backgroundColor: [
+            'rgba(86, 224, 224, 0.6)',
+            'rgba(255, 99, 132, 0.6)',
+            'rgba(255, 205, 86, 0.6)',
+            'rgba(75, 192, 192, 0.6)',
+            'rgba(54, 162, 235, 0.6)'
+          ],
+          borderColor: ['#56e0e0', '#ff6384', '#ffcd56', '#4bc0c0', '#36a2eb'],
+          borderWidth: 2
         }]
       },
-      options: { responsive: true, plugins: { legend: { position: 'top' } } }
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'top', labels: { font: { family: 'Poppins', size: 14 } } },
+          tooltip: {
+            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            titleFont: { family: 'Poppins' },
+            bodyFont: { family: 'Poppins' },
+            callbacks: {
+              label: (context) => {
+                const label = context.label || '';
+                const value = context.raw as number;
+                return `${label}: ${value} participants`;
+              }
+            }
+          }
+        },
+        animation: {
+          animateScale: true,
+          animateRotate: true,
+          duration: 1200,
+          easing: 'easeOutBounce'
+        },
+        scales: {
+          r: {
+            ticks: { display: false },
+            grid: { color: 'rgba(0, 0, 0, 0.1)' }
+          }
+        }
+      }
     });
   }
 }
