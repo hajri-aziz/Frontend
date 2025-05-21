@@ -37,21 +37,35 @@ import { CoursCreateComponent } from './pages/cours/cours-create/cours-create.co
 import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.component';
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
 
+import { AdminGuard } from './guards/admin.guard';
+
 // 📚 Catégories
 import { CategoryListComponent } from './pages/cours-category/category-list/category-list.component';
 import { CategoryCreateComponent } from './pages/cours-category/category-create/category-create.component';
 import { CategoryEditComponent } from './pages/cours-category/category-edit/category-edit.component';
 import { CategoryDetailComponent } from './pages/cours-category/category-detail/category-detail.component';
 
-// 🕒 Sessions
-import { SessionListComponent } from './pages/cours-session/session-list/session-list.component';
-import { SessionCreateComponent } from './pages/cours-session/session-create/session-create.component';
-import { SessionEditComponent } from './pages/cours-session/session-edit/session-edit.component';
-import { SessionDetailComponent } from './pages/cours-session/session-detail/session-detail.component';
+// 🕒 Sessions cours 
+
+import { CoursSessionService } from './services/cours-session.service';
+import { SessionDetailComponent } from './pages/cours-sessions/session-detail/session-detail.component';
+import { SessionFormComponent } from './pages/cours-sessions/session-form/session-form.component';
+import { SessionCoursComponent } from './pages/cours-sessions/session-cours/session-cours.component';
+
+
+
+
+
 import { DispEventComponent } from './pages/disp-event/disp-event.component';
 import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+
+
+
+
+
 
 @NgModule({
   declarations: [
@@ -83,14 +97,20 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     CategoryCreateComponent,
     CategoryEditComponent,
     CategoryDetailComponent,
-    SessionListComponent,
-    SessionCreateComponent,
-    SessionEditComponent,
     SessionDetailComponent,
+    SessionCoursComponent,
+    SessionFormComponent,
+    
     NavbarComponent,
     ContactComponent,
     ForgotPasswordComponent,
     VerifyOtpComponent,
+
+    UnauthorizedComponent,
+   
+    
+  
+
   ],
   imports: [
     BrowserModule,
@@ -100,7 +120,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
     FormsModule, 
     MatDialogModule,
   ],
-  providers: [],
+  providers: [AdminGuard,],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

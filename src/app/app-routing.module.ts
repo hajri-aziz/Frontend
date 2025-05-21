@@ -31,6 +31,17 @@ import { CoursEditComponent } from './pages/cours/cours-edit/cours-edit.componen
 import { CoursDetailComponent } from './pages/cours/cours-detail/cours-detail.component';
 import { NavbarComponent } from './pages/navbar/navbar.component';
 
+import { SessionCoursComponent } from './pages/cours-sessions/session-cours/session-cours.component';
+import { SessionFormComponent } from './pages/cours-sessions/session-form/session-form.component';
+import { SessionDetailComponent } from './pages/cours-sessions/session-detail/session-detail.component';
+
+
+import { AuthGuard } from './guards/auth.guard';
+import { AdminGuard } from './guards/admin.guard';
+
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+
+
 const routes: Routes = [
   { path: '', component: HomeComponent },
   { path: 'home', component: HomeComponent },
@@ -41,7 +52,7 @@ const routes: Routes = [
   { path: 'signup', component: SignupComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'create-account', component: CreateAccountComponent },
-  { path: 'social-feed', component: SocialFeedComponent },
+  
   { path: 'disp-event', component: DispEventComponent, children: [
     { path: '', redirectTo: 'availability', pathMatch: 'full' },
     { path: 'availability', component: AvailabilityComponent },
@@ -57,6 +68,10 @@ const routes: Routes = [
 
   { path: 'forget-password', component: ForgotPasswordComponent },
   { path: 'verify-otp', component: VerifyOtpComponent },
+
+  //CHAT/FORUM 
+  { path: 'social-feed', component: SocialFeedComponent },
+ 
 
 
   // 📦 DISP-EVENT avec enfants
@@ -78,14 +93,22 @@ const routes: Routes = [
   { path: 'categories/:id', component: CategoryDetailComponent },
 
   // 🆕 Cours
-  { path: 'courses', component: CoursListComponent },
-  { path: 'courses/create', component: CoursCreateComponent },
-  { path: 'courses/edit/:id', component: CoursEditComponent },
-  { path: 'courses/:id', component: CoursDetailComponent },
-  { path: 'courses/detail/:id', component: CoursDetailComponent },
+  { path: 'cours', component: CoursListComponent },
+  { path: 'cours/create', component: CoursCreateComponent, canActivate: [AuthGuard, AdminGuard] },
+  { path: 'cours/edit/:id', component: CoursEditComponent, canActivate: [AuthGuard, AdminGuard]  },
+  { path: 'cours/:id', component: CoursDetailComponent },
+  { path: 'cours/detail/:id', component: CoursDetailComponent },
+  
+  //cours session
+   {path: 'cours/:coursId/sessions',component: SessionCoursComponent,canActivate: [AuthGuard]},
+   {path: 'cours/:coursId/sessions/new',component: SessionFormComponent,canActivate: [AuthGuard],data: { roles: ['instructor', 'admin'] }},
+   {path: 'sessions/:id/edit',component: SessionFormComponent,canActivate: [AuthGuard],data: { roles: ['instructor', 'admin'] }},
+   {path: 'sessions/:id',component: SessionDetailComponent,canActivate: [AuthGuard]},
 
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
+
+  { path: 'unauthorized', component: UnauthorizedComponent },
 
   // Redirection en cas d'URL inconnue
   { path: '**', redirectTo: '' }

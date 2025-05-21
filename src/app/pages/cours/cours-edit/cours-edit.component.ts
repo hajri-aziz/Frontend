@@ -130,7 +130,7 @@ export class CoursEditComponent implements OnInit {
       next: () => {
         this.success = true;
         setTimeout(() => {
-          this.router.navigate(['/courses']);
+          this.router.navigate(['/cours']);
         }, 1500);
       },
       error: (err) => {
@@ -141,6 +141,6 @@ export class CoursEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/courses']);
+    this.router.navigate(['/cours']);
   }
 }
