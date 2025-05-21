@@ -252,7 +252,7 @@ toggleLike(postId: string, userId: string): Observable<any> {
       contenu
     });
   }
-
+ 
   onNewMessage(callback: (message: any) => void): void {
     this.socket.on('newMessage', (message: any) => {
       console.log('New message received in SocketService:', message);
@@ -265,5 +265,32 @@ toggleLike(postId: string, userId: string): Observable<any> {
       this.socket.disconnect();
     }
   }
+
+
+getMessagesBetweenUsersDirect(userId1: string, userId2: string): Observable<any> {
+  return this.http.get<any>(
+    `${this.apiUrl}group/message/between/${userId1}/${userId2}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+}
+ emit(event: string, data: any): void {
+    this.socket.emit(event, data);
+  }
+
+getFullConversation(otherUserId: string): Observable<any[]> {
+  return this.http.get<any[]>(
+    `${this.apiUrl}/group/message/with/${otherUserId}`,
+    {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    }
+  );
+}
+
   
 }

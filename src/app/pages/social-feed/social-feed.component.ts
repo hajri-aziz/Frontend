@@ -1,5 +1,5 @@
 // src/app/pages/social-feed/social-feed.component.ts
-import { Component, type OnInit, type OnDestroy, ChangeDetectorRef } from "@angular/core"
+import { Component, type OnInit, type OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from "@angular/core"
 import { CommonModule } from "@angular/common"
 import { FormsModule } from "@angular/forms"
 import type { Post, Comment, Group, Message } from "../../models/post.models"
@@ -44,9 +44,14 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   groupMessages: any[] = [];
   messageContent: string = '';
   newMessage = '';
-isTyping: boolean = false;
-typingTimeout: any;
+  isTyping: boolean = false;
+  typingTimeout: any;
+  // Nouvelles propriétés ajoutées
+  activeChats: any[] = []; // Pour gérer plusieurs chats ouverts
+  expandedChatId: string | null = null; // Pour savoir quel chat est développé
 
+  // ViewChild pour le scrolling automatique
+  @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
 
   constructor(
     private postService: PostService,
@@ -54,14 +59,10 @@ typingTimeout: any;
     private groupService: PostService,
     private http: HttpClient,
     private cdr: ChangeDetectorRef,
-   
   ) {}
 
 
-
-
-
-onTyping(): void {
+  onTyping(): void {
     if (!this.isTyping) {
         this.isTyping = true;
         // Envoyer la notification "typing" au serveur
@@ -72,32 +73,19 @@ onTyping(): void {
     this.typingTimeout = setTimeout(() => {
         this.isTyping = false;
     }, 2000);
-}
+  }
 
-
-
-// Écouter les notifications de typing
-listenForTyping(): void {
-    
-}
-
+  // Écouter les notifications de typing
+  listenForTyping(): void {
+      
+  }
 
   // Méthodes du SocketChatComponent intégrées
- 
-
   private isMessageForCurrentConversation(msg: Message): boolean {
     return !!this.selectedUser && msg.conversationId === this.getConversationId();
   }
 
-
-
   // Méthodes modifiées pour intégrer la fonctionnalité de chat
-
-
-
-
-
-
   closeConversation(): void {
     this.selectedUser = null;
     this.messages = [];
@@ -388,28 +376,7 @@ listenForTyping(): void {
 
 
 
-  private handleGroupsResponse(groups: Group[], userId: string): void {
-    const group = groups.find((g) => userId && g.members.includes(userId));
-    if (group?._id) {
-      this.loadMessages(group._id);
-    } else {
-      this.messages = [];
-    }
-  }
 
-  private loadMessages(groupId: string): void {
-    this.subscriptions.push(
-      this.postService.getConversationMessages(groupId).subscribe({
-        next: (messages) => {
-          this.messages = messages.map((m) => ({
-            ...m,
-            timestamp: new Date(m.timestamp).toISOString(),
-          }));
-        },
-        error: () => (this.messages = []),
-      }),
-    );
-  }
 
   private handleConversationError(error: any): void {
     console.error("Error loading conversations:", error);
@@ -698,37 +665,50 @@ listenForTyping(): void {
     });
   }
 
-
-
-  selectUser(user: User): void {
-    if (user._id === this.currentUser?._id || !this.currentUser?._id) return;
-
-    this.selectedUser = user;
-    this.messages = [];
-    this.currentUserId = this.currentUser._id;
-
-    if (!user._id) {
-      console.error('Selected user ID is undefined');
-      return;
-    }
-
-    this.postService.connect(this.currentUserId);
-    this.setupSocketListeners();
-
-    const conversationId = this.getConversationId();
-    if (conversationId) {
-      this.postService.joinConversation(conversationId);
-    }
-
-    this.loadConversation(user._id);
+  // Garder la méthode originale de selectUser avec des modifications de la seconde version
+selectUser(user: User): void {
+  if (user._id === this.currentUser?._id || !this.currentUser?._id) {
+    console.warn('Invalid user selection:', { selectedUser: user._id, currentUser: this.currentUser?._id });
+    return;
   }
 
-  private getConversationId(): string {
-  if (!this.selectedUser || !this.currentUserId) return '';
-  const id = [this.currentUserId, this.selectedUser._id].sort().join('_');
-  console.log('Generated conversation ID:', id);
-  return id;
+  console.log('Selecting user:', user);
+  this.selectedUser = user;
+  this.messages = [];
+  const existingChat = this.activeChats.find(chat => chat.user._id === user._id);
+  if (!existingChat) {
+    this.activeChats.push({
+      user: user,
+      isExpanded: true
+    });
+  }
+  this.expandedChatId = user._id ?? null;
+
+  this.postService.connect(this.currentUser._id);
+  this.setupSocketListeners();
+
+  const conversationId = this.getConversationId();
+  if (conversationId) {
+    this.postService.joinConversation(conversationId);
+  }
+
+  console.log('Loading messages for conversation:', conversationId);
+  if (this.currentUser._id && user._id) {
+    this.loadMessagesBetweenUsers(this.currentUser._id, user._id);
+  } else {
+    console.warn('Cannot load messages: user IDs are undefined', {
+      currentUserId: this.currentUser._id,
+      selectedUserId: user._id
+    });
+  }
 }
+
+  private getConversationId(): string {
+    if (!this.selectedUser || !this.currentUserId) return '';
+    const id = [this.currentUserId, this.selectedUser._id].sort().join('_');
+    console.log('Generated conversation ID:', id);
+    return id;
+  }
 
   private loadConversation(userId: string): void {
     const conversationId = this.getConversationId();
@@ -742,6 +722,7 @@ listenForTyping(): void {
             }));
             console.log('Messages loaded:', this.messages);
             this.cdr.detectChanges();
+            this.scrollToBottom();
           },
           error: (error) => {
             console.error('Error loading messages:', error);
@@ -761,37 +742,17 @@ listenForTyping(): void {
         this.messages.push({
           _id: msg._id || Date.now().toString(),
           sender: msg.expediteurId,
-          content: msg.contenu,
+          content: msg['contenu'],
           timestamp: msg.dateEnvoi || new Date().toISOString(),
           conversationId: msgConversationId
         });
         this.cdr.detectChanges();
+        this.scrollToBottom();
         console.log('Message added to UI:', this.messages);
       }
     });
   }
 
-  sendMessage(): void {
-    if (!this.validateMessage()) return;
-
-    const message: Message = {
-      _id: Date.now().toString(),
-      sender: this.currentUser!._id!,
-      conversationId: this.getConversationId(),
-      content: this.messageContent,
-      timestamp: new Date().toISOString()
-    };
-
-    console.log('Sending message:', {
-      destinataireId: this.selectedUser!._id,
-      contenu: this.messageContent
-    });
-
-    this.messages.push(message);
-    this.postService.sendMessage(this.selectedUser!._id!, this.messageContent);
-    this.messageContent = '';
-    this.cdr.detectChanges();
-  }
 
   private validateMessage(): boolean {
     const isValid = !!(this.selectedUser && this.selectedUser._id && this.messageContent.trim() && this.currentUser?._id);
@@ -804,4 +765,176 @@ listenForTyping(): void {
     }
     return isValid;
   }
+
+  // Nouvelles méthodes ajoutées du deuxième code
+private loadMessagesBetweenUsers(userId1: string, userId2: string): void {
+  console.log('Loading messages between:', { userId1, userId2 });
+  this.messages = []; // Affiche le loader
+  this.subscriptions.push(
+    this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
+      next: (apiMessages: any[]) => {
+        console.log('Raw API messages:', apiMessages);
+        this.messages = apiMessages.map((apiMsg: any) => ({
+          _id: apiMsg._id,
+          conversationId: apiMsg.conversationId,
+          expediteurId: apiMsg.expediteurId,
+          destinataireId: apiMsg.destinataireId,
+          contenu: apiMsg.contenu,
+          dateEnvoi: new Date(apiMsg.dateEnvoi).toISOString(),
+          status: apiMsg.status || 'read',
+          reactions: apiMsg.reactions || [],
+          sender: apiMsg.expediteurId,
+          content: apiMsg.contenu,
+          timestamp: new Date(apiMsg.dateEnvoi).toISOString()
+        }));
+        console.log('Mapped messages:', this.messages);
+        this.cdr.detectChanges();
+        this.scrollToBottom();
+        
+      },
+      error: (error) => {
+        console.error('Error loading messages:', error);
+        this.messages = [];
+        this.cdr.detectChanges();
+      }
+    })
+  );
 }
+
+sendMessage(): void {
+  if (!this.validateMessage()) return;
+
+  const message: Message = {
+    _id: Date.now().toString(),
+    expediteurId: this.currentUser!._id!,
+    destinataireId: this.selectedUser!._id!,
+    conversationId: this.getConversationId(),
+    contenu: this.messageContent,
+    dateEnvoi: new Date().toISOString(),
+    status: 'sent',
+    sender: this.currentUser!._id!,
+    content: this.messageContent,
+    timestamp: new Date().toISOString()
+  };
+
+  this.messages.push(message);
+  this.postService.sendMessage(this.selectedUser!._id!, this.messageContent);
+  this.messageContent = '';
+  this.cdr.detectChanges();
+  this.scrollToBottom();
+}
+
+
+// Méthode pour développer un chat
+
+
+// Méthode pour faire défiler vers le bas
+
+
+  // Méthode pour minimiser le chat
+  minimizeChat(): void {
+    if (!this.selectedUser) return;
+
+    const selectedUserId = this.selectedUser ? this.selectedUser._id : null;
+    if (!selectedUserId) return;
+
+    const chatIndex = this.activeChats.findIndex(chat => chat.user._id === selectedUserId);
+    if (chatIndex !== -1) {
+      this.activeChats[chatIndex].isExpanded = false;
+    }
+
+    this.expandedChatId = null;
+  }
+
+  // Méthode pour développer un chat minimisé
+
+
+  // Méthode pour fermer un chat
+  closeChat(userId: string): void {
+    this.activeChats = this.activeChats.filter(chat => chat.user._id !== userId);
+    
+    if (this.expandedChatId === userId) {
+      this.expandedChatId = null;
+      this.selectedUser = null;
+    }
+  }
+
+
+   // Méthode pour charger les messages entre deux utilisateurs
+  loadMessages(userId1: string, userId2: string): void {
+    this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
+      next: (response) => {
+        this.messages = response;
+        // Formater les messages si nécessaire
+        this.messages = this.messages.map(msg => ({
+          ...msg,
+          sender: msg["expediteurId"]._id,
+          content: msg['contenu'],
+          timestamp: msg['dateEnvoi']
+        }));
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des messages:', err);
+      }
+    });
+  }
+
+ 
+
+
+  // Amélioration de la méthode loadFullConversation\
+loadFullConversation(otherUserId: string) {
+  console.log('Chargement de la conversation avec :', otherUserId);
+  this.messages = [];
+
+  this.postService.getFullConversation(otherUserId).subscribe({
+    next: (msgs) => {
+      console.log("Messages reçus :", msgs);
+      this.messages = msgs.map(msg => ({
+        conversationId: msg.conversationId || [msg.expediteurId._id, otherUserId].sort().join('_'),
+        sender: msg.expediteurId._id,
+        content: msg.contenu,
+        timestamp: msg.dateEnvoi,
+        _id: msg._id,
+        reactions: msg.reactions || [],
+        status: msg.status || 'read'
+      }));
+      setTimeout(() => this.scrollToBottom(), 100);
+    },
+    error: (err) => console.error("Erreur de chargement :", err)
+  });
+}
+
+
+
+
+// Méthode pour faire défiler jusqu'au dernier message
+scrollToBottom()
+{
+  if (this.messagesContainer) {
+    const container = this.messagesContainer.nativeElement
+    container.scrollTop = container.scrollHeight
+  }
+}
+
+// Assurez-vous que cette méthode est appelée quand un chat est développé
+expandChat(userId: string) {
+  this.expandedChatId = userId;
+
+  const chatUser = this.activeChats.find(chat => chat.user._id === userId);
+  if (chatUser) {
+    this.selectedUser = chatUser.user;
+    chatUser.isExpanded = true;
+
+    // On télécharge la conversation juste avec l'ID du destinataire
+    this.loadFullConversation(userId);
+  }
+}
+
+
+
+
+ 
+}
+
+  // Méthode pour faire défiler vers le
