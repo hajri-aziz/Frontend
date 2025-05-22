@@ -31,7 +31,12 @@ export interface Comment {
 export interface Group {
   _id?: string;
   name: string;
-  creator: string;
+  creator:{
+        _id: string;
+        nom: string;
+        prenom: string;
+        profileImage?: string;
+    };
   members: string[];
   admins: string[];
   lastMessage?: string;
@@ -41,7 +46,7 @@ export interface Message {
 [x: string]: any;
   _id?: string;
   conversationId: string;
-  sender: string;
+  sender:string
   content: string;
   timestamp: string;
   reactions?: { userId: string; reaction: string }[];

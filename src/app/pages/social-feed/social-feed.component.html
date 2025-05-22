@@ -221,123 +221,258 @@
                     </div>
                 </div>
 
-                <!-- Groups -->
-                <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
-                    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Groupes</h2>
-                    <div class="h-60 overflow-y-auto pr-2" style="scrollbar-width: thin;">
-                        <div *ngIf="groups?.length === 0" class="text-center text-[#66676b] py-2">
-                            <p>Aucun groupe trouvé.</p>
-                        </div>
-                        <div *ngFor="let group of groups" class="flex items-center mb-4">
-                            <div class="relative">
-                                <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
-                                    <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
-                                        <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
-                                             class="absolute w-full h-full object-cover" 
-                                             (error)="handleImageError($event)">
-                                    </ng-container>
-                                    <ng-template #defaultIcon>
-                                        <img src="assets/profil.png" alt="Photo de profil par défaut" 
-                                             class="absolute w-full h-full object-cover">
-                                    </ng-template>
-                                    <ng-container *ngIf="group.members && group.members.length > 0 && group.members[0]?.profileImage">
-                                        <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
-                                             class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
-                                             (error)="handleImageError($event)">
-                                    </ng-container>
-                                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+
+
+<!-- Groups -->
+<div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4">
+    <h2 class="font-bold text-lg font-['Helvetica_Neue'] text-[#080808] mb-4">Groupes</h2>
+    <div class="h-60 overflow-y-auto pr-2" style="scrollbar-width: thin;">
+        <div *ngIf="groups?.length === 0" class="text-center text-[#66676b] py-2">
+            <p>Aucun groupe trouvé.</p>
+        </div>
+        <!-- Ajout du gestionnaire de clic sur le groupe entier -->
+        <div *ngFor="let group of groups" class="flex items-center mb-4 cursor-pointer hover:bg-gray-50 p-2 rounded-lg transition-colors"
+             (click)="openGroupChat(group)">
+            <div class="relative">
+                <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
+                    <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
+                        <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
+                             class="absolute w-full h-full object-cover" 
+                             (error)="handleImageError($event)">
+                    </ng-container>
+                    <ng-template #defaultIcon>
+                        <img src="assets/profil.png" alt="Photo de profil par défaut" 
+                             class="absolute w-full h-full object-cover">
+                    </ng-template>
+                    <ng-container *ngIf="group.members && group.members.length > 0 && group.members[0]?.profileImage">
+                        <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
+                             class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
+                             (error)="handleImageError($event)">
+                    </ng-container>
+                    <div class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>
+                </div>
+            </div>
+            <div class="ml-3 flex-1">
+                <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
+                <p class="text-sm text-gray-500">{{ group.members?.length || 0 }} membres</p>
+            </div>
+            <!-- Bouton Ajouter membre avec stopPropagation pour éviter l'ouverture du chat -->
+            <button 
+                (click)="$event.stopPropagation(); group._id && addMemberToGroup(group._id)"
+                class="text-sm text-[#04789d] font-poppins hover:text-[#036582] px-2 py-1 rounded hover:bg-blue-50 transition-colors"
+            >
+                Ajouter membre
+            </button>
+        </div>
+    </div>
+    <div class="mt-3">
+        <button 
+            (click)="openCreateGroupModal()"
+            class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+        >
+            Créer un groupe
+        </button>
+    </div>
+    
+    <!-- Modal de création de groupe -->
+    <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
+            <input 
+                [(ngModel)]="newGroupName"
+                class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+                placeholder="Nom du groupe"
+            >
+            <div class="flex flex-col space-y-2 mb-3">
+                <div class="flex space-x-2">
+                    <input 
+                        [(ngModel)]="tempEmail"
+                        class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
+                        placeholder="Email de l'utilisateur à inviter"
+                    >
+                    <button 
+                        (click)="addUserToTempList()"
+                        class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                    >
+                        Ajouter
+                    </button>
+                </div>
+            </div>
+            <div class="max-h-40 overflow-y-auto mb-3">
+                <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
+                <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
+                    <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
+                    <button 
+                        (click)="removeUserFromTempList(user.email)"
+                        class="text-sm text-red-500 font-poppins"
+                    >
+                        Supprimer
+                    </button>
+                </div>
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button 
+                    (click)="closeCreateGroupModal()"
+                    class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
+                >
+                    Annuler
+                </button>
+                <button 
+                    [disabled]="tempUsers.length < 3"
+                    (click)="createGroup()"
+                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
+                >
+                    Créer ({{ tempUsers.length }}/3)
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal de confirmation -->
+    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-lg p-6 w-96">
+            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
+            <div class="flex justify-end">
+                <button 
+                    (click)="closeModal()"
+                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+                >
+                    Fermer
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat de groupe (à placer à la racine de votre template) -->
+<div class="fixed bottom-0 right-0 mb-4 mr-4 flex flex-col items-end space-y-2 z-50">
+    <!-- Chats de groupe minimisés -->
+    <div *ngFor="let chat of activeGroupChats" class="flex flex-col items-end">
+        <div *ngIf="!chat.isExpanded" 
+             (click)="expandGroupChat(chat.group._id!)"
+             class="flex items-center bg-white rounded-t-lg shadow-lg cursor-pointer px-3 py-2 border border-gray-200 hover:bg-gray-50 transition-colors">
+            <div class="relative mr-2">
+                <img [src]="getGroupImage(chat.group)" 
+                     class="w-8 h-8 rounded-full object-cover"
+                     (error)="handleImageError($event)">
+                <span class="absolute -bottom-1 -right-1 bg-green-500 rounded-full w-3 h-3 border-2 border-white"></span>
+            </div>
+            <span class="font-medium text-sm">{{ chat.group.name }}</span>
+            <button (click)="$event.stopPropagation(); closeGroupChat(chat.group._id!)" 
+                    class="ml-2 text-gray-500 hover:text-gray-700">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Chat de groupe développé -->
+    <div *ngIf="selectedGroup && expandedGroupChatId === selectedGroup._id" 
+         class="w-80 h-96 bg-white rounded-t-lg shadow-xl flex flex-col border border-gray-200">
+        <!-- En-tête -->
+        <div class="bg-gradient-to-r from-[#04789d] to-[#56e0e0] text-white p-3 rounded-t-lg flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img [src]="getGroupImage(selectedGroup)" 
+                     class="w-8 h-8 rounded-full object-cover border border-white"
+                     (error)="handleImageError($event)">
+                <div>
+                    <span class="font-medium">{{ selectedGroup.name }}</span>
+                    <div class="text-xs text-white/80">{{ selectedGroup.members?.length || 0 }} membres</div>
+                </div>
+            </div>
+            <div class="flex space-x-2">
+                <button (click)="loadGroupMessages(selectedGroup._id)" class="text-white hover:text-gray-200" title="Télécharger l'historique">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M13 7h4a2 2 0 012 2v7a2 2 0 01-2 2H3a2 2 0 01-2-2V9a2 2 0 012-2h4m2 0v6m0 0l-3-3m3 3l3-3M3 5a2 2 0 012-2h10a2 2 0 012 2v2H3V5z"/>
+                    </svg>
+                </button>
+                <button (click)="minimizeGroupChat()" class="text-white hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+                <button (click)="closeGroupChat(selectedGroup._id)" class="text-white hover:text-gray-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Zone des messages -->
+        <div class="flex-1 p-3 overflow-y-auto bg-gray-50" #groupMessagesContainer>
+            <!-- Loader -->
+            <div *ngIf="groupMessages === null" class="flex justify-center items-center h-full">
+                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#04789d]"></div>
+                <span class="ml-2">Chargement des messages...</span>
+            </div>
+
+            <!-- Messages -->
+            <div *ngIf="groupMessages && groupMessages.length > 0">
+                <div *ngFor="let message of groupMessages" class="mb-3">
+                    <!-- Message reçu -->
+                    <div *ngIf="message.expediteurId !== currentUser?._id" class="flex items-start">
+                        <img [src]="getProfileImageUrl(message.sender?.profileImage)" 
+                             class="w-6 h-6 rounded-full mr-2 mt-1 object-cover"
+                             (error)="handleImageError($event)">
+                        <div>
+                            <p class="text-xs font-medium text-gray-600 mb-1">
+                                {{ message.sender?.prenom }} {{ message.sender?.nom }}
+                            </p>
+                            <div class="bg-white border border-gray-200 px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
+                                <p class="text-sm text-gray-800">{{ message.contenu }}</p>
+                                <div class="text-xs text-gray-500 mt-1 text-right">
+                                    {{ message.dateEnvoi | date:'HH:mm' }}
                                 </div>
-                            </div>
-                            <div class="ml-3">
-                                <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
-                                <button 
-                                    (click)="group._id && addMemberToGroup(group._id)"
-                                    class="text-sm text-[#04789d] font-poppins"
-                                >
-                                    Ajouter membre
-                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-3">
-                        <button 
-                            (click)="openCreateGroupModal()"
-                            class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-                        >
-                            Créer un groupe
-                        </button>
-                    </div>
-                    <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div class="bg-white rounded-lg p-6 w-96">
-                            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
-                            <input 
-                                [(ngModel)]="newGroupName"
-                                class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
-                                placeholder="Nom du groupe"
-                            >
-                            <div class="flex flex-col space-y-2 mb-3">
-                                <div class="flex space-x-2">
-                                    <input 
-                                        [(ngModel)]="tempEmail"
-                                        class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
-                                        placeholder="Email de l'utilisateur à inviter"
-                                    >
-                                    <button 
-                                        (click)="addUserToTempList()"
-                                        class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-                                    >
-                                        Ajouter
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="max-h-40 overflow-y-auto mb-3">
-                                <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
-                                <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
-                                    <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
-                                    <button 
-                                        (click)="removeUserFromTempList(user.email)"
-                                        class="text-sm text-red-500 font-poppins"
-                                    >
-                                        Supprimer
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="flex justify-end space-x-2">
-                                <button 
-                                    (click)="closeCreateGroupModal()"
-                                    class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
-                                >
-                                    Annuler
-                                </button>
-                                <button 
-                                    [disabled]="tempUsers.length < 3"
-                                    (click)="createGroup()"
-                                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
-                                >
-                                    Créer ({{ tempUsers.length }}/3)
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-                        <div class="bg-white rounded-lg p-6 w-96">
-                            <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
-                            <div class="flex justify-end">
-                                <button 
-                                    (click)="closeModal()"
-                                    class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
-                                >
-                                    Fermer
-                                </button>
+                    
+                    <!-- Message envoyé -->
+                    <div *ngIf="message.expediteurId === currentUser?._id" class="flex justify-end">
+                        <div class="bg-gradient-to-r from-[#04789d] to-[#56e0e0] text-white px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
+                            <p class="text-sm">{{ message.contenu }}</p>
+                            <div class="flex items-center justify-end mt-1">
+                                <span class="text-xs text-white/70 mr-1">
+                                    {{ message.dateEnvoi | date:'HH:mm' }}
+                                </span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Aucun message -->
+            <div *ngIf="groupMessages && groupMessages.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+                <p>Aucun message dans ce groupe</p>
+            </div>
+        </div>
+        
+        <!-- Zone de saisie -->
+        <div class="p-3 border-t border-gray-200 bg-white rounded-b-lg">
+            <div class="flex items-center space-x-2">
+                <input [(ngModel)]="groupMessageContent" 
+                       (keyup.enter)="sendGroupMessage()"
+                       (keydown)="onGroupTyping()"
+                       class="flex-1 border border-gray-200 rounded-full px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#04789d]"
+                       placeholder="Écrire un message...">
+                <button (click)="sendGroupMessage()" 
+                        [disabled]="!groupMessageContent.trim()"
+                        class="bg-gradient-to-r from-[#04789d] to-[#56e0e0] text-white rounded-full p-2 hover:opacity-90 disabled:opacity-50 transition-all">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
+</div>
 
-   <!-- Messages - Messenger-like Chat Container -->
+
 <!-- Chat Container -->
 <div class="fixed bottom-0 right-0 mb-4 mr-4 flex flex-col items-end space-y-2 z-50">
     <!-- Chats minimisés -->
@@ -458,6 +593,9 @@
     </div>
 </div>
 
-    
+
+            </div>
+        </div>
+    </div> 
 </body>
 </html>

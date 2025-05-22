@@ -1,7 +1,7 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable, Subject, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Post, Comment, Group, Message } from '../models/post.models';
 import { User } from '../models/user.model';
@@ -11,11 +11,12 @@ import io from 'socket.io-client';
 export class PostService {
   private socket: any; // Use 'any' or proper interface if available
   private readonly SOCKET_URL = 'http://localhost:3000';
+  private apiUrl = 'http://localhost:3000';
   newGroupName: string | undefined;
+  private newGroupMessageSubject = new Subject<any>();
+  private groupCreatedSubject = new Subject<any>();
   
  
-  private apiUrl = 'http://localhost:3000';
-
   constructor(private http: HttpClient) {const options = {
       transports: ['websocket'],
       autoConnect: false,
@@ -33,7 +34,7 @@ export class PostService {
     });
   }
 
-  // Posts
+  // *******************************************REST API POST  ************************/
   getPosts(): Observable<Post[]> {
     return this.http.get<Post[]>(`${this.apiUrl}/post/getallPost`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -92,7 +93,7 @@ export class PostService {
 
 
 
-  // Commentaires
+  //*******************************************REST API COMMENTAIRE  ************************/ 
   addComment(comment: Partial<Comment>): Observable<Comment> {
     return this.http.post<Comment>(`${this.apiUrl}/commentaire/addComment`, comment, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -101,7 +102,6 @@ export class PostService {
       })
     );
   }
-
   getComments(): Observable<Comment[]> {
     return this.http.get<Comment[]>(`${this.apiUrl}/commentaire/getallComment`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -110,7 +110,6 @@ export class PostService {
       })
     );
   }
-
   getCommentById(id: string): Observable<Comment> {
     return this.http.get<Comment>(`${this.apiUrl}/commentaire/getCommentbyId/${id}`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -119,7 +118,6 @@ export class PostService {
       })
     );
   }
-
   updateComment(id: string, comment: Partial<Comment>): Observable<Comment> {
     return this.http.put<Comment>(`${this.apiUrl}/commentaire/updateComment/${id}`, comment, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -128,7 +126,6 @@ export class PostService {
       })
     );
   }
-
   deleteComment(id: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/commentaire/deleteComment/${id}`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -138,28 +135,12 @@ export class PostService {
     );
   }
 
- //GROUP 
-  getGroups(_id: string | undefined) {
-    throw new Error('Method not implemented.');
-  }
-
-
-   // Récupérer les groupes d'un utilisateur spécifique
-  getUserGroups(userId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
-  }
-
-
-  // Récupérer un utilisateur par email
-
-  // Créer un groupe
- 
-
-  // Conversations et Messages
 
 
 
-  // Utilisateurs
+
+
+  //*************************************REST API USER***************** */
 getUsers(): Observable<User[]> {
     return this.http.get<User[]>(`${this.apiUrl}/users`, { headers: this.getHeaders() }).pipe(
       catchError((error) => {
@@ -183,6 +164,8 @@ getUserByEmail(email: string): Observable<any> {
       })
     );
   }
+
+  //***************************************REST API MESSAGE******************** */
 addMember(groupId: string, newMemberEmail: string): Observable<Group> {
   return this.http.post<Group>(`${this.apiUrl}/group/add-member`, { groupId, email: newMemberEmail }, { headers: this.getHeaders() }).pipe(
     catchError((error) => {
@@ -203,22 +186,16 @@ addMember(groupId: string, newMemberEmail: string): Observable<Group> {
   return this.http.get<Message[]>(`${this.apiUrl}/messages/conversations/${conversationId}`, { headers });
 }
 
-  getGroupMessages(groupId: string): Observable<Message[]> {
+getGroupMessages(groupId: string): Observable<Message[]> {
     return this.http.get<Message[]>(`${this.apiUrl}/messages/group/${groupId}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
     });
   }
   
 
-  sendGroupMessage(message: Message, groupId: string): Observable<Message> {
-    return this.http.post<Message>(
-      `${this.apiUrl}/messages/group/${groupId}`,
-      message,
-      { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
-    );
-  }
 
-  toggleReaction(messageId: string, userId: string, reaction: string): Observable<any> {
+
+toggleReaction(messageId: string, userId: string, reaction: string): Observable<any> {
     return this.http.post(
       `${this.apiUrl}/messages/${messageId}/reaction`,
       { userId, reaction },
@@ -234,7 +211,7 @@ toggleLike(postId: string, userId: string): Observable<any> {
   }
 
 
-  ///////***********************SOCKET************************* */
+  ///////***********************SOCKET  ONETOONE************************* */
   connect(userId: string): void {
     if (!this.socket.connected) {
       this.socket.auth = { userId };
@@ -280,17 +257,76 @@ getMessagesBetweenUsersDirect(userId1: string, userId2: string): Observable<any>
  emit(event: string, data: any): void {
     this.socket.emit(event, data);
   }
-
-getFullConversation(otherUserId: string): Observable<any[]> {
-  return this.http.get<any[]>(
-    `${this.apiUrl}/group/message/with/${otherUserId}`,
-    {
-      headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
+getMessagesBetweenUsers(otherUserId: string): Observable<any> {
+    return this.http.get<any>(
+      `${this.apiUrl}/group/message/with/${otherUserId}`,
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       }
-    }
-  );
-}
+    );
+  }
+
+  //*****************************REST API GROUP *************************** */
+  
+  getGroups(_id: string | undefined) {
+    throw new Error('Method not implemented.');
+  }
+  getUserGroups(userId: string): Observable<any> {
+    return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
+  }
+ // Rejoindre un groupe
+  joinGroup(groupId: string): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.emit('join-group', { groupId }, (response: any) => {
+        if (response.status === 'success') {
+          observer.next(response);
+        } else {
+          observer.error('Failed to join group');
+        }
+      });
+    });
+  }
+
+  // Écouter la création d'un nouveau groupe
+  onGroupCreated(): Observable<any> {
+    this.socket.on('group-created', (data: any) => {
+      this.groupCreatedSubject.next(data);
+    });
+    return this.groupCreatedSubject.asObservable();
+  }
+
+  // Envoyer un message de groupe
+  sendGroupMessage(groupId: string, content: string, memberIds: string[]): void {
+    this.socket.emit('send-group-message', {
+      groupId,
+      contenu: content, // Backend expects 'contenu'
+      destinataireIds: memberIds
+    });
+  }
+
+  // Écouter les nouveaux messages de groupe
+  onNewGroupMessage(): Observable<Message> {
+    this.socket.on('new-group-message', (message: any) => {
+      // Map backend message to Message model
+      const mappedMessage: Message = {
+        _id: message._id,
+        conversationId: message.groupId,
+        sender: message.expediteurId,
+        content: message.contenu,
+        timestamp: message.dateEnvoi,
+        status: 'delivered' // Assume delivered for simplicity
+      };
+      this.newGroupMessageSubject.next(mappedMessage);
+    });
+    return this.newGroupMessageSubject.asObservable();
+  }
 
   
 }
+
+
+
+
+  

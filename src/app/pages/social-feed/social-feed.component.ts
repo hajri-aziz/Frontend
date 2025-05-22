@@ -46,13 +46,20 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   newMessage = '';
   isTyping: boolean = false;
   typingTimeout: any;
+  groupMessageContent: string = '';
   // Nouvelles propriétés ajoutées
   activeChats: any[] = []; // Pour gérer plusieurs chats ouverts
   expandedChatId: string | null = null; // Pour savoir quel chat est développé
+  activeGroupChats: Array<{
+    group: Group;
+    isExpanded: boolean;
+    unreadCount: number;
+}> = [];
 
   // ViewChild pour le scrolling automatique
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
-
+  newGroupMessage: any
+expandedGroupChatId: string | null = null;
   constructor(
     private postService: PostService,
     private userService: UserService,
@@ -628,43 +635,57 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
     }
   }
 
-  private loadCurrentUser(): void {
-    const token = localStorage.getItem("token");
-    const userId = localStorage.getItem("userId");
+private loadCurrentUser(): void {
+  const token = localStorage.getItem("token");
+  const userId = localStorage.getItem("userId");
 
-    if (!token || !userId) {
-      console.warn("Token ou UserID manquant, redirection vers /login");
-      window.location.href = "/login";
-      return;
-    }
-
-    const prenom = this.getSanitizedLocalStorageItem("prenom");
-    const nom = this.getSanitizedLocalStorageItem("nom");
-    const email = localStorage.getItem("email") || "email@inconnu.com";
-    const profileImage = this.getValidImageUrl(localStorage.getItem("profileImage"));
-    const role = localStorage.getItem("role") || "user";
-
-    this.currentUser = {
-      _id: userId,
-      nom: nom || "Utilisateur",
-      prenom: prenom || "Inconnu",
-      profileImage,
-      email,
-      role,
-    };
-
-    this.validateUserData();
-
-    console.debug("Utilisateur chargé:", {
-      id: this.currentUser._id,
-      prenom: this.currentUser.prenom,
-      nom: this.currentUser.nom,
-      email: this.currentUser.email,
-      role: this.currentUser.role,
-      profileImage: this.currentUser.profileImage,
-    });
+  // Vérifier si le token et l'userId sont présents
+  if (!token || !userId) {
+    console.warn("Token ou UserID manquant, redirection vers /login");
+    window.location.href = "/login";
+    return;
   }
 
+  // Récupérer les données utilisateur avec logs pour débogage
+  console.debug("Contenu de localStorage:", {
+    token: !!token, // Vérifie si le token existe
+    userId,
+    prenom: localStorage.getItem("prenom"),
+    nom: localStorage.getItem("nom"),
+    email: localStorage.getItem("email"),
+    profileImage: localStorage.getItem("profileImage"),
+    role: localStorage.getItem("role")
+  });
+
+  // Récupération et sanitization des données utilisateur
+  const prenom = this.getSanitizedLocalStorageItem("prenom") || "Inconnu";
+  const nom = this.getSanitizedLocalStorageItem("nom") || "Utilisateur";
+  const email = localStorage.getItem("email") || "email@inconnu.com";
+  const profileImage = this.getValidImageUrl(localStorage.getItem("profileImage")) || "https://i.pravatar.cc/150?img=1";
+  const role = localStorage.getItem("role") || "user";
+
+  // Construction de l'objet utilisateur
+  this.currentUser = {
+    _id: userId,
+    nom,
+    prenom,
+    email,
+    profileImage,
+    role
+  };
+
+  // Validation des données utilisateur
+  this.validateUserData();
+
+  console.debug("Utilisateur chargé:", {
+    id: this.currentUser._id,
+    prenom: this.currentUser.prenom,
+    nom: this.currentUser.nom,
+    email: this.currentUser.email,
+    role: this.currentUser.role,
+    profileImage: this.currentUser.profileImage
+  });
+}
   // Garder la méthode originale de selectUser avec des modifications de la seconde version
 selectUser(user: User): void {
   if (user._id === this.currentUser?._id || !this.currentUser?._id) {
@@ -692,17 +713,14 @@ selectUser(user: User): void {
     this.postService.joinConversation(conversationId);
   }
 
-  console.log('Loading messages for conversation:', conversationId);
-  if (this.currentUser._id && user._id) {
-    this.loadMessagesBetweenUsers(this.currentUser._id, user._id);
+  // Remplacer l'ancien chargement par loadFullConversation
+  console.log('Loading full conversation for user:', user._id);
+  if (user._id) {
+    this.loadFullConversation(user._id);
   } else {
-    console.warn('Cannot load messages: user IDs are undefined', {
-      currentUserId: this.currentUser._id,
-      selectedUserId: user._id
-    });
+    console.error('User ID is undefined, cannot load conversation.');
   }
 }
-
   private getConversationId(): string {
     if (!this.selectedUser || !this.currentUserId) return '';
     const id = [this.currentUserId, this.selectedUser._id].sort().join('_');
@@ -710,28 +728,6 @@ selectUser(user: User): void {
     return id;
   }
 
-  private loadConversation(userId: string): void {
-    const conversationId = this.getConversationId();
-    if (conversationId) {
-      this.subscriptions.push(
-        this.postService.getConversationMessages(conversationId).subscribe({
-          next: (messages) => {
-            this.messages = messages.map((m) => ({
-              ...m,
-              timestamp: new Date(m.timestamp).toISOString(),
-            }));
-            console.log('Messages loaded:', this.messages);
-            this.cdr.detectChanges();
-            this.scrollToBottom();
-          },
-          error: (error) => {
-            console.error('Error loading messages:', error);
-            this.messages = [];
-          },
-        })
-      );
-    }
-  }
 
   private setupSocketListeners(): void {
     this.postService.onNewMessage((msg: any) => {
@@ -747,7 +743,7 @@ selectUser(user: User): void {
           conversationId: msgConversationId
         });
         this.cdr.detectChanges();
-        this.scrollToBottom();
+        
         console.log('Message added to UI:', this.messages);
       }
     });
@@ -789,7 +785,7 @@ private loadMessagesBetweenUsers(userId1: string, userId2: string): void {
         }));
         console.log('Mapped messages:', this.messages);
         this.cdr.detectChanges();
-        this.scrollToBottom();
+        this.scrollToBottom('messagesContainer');
         
       },
       error: (error) => {
@@ -800,7 +796,6 @@ private loadMessagesBetweenUsers(userId1: string, userId2: string): void {
     })
   );
 }
-
 sendMessage(): void {
   if (!this.validateMessage()) return;
 
@@ -821,17 +816,12 @@ sendMessage(): void {
   this.postService.sendMessage(this.selectedUser!._id!, this.messageContent);
   this.messageContent = '';
   this.cdr.detectChanges();
-  this.scrollToBottom();
+  this.scrollToBottom('messagesContainer');
 }
 
 
-// Méthode pour développer un chat
 
 
-// Méthode pour faire défiler vers le bas
-
-
-  // Méthode pour minimiser le chat
   minimizeChat(): void {
     if (!this.selectedUser) return;
 
@@ -879,45 +869,7 @@ sendMessage(): void {
     });
   }
 
- 
 
-
-  // Amélioration de la méthode loadFullConversation\
-loadFullConversation(otherUserId: string) {
-  console.log('Chargement de la conversation avec :', otherUserId);
-  this.messages = [];
-
-  this.postService.getFullConversation(otherUserId).subscribe({
-    next: (msgs) => {
-      console.log("Messages reçus :", msgs);
-      this.messages = msgs.map(msg => ({
-        conversationId: msg.conversationId || [msg.expediteurId._id, otherUserId].sort().join('_'),
-        sender: msg.expediteurId._id,
-        content: msg.contenu,
-        timestamp: msg.dateEnvoi,
-        _id: msg._id,
-        reactions: msg.reactions || [],
-        status: msg.status || 'read'
-      }));
-      setTimeout(() => this.scrollToBottom(), 100);
-    },
-    error: (err) => console.error("Erreur de chargement :", err)
-  });
-}
-
-
-
-
-// Méthode pour faire défiler jusqu'au dernier message
-scrollToBottom()
-{
-  if (this.messagesContainer) {
-    const container = this.messagesContainer.nativeElement
-    container.scrollTop = container.scrollHeight
-  }
-}
-
-// Assurez-vous que cette méthode est appelée quand un chat est développé
 expandChat(userId: string) {
   this.expandedChatId = userId;
 
@@ -930,6 +882,209 @@ expandChat(userId: string) {
     this.loadFullConversation(userId);
   }
 }
+
+  loadFullConversation(otherUserId: string) {
+    if (!this.currentUser || !this.currentUser._id) {
+      console.error('Utilisateur courant non défini');
+      this.messages = [];
+      return;
+    }
+
+    this.messages = [];
+    this.postService.getMessagesBetweenUsers(otherUserId).subscribe({
+      next: (messages) => {
+        this.messages = messages.map((msg: any) => ({
+          _id: msg._id,
+          sender: msg.sender,
+          content: msg.content,
+          timestamp: msg.timestamp,
+          expediteur: msg.expediteur
+        }));
+        console.log('Messages transformés:', this.messages);
+        this.scrollToBottom('messagesContainer');
+      },
+      error: (err) => {
+        console.error('Erreur de chargement des messages:', err);
+        this.messages = [];
+      }
+    });
+  }
+
+  scrollToBottom(p0: string): void {
+    setTimeout(() => {
+      if (this.messagesContainer) {
+        this.messagesContainer.nativeElement.scrollTop = this.messagesContainer.nativeElement.scrollHeight;
+      }
+    }, 100);
+  }
+
+  downloadMessages() {
+    if (!this.messages || this.messages.length === 0) {
+      alert('Aucun message à télécharger.');
+      return;
+    }
+
+    const formattedMessages = this.messages.map(msg => {
+      let senderName = 'Inconnu';
+      if (this.currentUser && msg.sender === this.currentUser._id) {
+        senderName = `${this.currentUser.prenom ?? ''} ${this.currentUser.nom ?? ''}`.trim();
+      } else if (msg['expediteur'] && msg['expediteur'].prenom) {
+        senderName = `${msg['expediteur'].prenom}`;
+      }
+      const timestamp = new Date(msg.timestamp).toLocaleString();
+      return `${timestamp} - ${senderName}: ${msg.content}`;
+    }).join('\n');
+
+    const blob = new Blob([formattedMessages], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    const prenom = this.selectedUser?.prenom ?? 'utilisateur';
+    const nom = this.selectedUser?.nom ?? 'inconnu';
+    a.download = `chat_${prenom}_${nom}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+  }
+
+
+
+
+  //GROUPES*************************
+openGroupChat(group: Group): void {
+    // Rejoindre le groupe via socket
+    this.postService.emit('join-group', { groupId: group._id });
+
+    // Vérifier si le chat est déjà ouvert
+    const existingChat = this.activeGroupChats.find(c => c.group._id === group._id);
+    
+    if (existingChat) {
+        if (group._id) {
+            this.expandGroupChat(group._id);
+        } else {
+            console.error('Group ID is undefined, cannot expand group chat.');
+        }
+        return;
+    }
+
+    // Ajouter le nouveau chat
+    this.activeGroupChats.push({
+        group,
+        isExpanded: true,
+        unreadCount: 0
+    });
+
+    this.selectedGroup = group;
+    this.expandedGroupChatId = group._id ?? null;
+    if (group._id) {
+        this.loadGroupMessages(group._id);
+    } else {
+        console.error('Group ID is undefined, cannot load group messages.');
+    }
+}
+
+expandGroupChat(groupId: string): void {
+    const chat = this.activeGroupChats.find(c => c.group._id === groupId);
+    if (chat) {
+        chat.isExpanded = true;
+        chat.unreadCount = 0;
+        this.selectedGroup = chat.group;
+        this.expandedGroupChatId = groupId;
+        this.loadGroupMessages(groupId);
+    }
+}
+
+minimizeGroupChat(): void {
+    if (this.expandedGroupChatId) {
+        const chat = this.activeGroupChats.find(c => c.group._id === this.expandedGroupChatId);
+        if (chat) {
+            chat.isExpanded = false;
+        }
+        this.expandedGroupChatId = '';
+    }
+}
+
+closeGroupChat(groupId: string): void {
+    this.activeGroupChats = this.activeGroupChats.filter(c => c.group._id !== groupId);
+    if (this.expandedGroupChatId === groupId) {
+        this.expandedGroupChatId = '';
+        this.selectedGroup = null;
+    }
+    // Quitter le groupe via socket si nécessaire
+    this.postService.emit('leave-group', { groupId });
+}
+
+loadGroupMessages(groupId: string): void {
+    this.groupMessages = []; // Afficher le loader
+    this.postService.getGroupMessages(groupId).subscribe({
+        next: (messages) => {
+            this.groupMessages = messages;
+            this.scrollToBottom('groupMessagesContainer');
+        },
+        error: (err) => {
+            console.error('Erreur lors du chargement des messages:', err);
+            this.groupMessages = [];
+        }
+    });
+}
+
+sendGroupMessage(): void {
+  if (!this.groupMessageContent.trim() || !this.selectedGroup) return;
+
+  const groupId = this.selectedGroup._id;
+  const content = this.groupMessageContent;
+  const memberIds = this.selectedGroup.members;
+
+  this.postService.sendGroupMessage(groupId, content, memberIds);
+
+  // Optimistic UI
+  if (!this.currentUser) return;
+
+  const newMessage: Message = {
+    _id: 'temp_' + Date.now(),
+    expediteurId: this.currentUser._id,
+    contenu: content,
+    isGroupMessage: true,
+    groupId,
+    destinataireIds: memberIds,
+    dateEnvoi: new Date(),
+    conversationId: groupId,
+    sender: this.currentUser._id ?? '',
+    content: content,
+    timestamp: new Date().toISOString()
+  };
+
+  this.groupMessages = [...this.groupMessages, newMessage];
+  this.groupMessageContent = '';
+  this.scrollToBottom('groupMessagesContainer');
+}
+
+
+// Méthodes utilitaires
+getGroupImage(group: Group): string {
+    if (group.creator && group.creator.profileImage) {
+        return this.getProfileImageUrl(group.creator.profileImage);
+    }
+    return 'assets/profil.png';
+}
+
+getTypingUsersText(users: User[]): string {
+    if (users.length === 1) {
+        return `${users[0].prenom} écrit...`;
+    }
+    if (users.length === 2) {
+        return `${users[0].prenom} et ${users[1].prenom} écrivent...`;
+    }
+    return `${users.length} personnes écrivent...`;
+}
+
+onGroupTyping(): void {
+   
+}
+
+// N'oubliez pas d'initialiser les écouteurs socket dans ngOnInit
+
 
 
 
