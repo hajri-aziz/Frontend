@@ -10,11 +10,15 @@ import { UserService } from 'src/app/services/user.service';
 export class LoginComponent {
   email: string = '';
   password: string = '';
+  showPassword: boolean = false; 
 
   constructor(private userService: UserService, private router: Router) { }
    navigateToLogin() {
     this.router.navigate(['/signup']);
-   }
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
+  }
 
   onSubmit(): void {
     if (!this.email || !this.password) {

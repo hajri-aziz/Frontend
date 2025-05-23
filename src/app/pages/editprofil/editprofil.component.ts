@@ -11,6 +11,7 @@ export class EditprofilComponent implements OnInit {
   userForm: FormGroup;
   profileImageUrl: string | null = null;
   user: any;
+  showPassword: boolean = false; 
   selectedFile: File | null = null;
   defaultImage = 'assets/images/default-avatar.png'; // Chemin vers une image par défaut
 
@@ -28,6 +29,9 @@ export class EditprofilComponent implements OnInit {
       telephone: [''],
       profileImage: ['']
     });
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   ngOnInit(): void {
