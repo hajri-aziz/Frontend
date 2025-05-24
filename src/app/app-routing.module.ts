@@ -111,7 +111,7 @@ const routes: Routes = [
    {path: 'sessions/:id',component: SessionDetailComponent,canActivate: [AuthGuard]},
 
   // 🗂️ Dashboard Cours
-   {path: 'admin/dashboard-cours', component: DashboardCoursComponent },
+   {path: 'dashboard-cours', component: DashboardCoursComponent },
   
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
