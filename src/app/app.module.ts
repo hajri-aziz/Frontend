@@ -2,10 +2,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
+import { Chart } from 'chart.js/auto';
+
+
+
+
 
 // 📦 Composants généraux
 import { HomeComponent } from './pages/home/home.component';
@@ -61,6 +65,9 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
+import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
+
 
 
 
@@ -107,20 +114,18 @@ import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.compone
     VerifyOtpComponent,
 
     UnauthorizedComponent,
-   
-    
-  
-
+    SessionCalendarComponent,
+    DashboardCoursComponent,
   ],
+ 
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    FormsModule, 
-    MatDialogModule,
+    FormsModule,
+    MatDialogModule
   ],
-  providers: [AdminGuard,],
   bootstrap: [AppComponent]
 })
 export class AppModule {}

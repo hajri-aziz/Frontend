@@ -50,13 +50,21 @@ export class CoursSessionService {
   }
 
   // Gestion des inscriptions
+
   inscrireUtilisateur(sessionId: string, userId: string): Observable<any> {
+    const body = { user_id: userId }; // ✅ seul user_id dans body
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${localStorage.getItem('token')}`
+    });
+    console.log("Body envoyé pour inscription :", body);
     return this.http.post(
-      `${this.apiUrl}/${sessionId}/inscriptions`,
-      { user_id: userId },
-      { headers: this.getAuthHeaders() }
+      `http://localhost:3000/api/courssessions/${sessionId}/inscriptions`,
+      body,
+      { headers }
     );
   }
+
+
 
   getInscriptions(sessionId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${sessionId}/inscriptions`, {

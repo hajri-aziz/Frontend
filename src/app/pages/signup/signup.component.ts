@@ -8,6 +8,7 @@ import { UserService } from 'src/app/services/user.service';
 })
 export class SignupComponent {
   signupForm: FormGroup;
+  showPassword: boolean = false; 
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.signupForm = this.fb.group({
@@ -18,6 +19,9 @@ export class SignupComponent {
       dateNaissance: ['', Validators.required],
       telephone: ['', Validators.required]
     });
+  }
+  togglePasswordVisibility(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit() {

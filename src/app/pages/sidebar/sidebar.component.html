@@ -27,9 +27,10 @@
 
       <!-- Profile -->
       <div class="flex flex-col items-center my-10">
-        <img src="assets/Ellipse 23.png" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
+        <img [src]="profileImageUrl" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
         <p class="text-gray-700 text-lg font-semibold mt-4">Admin</p>
       </div>
+      
 
       <!-- Navigation -->
       <nav class="flex flex-col space-y-4">
@@ -76,6 +77,17 @@
           <img src="assets/calendrier.png" alt="Planning Icon" class="w-5 h-5" />
           <span>Tableau bord planning</span>
         </a> 
+        <!-- Dashboard Cours -->
+        <a routerLink="/dashboard-cours"
+          class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
+          [ngClass]="{ 'text-[#04789d] font-semibold': router.url === '/dashboard-cours', 'text-gray-600': router.url !== '/dashboard-cours' }">
+          <ng-container *ngIf="router.url === '/dashboard-cours'">
+            <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
+          </ng-container>
+          <img src="assets/calendrier.png" alt="Dashboard Cours Icon" class="w-5 h-5" />
+          <span>Tableau de bord Cours</span>
+        </a>
+
 
         <!-- Espace planning Patient -->
         <a routerLink="/rendz-inscri"

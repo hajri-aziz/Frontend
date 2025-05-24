@@ -88,7 +88,7 @@
   <div *ngIf="filteredCoursList && filteredCoursList.length > 0" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
     <div 
       *ngFor="let cours of filteredCoursList"
-      class="rounded-lg overflow-hidden shadow-lg hover:shadow-xl bg-gradient-to-br from-[#ebf9fc] to-[#d5f1f9] transition-transform duration-200 hover:-translate-y-1"
+      class="rounded-lg overflow-hidden shadow-lg hover:shadow-xl bg-gradient-to-br from-[#f8fcff] to-[#f0f8ff] transition-transform duration-200 hover:-translate-y-1 flex flex-col"
     >
       <!-- Image -->
       <div class="h-40 w-full overflow-hidden">
@@ -101,31 +101,37 @@
       </div>
 
       <!-- Infos -->
-      <div class="p-4">
-        <h3 class="text-lg font-semibold text-center text-[#007299] mb-1">{{ cours.title }}</h3>
-        <p class="text-xs text-center text-gray-600 mb-2 line-clamp-2">{{ cours.description }}</p>
-        <div class="text-xs text-gray-600 space-y-1 mb-4">
-          <div class="flex items-center gap-2 justify-center"><i class="bi bi-currency-dollar"></i> {{ cours.price }} {{ cours.currency }}</div>
-          <div class="flex items-center gap-2 justify-center"><i class="bi bi-person-fill"></i> {{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</div>
-          <div class="flex items-center gap-2 justify-center"><i class="bi bi-tag-fill"></i> {{ cours.category_id?.title }}</div>
-          <div class="flex items-center gap-2 justify-center"><i class="bi bi-calendar-event"></i> {{ cours.created_at | date:'shortDate' }}</div>
+      <div class="p-4 flex flex-col flex-grow">
+        <h3 class="text-lg font-semibold text-left text-[#007299] mb-1">{{ cours.title }}</h3>
+        <p class="text-xs text-left text-gray-600 mb-2 line-clamp-2">{{ cours.description }}</p>
+        
+        <div class="text-xs text-gray-600 space-y-1 mb-4 flex-grow">
+          <div class="flex items-center gap-2"><i class="bi bi-currency-dollar"></i> {{ cours.price }} {{ cours.currency }}</div>
+          <div class="flex items-center gap-2"><i class="bi bi-person-fill"></i> {{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</div>
+          <div class="flex items-center gap-2"><i class="bi bi-tag-fill"></i> {{ cours.category_id?.title }}</div>
+          <div class="flex items-center gap-2"><i class="bi bi-calendar-event"></i> {{ cours.created_at | date:'shortDate' }}</div>
         </div>
         
         <hr class="mb-3" />
 
         <!-- Actions -->
-        <div class="grid grid-cols-1 gap-2">
-          <button (click)="viewCours(cours._id)" class="text-[#007299] hover:underline flex items-center justify-center gap-1">
-            <i class="bi bi-eye"></i> Voir le cours
+        <div class="flex justify-between items-center border-t pt-3 mt-auto text-sm">
+          <button (click)="viewCours(cours._id)" class="text-[#007299] flex items-center gap-1 hover:underline">
+            <i class="bi bi-eye"></i> Voir
           </button>
-
+          
           <ng-container *ngIf="isAdmin">
-            <button (click)="editCours(cours._id)" class="text-yellow-600 hover:underline flex items-center justify-center gap-1">
+            <button (click)="editCours(cours._id)" class="text-blue-600 flex items-center gap-1 hover:underline">
               <i class="bi bi-pencil-square"></i> Modifier
             </button>
-            <button (click)="goToDeleteConfirmation(cours._id)" class="text-red-600 hover:underline flex items-center justify-center gap-1">
-              <i class="bi bi-trash-fill"></i> Supprimer
+            <button (click)="goToDeleteConfirmation(cours._id)" class="text-red-600 flex items-center gap-1 hover:underline">
+              <i class="bi bi-x-circle"></i> Supprimer
             </button>
+          </ng-container>
+          
+          <ng-container *ngIf="!isAdmin">
+            <div></div>
+            <div></div>
           </ng-container>
         </div>
       </div>
