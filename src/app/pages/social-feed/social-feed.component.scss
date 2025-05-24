@@ -367,5 +367,25 @@
 .reaction-wow.active { color: #f7b125; }
 .reaction-sad.active { color: #f7b125; }
 .reaction-angry.active { color: #e9710f; }
+
+
+
+
+
+
 }
 
+.emoji-reaction {
+    font-size: 1.25rem;
+    line-height: 1;
+    transition: all 0.2s ease;
+}
+
+.emoji-reaction:hover {
+    transform: scale(1.2);
+}
+
+/* Animation pour le menu des réactions */
+[class*="text-"] {
+    transition: color 0.2s ease;
+}

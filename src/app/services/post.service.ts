@@ -331,7 +331,7 @@ getMessagesBetweenUsers(otherUserId: string): Observable<any> {
 
 
    addReaction(postId: string, reactionType: string) {
-        return this.http.post(`/api/posts/${postId}/react`, { type: reactionType });
+        return this.http.post(`post/posts/${postId}/react`, { type: reactionType });
     }
     
     removeReaction(postId: string) {
