@@ -292,5 +292,72 @@
     background-color: rgba(156, 163, 175, 0.5);
     border-radius: 20px;
   }
+  /* Ajoutez ceci dans votre fichier CSS global ou dans le style du composant */
+.fixed {
+  position: fixed;
+}
+
+.z-50 {
+  z-index: 50;
+}
+
+.shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.h-64 {
+  height: 16rem;
+}
+
+.max-w-70 {
+  max-width: 70%;
+}
+
+/* Animation pour les nouveaux messages */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.message {
+  animation: fadeIn 0.3s ease-out;
+}
+.messages-container {
+    scrollbar-width: thin;
+    scrollbar-color: #a0aec0 #edf2f7;
+}
+.messages-container::-webkit-scrollbar {
+    width: 6px;
+}
+.messages-container::-webkit-scrollbar-track {
+    background: #edf2f7;
+}
+.messages-container::-webkit-scrollbar-thumb {
+    background: #a0aec0;
+    border-radius: 3px;
+}
+ .typing-indicator {
+            display: flex;
+            padding: 5px;
+        }
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background-color: #718096;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 2px;
+            animation: typing 1s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        @keyframes typing {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
 }
 
