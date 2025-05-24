@@ -1063,16 +1063,9 @@ onGroupTyping(): void {
 
 
 // Dans votre composant
-reactionTypes = [
-    { type: 'like', label: 'J\'aime', icon: '/assets/reactions/like.png' },
-    { type: 'love', label: 'Love', icon: '/assets/reactions/love.png' },
-    { type: 'haha', label: 'Haha', icon: '/assets/reactions/haha.png' },
-    { type: 'wow', label: 'Wow', icon: '/assets/reactions/wow.png' },
-    { type: 'sad', label: 'Triste', icon: '/assets/reactions/sad.png' },
-    { type: 'angry', label: 'Angry', icon: '/assets/reactions/angry.png' }
-];
 
-showReactionMenu: string | null = null;
+
+
 
 // Obtenir la réaction de l'utilisateur courant
 getCurrentUserReaction(post: any): any {
@@ -1118,31 +1111,14 @@ getTotalReactions(post: any): number {
     return post.likes?.length || 0;
 }
 
-// Obtenir l'icône SVG correspondant au type de réaction
-getReactionSvg(type: string): string {
-    switch(type) {
-        case 'like':
-            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-            </svg>`;
-        case 'love':
-            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f33e58;">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-            </svg>`;
-        // Ajouter les autres SVG pour chaque type de réaction
-        default:
-            return '';
-    }
-}
+
 
     
     addReaction(postId: string, reactionType: string) {
         return this.http.post(`/api/posts/${postId}/react`, { type: reactionType });
     }
     
-    removeReaction(postId: string) {
-        return this.http.delete(`/api/posts/${postId}/react`);
-    }
+   
 
 
     getReactionIcon(reactionType: string): string {
@@ -1162,22 +1138,177 @@ getReactionSvg(type: string): string {
   return reactionIcons[reactionType] || `${basePath}like.png`;
 }
 
-getReactionLabel(reactionType: string): string {
-  const labels: {[key: string]: string} = {
-    'like': 'J\'aime',
-    'love': 'Love',
-    'haha': 'Haha',
-    'wow': 'Wow',
-    'sad': 'Triste',
-    'angry': 'En colère'
-  };
-  return labels[reactionType] || '';
-}
 
 // Pour capitaliser la première lettre (utilisé dans le bouton)
 capitalizeFirstLetter(string: string): string {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+ return string.charAt(0).toUpperCase() + string.slice(1);
 }
+
+
+
+
+
+
+
+
+// Obtenir le SVG d'une réaction
+
+
+
+// Obtenir le nombre total de réactions
+getReactionCount(post: any): number {
+    return post.likes?.length || 0;
+}
+
+// Obtenir les 3 réactions principales
+getTopReactions(post: any): any[] {
+    if (!post.likes || post.likes.length === 0) return [];
+    
+    const reactionCounts: any = {};
+    post.likes.forEach((like: any) => {
+        reactionCounts[like.type] = (reactionCounts[like.type] || 0) + 1;
+    });
+    
+    return Object.entries(reactionCounts)
+        .sort((a: any, b: any) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([type, count]) => ({ type, count }));
+}
+
+// Basculer la réaction
+
+
+
+
+
+
+// Dans votre composant
+
+
+showReactionMenu: string | null = null;
+
+// Obtenir l'icône SVG de la réaction actuelle
+getCurrentReactionIcon(post: any): string {
+    const reaction = this.getUserReaction(post);
+    return this.getReactionSvg(reaction || 'like', '20');
+}
+
+// Obtenir le libellé à afficher
+getReactionLabel(post: any): string {
+    const reaction = this.getUserReaction(post);
+    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
+}
+
+// Vérifier si l'utilisateur a réagi
+hasUserReacted(post: any, type: string): boolean {
+    if (!this.currentUser || !post.likes) return false;
+    return this.currentUser && this.currentUser._id
+        ? post.likes.some((like: any) => like.userId === this.currentUser!._id && like.type === type)
+        : false;
+}
+
+// Obtenir la réaction de l'utilisateur
+getUserReaction(post: any): string | null {
+    if (!this.currentUser || !post.likes) return null;
+    const reaction = (post.likes && this.currentUser && this.currentUser._id)
+        ? post.likes.find((like: any) => like.userId === this.currentUser!._id)
+        : null;
+    return reaction ? reaction.type : null;
+}
+
+// Obtenir le SVG d'une réaction
+getReactionSvg(type: string, size: string = '24'): string {
+    const svgs: {[key: string]: string} = {
+        'like': `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#04789d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
+                </svg>`,
+        'love': `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="#f33e58" stroke="#f33e58" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
+                </svg>`,
+        // Ajouter les autres SVG pour chaque type de réaction
+    };
+    return svgs[type] || svgs['like'];
+}
+
+// Basculer la réaction
+toggleReaction(post: any) {
+    const currentReaction = this.getUserReaction(post);
+    if (currentReaction) {
+        this.removeReaction(post);
+    } else {
+        this.setReaction(post, 'like');
+    }
+}
+
+// Définir une réaction
+setReaction(post: any, type: string) {
+    this.postService.addReaction(post._id, type).subscribe(
+        (updatedPost: any) => {
+            // Mettre à jour le post dans votre state/store
+            post.likes = updatedPost.likes;
+            this.showReactionMenu = null;
+        }
+    );
+}
+
+// Supprimer une réaction
+removeReaction(post: any) {
+    this.postService.removeReaction(post._id).subscribe(
+        (updatedPost: any) => {
+            // Mettre à jour le post dans votre state/store
+            post.likes = updatedPost.likes;
+        }
+    );
+}
+
+
+
+
+// Dans votre composant
+reactionTypes = [
+    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
+    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
+    { type: 'haha', label: 'Haha', emoji: '😄', color: '#F7B125' },
+    { type: 'wow', label: 'Wow', emoji: '😲', color: '#F7B125' },
+    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
+    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
+];
+
+showReactionsFor: string | null = null;
+reactionTimeout: any = null;
+
+// Obtenir l'emoji de la réaction actuelle
+getCurrentReactionEmoji(post: any): string {
+    const reaction = this.getUserReaction(post);
+    return this.reactionTypes.find(r => r.type === reaction)?.emoji || '👍';
+}
+
+// Gestion de l'affichage du menu
+keepReactionsVisible() {
+    if (this.reactionTimeout) {
+        clearTimeout(this.reactionTimeout);
+    }
+}
+
+hideReactions() {
+    this.reactionTimeout = setTimeout(() => {
+        this.showReactionsFor = null;
+    }, 300);
+}
+
+handleReactionClick(post: any) {
+    if (!this.showReactionsFor) {
+        // Si le menu n'est pas visible, basculer like/unlike
+        const currentReaction = this.getUserReaction(post);
+        if (currentReaction) {
+            this.removeReaction(post);
+        } else {
+            this.setReaction(post, 'like');
+        }
+    }
+}
+
+// Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique
 }
 
  
