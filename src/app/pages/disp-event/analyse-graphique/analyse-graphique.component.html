@@ -16,7 +16,7 @@
           class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300" />
       </div>
       <button (click)="filterDataByDate()" 
-        class="mt-6 px-4 py-2 bg-teal-500 text-white rounded-md font-poppins hover:bg-teal-600 transition-colors duration-300">
+        class="mt-6 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white rounded-md font-poppins hover:bg-teal-600 transition-colors duration-300">
         Appliquer le Filtre
       </button>
     </div>
@@ -48,11 +48,11 @@
 
   <!-- Disponibilités Section -->
   <div class="mb-8">
-    <h3 class="text-xl font-medium font-poppins text-gray-800 mb-4">Disponibilités</h3>
+    <h3 class="text-2xl font-semibold font-['Helvetica_Neue'] text-teal-300 mb-6">Disponibilités</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div *ngFor="let dispo of filteredDisponibilites" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
         [ngClass]="{'bg-blue-100': dispo.statut === 'disponible', 'bg-yellow-100': dispo.statut === 'occupé', 'bg-red-100': dispo.statut === 'absent'}">
-        <h4 class="font-poppins text-md font-semibold">{{ dispo.id_psychologue.nom }}</h4>
+        <h4 class="font-poppins text-md font-semibold">{{ dispo.id_psychologue.nom }} {{ dispo.id_psychologue.prenom }}</h4>
         <p class="text-sm text-gray-600 font-poppins">{{ dispo.date | date:'yyyy-MM-dd' }}</p>
         <p class="text-sm text-gray-600 font-poppins">{{ dispo.heure_debut }} - {{ dispo.heure_fin }}</p>
         <p class="text-sm font-poppins">{{ dispo.statut }}</p>
@@ -69,6 +69,7 @@
               </svg>
             </button>
           </div>
+
         </ng-container>
         <ng-template #editDispoForm>
           <div class="mt-2 space-y-2">
@@ -99,7 +100,7 @@
 
   <!-- Événements Section -->
   <div>
-    <h3 class="text-xl font-medium font-poppins text-gray-800 mb-4">Événements</h3>
+    <h3 class="text-2xl font-semibold font-['Helvetica_Neue'] text-teal-300 mb-6">Événements</h3>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <div *ngFor="let event of filteredEvenements" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
         [ngClass]="{'bg-green-100': event.titre.includes('Training'), 'bg-pink-100': event.titre.includes('Demo'), 'bg-orange-100': event.titre.includes('Meeting'), 'bg-red-100': event.titre.includes('Presentation')}">

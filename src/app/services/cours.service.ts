@@ -6,7 +6,8 @@ import { User } from '../models/user.model';
   providedIn: 'root'
 })
 export class CoursService {
-  private apiUrl = 'http://localhost:3000';
+  //private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://backend-5uj8.onrender.com';
 
   constructor(private http: HttpClient) {}
 

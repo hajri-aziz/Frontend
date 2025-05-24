@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class BookingService {
-  private apiUrl = 'http://localhost:3000/api/courssessions';
+  //private apiUrl = 'http://localhost:3000/api/courssessions';
+  private apiUrl = 'https://backend-5uj8.onrender.com/api/courssessions';
 
   constructor(private http: HttpClient) {}
 

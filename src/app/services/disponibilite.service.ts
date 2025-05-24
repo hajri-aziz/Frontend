@@ -8,7 +8,8 @@ import { Disponibilite } from '../models/disponibilite.model';
   providedIn: 'root'
 })
 export class DisponibiliteService {
-  private apiUrl = 'http://localhost:3000/apis';
+  //private apiUrl = 'http://localhost:3000/apis';
+  private apiUrl = 'https://backend-5uj8.onrender.com/apis';
 
   constructor(private http: HttpClient) {}
   
