@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class CoursSessionService {
-  //private apiUrl = 'http://localhost:3000/api/courssessions';
-  private apiUrl = 'https://backend-5uj8.onrender.com/api/courssessions';
+  private apiUrl = 'http://localhost:3000/api/courssessions';
+  //private apiUrl = 'https://backend-5uj8.onrender.com/api/courssessions';
 
   constructor(private http: HttpClient) {}
 
@@ -59,7 +59,7 @@ export class CoursSessionService {
     });
     console.log("Body envoyé pour inscription :", body);
     return this.http.post(
-      `http://localhost:3000/api/courssessions/${sessionId}/inscriptions`,
+      `${this.apiUrl}/${sessionId}/inscriptions`,
       body,
       { headers }
     );

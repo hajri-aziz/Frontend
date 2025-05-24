@@ -8,8 +8,8 @@ import { RendezVous } from '../models/rendezvous.model';
   providedIn: 'root'
 })
 export class RendezVousService {
-  //private apiUrl = 'http://localhost:3000/apis';
-  private apiUrl = 'https://backend-5uj8.onrender.com/apis'; // Utiliser cette URL pour la production
+  private apiUrl = 'http://localhost:3000/apis';
+  //private apiUrl = 'https://backend-5uj8.onrender.com/apis'; // Utiliser cette URL pour la production
   constructor(private http: HttpClient) {}
   
   private getAuthHeaders(): HttpHeaders {
