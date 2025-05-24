@@ -75,34 +75,42 @@
       </div>
 
       <!-- Actions -->
-      <div class="flex flex-wrap justify-end gap-3 border-t pt-6">
-        <!-- Inscription/Désinscription -->
-        <button 
-          *ngIf="!isInstructor"
-          (click)="isRegistered() ? cancelRegistration() : registerToSession()"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          <i class="bi" [class.bi-calendar-check]="!isRegistered()" [class.bi-calendar-x]="isRegistered()"></i>
-          {{ isRegistered() ? 'Se désinscrire' : 'S\'inscrire' }}
-        </button>
+<div class="flex flex-wrap justify-end gap-3 border-t pt-6">
+  <!-- Inscription/Désinscription -->
+  <button 
+    *ngIf="!isInstructor"
+    (click)="isRegistered() ? cancelRegistration() : registerToSession()"
+    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+  >
+    <i class="bi" [class.bi-calendar-check]="!isRegistered()" [class.bi-calendar-x]="isRegistered()"></i>
+    {{ isRegistered() ? 'Se désinscrire' : 'S\'inscrire' }}
+  </button>
 
-        <!-- Modifier (admin/instructeur) -->
-        <button 
-          *ngIf="isInstructor"
-          (click)="editSession()"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          <i class="bi bi-pencil-square"></i> Modifier
-        </button>
+  <!-- Modifier (admin/instructeur) -->
+  <button 
+    *ngIf="isInstructor"
+    (click)="editSession()"
+    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+  >
+    <i class="bi bi-pencil-square"></i> Modifier
+  </button>
 
-        <!-- Supprimer (admin/instructeur) -->
-        <button 
-          *ngIf="isInstructor"
-          (click)="deleteSession()" 
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          <i class="bi bi-trash-fill"></i> Supprimer
-        </button>
+  <!-- Supprimer (admin/instructeur) -->
+  <button 
+    *ngIf="isInstructor"
+    (click)="deleteSession()" 
+    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
+  >
+    <i class="bi bi-trash-fill"></i> Supprimer
+  </button>
+
+  <!-- Accès au calendrier (visible pour tous) -->
+  <button 
+    (click)="goToCalendar()" 
+    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#b2f0e9] to-[#4fb6cf] text-[#06455e] rounded-xl shadow-md hover:opacity-90 transition"
+  >
+    <i class="bi bi-calendar3"></i> Voir le calendrier
+  </button>
       </div>
     </div>
   </div>

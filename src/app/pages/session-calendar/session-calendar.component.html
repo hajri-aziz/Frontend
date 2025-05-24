@@ -1,0 +1,98 @@
+<div class="w-full max-w-7xl mx-auto px-4 py-6">
+  <h2 class="text-3xl font-bold text-center text-[#007299] mb-8">Calendrier des sessions</h2>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+    {{ errorMessage }}
+  </div>
+  <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
+    {{ successMessage }}
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- Calendrier -->
+    <div class="bg-white rounded-xl shadow-md p-4">
+      <div class="flex justify-between items-center mb-4">
+        <button (click)="previousMonth()" class="text-[#007299] hover:underline">&larr;</button>
+        <span class="text-lg font-semibold">{{ currentMonthYear }}</span>
+        <button (click)="nextMonth()" class="text-[#007299] hover:underline">&rarr;</button>
+      </div>
+      <div class="grid grid-cols-7 text-center text-sm font-medium mb-2">
+        <div *ngFor="let d of ['Lu','Ma','Me','Je','Ve','Sa','Di']">{{ d }}</div>
+      </div>
+      <div class="grid grid-cols-7 gap-1">
+        <div *ngFor="let day of calendarDays">
+          <button 
+            (click)="selectDate(day.date)" 
+            class="w-10 h-10 flex items-center justify-center rounded-full text-sm"
+            [class.bg-[#007299]]="isSelectedDate(day.date)"
+            [class.text-white]="isSelectedDate(day.date)"
+            [class.text-gray-400]="day.isOtherMonth"
+            [class.hover:bg-[#e0f7f9]]="!isSelectedDate(day.date)">
+            {{ day.date.getDate() }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sessions disponibles -->
+    <div class="md:col-span-2 bg-white rounded-xl shadow-md p-6">
+      <h3 class="text-xl font-semibold text-[#007299] mb-4">Sessions disponibles</h3>
+      <div *ngIf="selectedDate; else noDate">
+        <div *ngIf="sessions.length > 0; else noSessions" class="space-y-6">
+          <div *ngFor="let session of sessions" class="border border-gray-300 rounded-lg p-4">
+            <div class="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-4">
+              <div>
+                <h4 class="text-lg font-semibold text-gray-800">{{ session.title }}</h4>
+                <p class="text-sm text-gray-600">{{ session.startdate | date:'fullDate' }} - {{ session.startdate | date:'shortTime' }}</p>
+                <p class="text-sm text-gray-600">Lieu : {{ session.location }}</p>
+                <p class="text-sm text-gray-600">Capacité : {{ session.participants.length }}/{{ session.capacity }}</p>
+              </div>
+              <div class="flex flex-col gap-2 items-end w-full sm:w-auto">
+                <button 
+                  *ngIf="!isRegistered(session)" 
+                  (click)="registerToSession(session._id)"
+                  [disabled]="session.participants.length >= session.capacity"
+                  class="px-4 py-2 text-white bg-[#007299] hover:bg-[#056a8c] rounded-md disabled:opacity-50">
+                  S'inscrire
+                </button>
+                <button 
+                  *ngIf="isRegistered(session)" 
+                  (click)="cancelRegistration(session._id)"
+                  class="px-4 py-2 text-red-600 border border-red-600 rounded-md hover:bg-red-50">
+                  Annuler
+                </button>
+
+                <!-- Créneaux horaires disponibles -->
+                <div *ngIf="availableTimes.length > 0" class="mt-2 w-full sm:w-auto">
+                  <label class="text-xs text-gray-500 block mb-1">Choisissez une heure :</label>
+                  <select 
+                    class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm"
+                    [(ngModel)]="selectedTime">
+                    <option *ngFor="let time of availableTimes" 
+                            [value]="time" 
+                            [disabled]="isSlotBooked(session._id, selectedDate, time)">
+                      {{ time }} <span *ngIf="isSlotBooked(session._id, selectedDate, time)"> (Réservé) </span>
+                    </option>
+                  </select>
+                  <button 
+                    class="mt-2 px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
+                    (click)="bookTime(session._id)"
+                    [disabled]="!selectedTime || isSlotBooked(session._id, selectedDate, selectedTime)">
+                    Réserver ce créneau
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <ng-template #noSessions>
+          <p class="text-center text-gray-500">Aucune session pour cette date</p>
+        </ng-template>
+      </div>
+      <ng-template #noDate>
+        <p class="text-center text-gray-500">Veuillez sélectionner une date</p>
+      </ng-template>
+    </div>
+  </div>
+</div>

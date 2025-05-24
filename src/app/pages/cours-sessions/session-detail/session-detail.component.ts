@@ -148,4 +148,7 @@ export class SessionDetailComponent implements OnInit {
       });
     }
   }
+    goToCalendar(): void {
+    this.router.navigate(['/sessions/calendar']);
+  }
 }

@@ -61,6 +61,7 @@ import { ContactComponent } from './pages/contact/contact.component';
 import { VerifyOtpComponent } from './pages/verify-otp/verify-otp.component';
 import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password.component';
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 
 
 
@@ -107,6 +108,7 @@ import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.compone
     VerifyOtpComponent,
 
     UnauthorizedComponent,
+    SessionCalendarComponent,
    
     
   
