@@ -69,17 +69,17 @@
 
         <!-- Actions -->
         <div class="flex flex-wrap justify-between md:justify-end items-center gap-3 border-t pt-6">
-          <div class="flex flex-wrap gap-3">
-            <!-- Gérer les sessions -->
-            <a 
-              *ngIf="isAdmin || userRole === 'instructor'" 
-              [routerLink]="['/cours', cours._id, 'sessions']"
-              class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-            >
-              <i class="bi bi-calendar-check-fill"></i> Gérer les sessions
-            </a>
+         <div class="flex flex-wrap justify-end gap-3 border-t pt-6">
+        <!-- Gérer les sessions -->
+        <a 
+          *ngIf="isAdmin || userRole === 'instructor'" 
+          [routerLink]="['/cours', cours._id, 'sessions']"
+          class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+        >
+          <i class="bi bi-calendar-check-fill"></i> Gérer les sessions
+        </a>
 
-            <!-- Voir le calendrier -->
+        <!-- Voir le calendrier -->
         <button 
           (click)="goToCalendar()"
           class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#d0f0f9] to-[#00acc1] text-[#004d61] border border-[#00acc1] rounded-xl shadow-md hover:opacity-90 transition"
