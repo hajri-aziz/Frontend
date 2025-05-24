@@ -91,7 +91,9 @@ export class CoursDetailComponent implements OnInit {
       }
     });
   }
-
+  goToCalendar(): void {
+  this.router.navigate(['/sessions/calendar']);
+}
   goBack(): void {
     this.router.navigate(['/cours']);
   }

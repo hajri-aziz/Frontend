@@ -34,6 +34,7 @@ import { NavbarComponent } from './pages/navbar/navbar.component';
 import { SessionCoursComponent } from './pages/cours-sessions/session-cours/session-cours.component';
 import { SessionFormComponent } from './pages/cours-sessions/session-form/session-form.component';
 import { SessionDetailComponent } from './pages/cours-sessions/session-detail/session-detail.component';
+import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 
 
 import { AuthGuard } from './guards/auth.guard';
@@ -103,8 +104,11 @@ const routes: Routes = [
    {path: 'cours/:coursId/sessions',component: SessionCoursComponent,canActivate: [AuthGuard]},
    {path: 'cours/:coursId/sessions/new',component: SessionFormComponent,canActivate: [AuthGuard],data: { roles: ['instructor', 'admin'] }},
    {path: 'sessions/:id/edit',component: SessionFormComponent,canActivate: [AuthGuard],data: { roles: ['instructor', 'admin'] }},
+   // --- Calendrier de réservation ---
+  { path: 'sessions/calendar', component: SessionCalendarComponent },
    {path: 'sessions/:id',component: SessionDetailComponent,canActivate: [AuthGuard]},
 
+  
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
 
