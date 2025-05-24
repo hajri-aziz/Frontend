@@ -7,7 +7,8 @@ import { CoursCategory } from '../models/cours-category.model';
   providedIn: 'root'
 })
 export class CoursCategoryService {
-  private baseUrl = 'http://localhost:3000/api/coursecategories';
+  //private baseUrl = 'http://localhost:3000/api/coursecategories';
+  private baseUrl = 'https://backend-5uj8.onrender.com/api/coursecategories';
 
   constructor(private http: HttpClient) {}
 

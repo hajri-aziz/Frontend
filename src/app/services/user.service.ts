@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class UserService {
-  private apiUrl = 'http://localhost:3000'; // URL de base de ton backend
-
+  //private apiUrl = 'http://localhost:3000';  // URL de base de ton backend
+  private apiUrl = 'https://backend-5uj8.onrender.com';
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {

@@ -2,6 +2,7 @@
 export interface Psychologue {
   _id: string;
   nom: string;
+  prenom: string;
 }
 
 export interface Disponibilite {

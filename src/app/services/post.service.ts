@@ -10,8 +10,12 @@ import io from 'socket.io-client';
 @Injectable({providedIn: 'root'})
 export class PostService {
   private socket: any; // Use 'any' or proper interface if available
-  private readonly SOCKET_URL = 'http://localhost:3000';
-  private apiUrl = 'http://localhost:3000';
+  //private readonly SOCKET_URL = 'http://localhost:3000';
+  private readonly SOCKET_URL = 'https://backend-5uj8.onrender.com';
+
+  //private apiUrl = 'http://localhost:3000';
+  private apiUrl = 'https://backend-5uj8.onrender.com';
+
   newGroupName: string | undefined;
   private newGroupMessageSubject = new Subject<any>();
   private groupCreatedSubject = new Subject<any>();
