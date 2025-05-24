@@ -1,32 +1,150 @@
 <!-- Error Message -->
-<div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md font-poppins">
+<div *ngIf="errorMessage" class="mb-6 p-4 bg-red-100 text-red-700 rounded-lg shadow-md font-poppins">
   {{ errorMessage }}
 </div>
 
-<!-- Section analyse visuelle -->
-<div class="mt-6">
-  <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300 mb-4">Analyse Visuelle des Statistiques</h2>
-  <!-- Section calendrier -->
-<div class="mb-6">
-  <label for="selectedDate" class="block text-gray-700 font-medium mb-2 font-poppins">Filtrer par date :</label>
-  <input type="date" id="selectedDate" [(ngModel)]="selectedDate" (change)="filterDataByDate()"
-    class="p-2 border border-gray-300 rounded-md shadow-sm" />
-</div>
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Graphique en barres -->
-    <div class="bg-transparent p-4 rounded-lg shadow-md">
-      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Répartition des disponibilités (Barres)</h3>
-      <canvas #availabilityBarChart></canvas>
-    </div>
-    <!-- Graphique en donut -->
-    <div class="bg-transparent p-4 rounded-lg shadow-md">
-      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Répartition des disponibilités (Donut)</h3>
-      <canvas #availabilityDonutChart></canvas>
-    </div>
-    <!-- Graphique des événements -->
-    <div class="bg-transparent p-4 rounded-lg shadow-md">
-      <h3 class="text-lg font-medium font-poppins text-[#080808] mb-2">Distribution des événements par date</h3>
-      <canvas #eventChart></canvas>
+<!-- Main Container -->
+<div class="p-6 bg-transparent min-h-screen">
+
+  <!-- Filter Section -->
+  <div class="mb-8 bg-white p-4 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300 mb-4">Filtrer les Données</h2>
+    <div class="flex items-center space-x-4">
+      <div class="flex-1">
+        <label for="selectedDate" class="block text-gray-700 font-medium mb-2 font-poppins">Sélectionner une date :</label>
+        <input type="date" id="selectedDate" [(ngModel)]="selectedDate" 
+          class="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-300" />
+      </div>
+      <button (click)="filterDataByDate()" 
+        class="mt-6 px-4 py-2 bg-teal-500 text-white rounded-md font-poppins hover:bg-teal-600 transition-colors duration-300">
+        Appliquer le Filtre
+      </button>
     </div>
   </div>
+
+  <!-- Charts Section -->
+  <div class="mb-8 ">
+    <h2 class="text-2xl font-semibold font-['Helvetica_Neue'] text-teal-300 mb-6">Analyse Visuelle des Statistiques</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Graphique en barres -->
+      <div class="bg-transparent p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-lg font-medium font-poppins text-gray-800 mb-2">Répartition des disponibilités (Barres)</h3>
+        <canvas #availabilityBarChart class="w-full"></canvas>
+      </div>
+
+      <!-- Graphique en Polar Area (Disponibilités) -->
+      <div class="bg-transparent p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-lg font-medium font-poppins text-gray-800 mb-2">Répartition des disponibilités (Polar Area)</h3>
+        <canvas #availabilityPolarChart class="w-full"></canvas>
+      </div>
+
+      <!-- Graphique des événements -->
+      <div class="bg-transparent p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <h3 class="text-lg font-medium font-poppins text-gray-800 mb-2">Nombre de participants par événement</h3>
+        <canvas #eventChart class="w-full"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Disponibilités Section -->
+  <div class="mb-8">
+    <h3 class="text-xl font-medium font-poppins text-gray-800 mb-4">Disponibilités</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let dispo of filteredDisponibilites" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+        [ngClass]="{'bg-blue-100': dispo.statut === 'disponible', 'bg-yellow-100': dispo.statut === 'occupé', 'bg-red-100': dispo.statut === 'absent'}">
+        <h4 class="font-poppins text-md font-semibold">{{ dispo.id_psychologue.nom }}</h4>
+        <p class="text-sm text-gray-600 font-poppins">{{ dispo.date | date:'yyyy-MM-dd' }}</p>
+        <p class="text-sm text-gray-600 font-poppins">{{ dispo.heure_debut }} - {{ dispo.heure_fin }}</p>
+        <p class="text-sm font-poppins">{{ dispo.statut }}</p>
+        <ng-container *ngIf="editingDisponibilite?._id !== dispo._id; else editDispoForm">
+          <div class="flex space-x-2 mt-2">
+            <button (click)="editDisponibilite(dispo)" class="text-blue-500 hover:text-blue-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+            </button>
+            <button (click)="deleteDisponibilite(dispo._id!)" class="text-red-500 hover:text-red-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1zm-4 4h12"></path>
+              </svg>
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #editDispoForm>
+          <div class="mt-2 space-y-2">
+            <input type="time" [(ngModel)]="editingDisponibilite!.heure_debut" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="time" [(ngModel)]="editingDisponibilite!.heure_fin" class="w-full p-1 border border-gray-300 rounded-md" />
+            <select [(ngModel)]="editingDisponibilite!.statut" class="w-full p-1 border border-gray-300 rounded-md">
+              <option value="disponible">Disponible</option>
+              <option value="occupé">Occupé</option>
+              <option value="absent">Absent</option>
+            </select>
+            <div class="flex space-x-2 mt-2">
+              <button (click)="saveDisponibilite()" class="text-green-500 hover:text-green-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+              <button (click)="cancelEditDisponibilite()" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
+  <!-- Événements Section -->
+  <div>
+    <h3 class="text-xl font-medium font-poppins text-gray-800 mb-4">Événements</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div *ngFor="let event of filteredEvenements" class="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+        [ngClass]="{'bg-green-100': event.titre.includes('Training'), 'bg-pink-100': event.titre.includes('Demo'), 'bg-orange-100': event.titre.includes('Meeting'), 'bg-red-100': event.titre.includes('Presentation')}">
+        <h4 class="font-poppins text-md font-semibold">{{ event.titre }}</h4>
+        <p class="text-sm text-gray-600 font-poppins">{{ event.description }}</p>
+        <p class="text-sm text-gray-600 font-poppins">{{ event.date | date:'yyyy-MM-dd' }} {{ event.heure_debut }}</p>
+        <p class="text-sm font-poppins">Durée: {{ event.duree }} min | Capacité: {{ event.capacite }} | Participants: {{ event.participants?.length || 0 }}</p>
+        <ng-container *ngIf="editingEvenement?._id !== event._id; else editEventForm">
+          <div class="flex space-x-2 mt-2">
+            <button (click)="editEvenement(event)" class="text-blue-500 hover:text-blue-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+              </svg>
+            </button>
+            <button (click)="deleteEvenement(event._id!)" class="text-red-500 hover:text-red-700">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5-4h4a1 1 0 011 1v1H9V4a1 1 0 011-1zm-4 4h12"></path>
+              </svg>
+            </button>
+          </div>
+        </ng-container>
+        <ng-template #editEventForm>
+          <div class="mt-2 space-y-2">
+            <input type="text" [(ngModel)]="editingEvenement!.titre" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="text" [(ngModel)]="editingEvenement!.description" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="date" [(ngModel)]="editingEvenement!.date" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="time" [(ngModel)]="editingEvenement!.heure_debut" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="number" [(ngModel)]="editingEvenement!.duree" class="w-full p-1 border border-gray-300 rounded-md" />
+            <input type="number" [(ngModel)]="editingEvenement!.capacite" class="w-full p-1 border border-gray-300 rounded-md" />
+            <div class="flex space-x-2 mt-2">
+              <button (click)="saveEvenement()" class="text-green-500 hover:text-green-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </button>
+              <button (click)="cancelEditEvenement()" class="text-gray-500 hover:text-gray-700">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+
 </div>
