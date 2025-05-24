@@ -1333,16 +1333,7 @@ hideReactions() {
     }, 300);
 }
 
-// Définir une réaction
-setReaction(post: any, type: string): void {
-    this.postService.addReaction(post._id, type).subscribe({
-        next: (updatedPost: any) => {
-            post.likes = updatedPost.likes;
-            this.showReactionsFor = null;
-        },
-        error: (err) => console.error('Erreur réaction:', err)
-    });
-}
+
 
 // Vérifier si l'utilisateur a réagi
 hasUserReacted(post: any, type: string): boolean {
@@ -1359,6 +1350,45 @@ getUserReaction(post: any): string | null {
     return reaction ? reaction.type : null;
 }
 
+
+
+
+
+
+
+
+startHideReactionsTimer() {
+  this.reactionTimeout = setTimeout(() => {
+    this.showReactionsFor = null;
+  }, 300);
+}
+
+// Nouvelle méthode pour annuler le timer
+cancelHideReactionsTimer() {
+  if (this.reactionTimeout) {
+    clearTimeout(this.reactionTimeout);
+  }
+}
+
+// Méthode setReaction corrigée
+setReaction(post: Post, type: string) {
+  this.cancelHideReactionsTimer();
+  
+  if (!post._id) {
+    console.error('Post ID is undefined, cannot add reaction.');
+    return;
+  }
+  this.postService.addReaction(post._id, type).subscribe(
+    (updatedPost: any) => {
+      post.likes = updatedPost.likes;
+      this.showReactionsFor = null;
+    },
+    (err: any) => {
+      console.error('Erreur réaction:', err);
+      this.showReactionsFor = null;
+    }
+  );
+}
 // Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique
 }
 
