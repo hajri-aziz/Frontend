@@ -1,12 +1,14 @@
-<div class="max-w-6xl mx-auto p-6">
+<div class="max-w-4xl mx-auto p-6">
   <!-- Bouton de retour -->
-  <button 
-    (click)="goBack()" 
-    class="flex items-center gap-2 mb-6 text-[#007299] hover:text-[#56e0e0] transition"
-  >
-    <i class="bi bi-arrow-left"></i>
-    Retour à la liste
-  </button>
+  <div class="mb-6">
+    <button 
+      (click)="goBack()" 
+      class="px-6 py-3 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold text-sm rounded-xl shadow-md hover:from-[#56e0e0]/90 hover:to-[#007299]/90 transition flex items-center gap-2"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Retour à la liste
+    </button>
+  </div>
 
   <!-- Messages d'erreur -->
   <div *ngIf="error" class="p-4 mb-6 text-red-700 bg-red-100 rounded-lg">
@@ -14,7 +16,7 @@
   </div>
 
   <!-- Carte du cours -->
-  <div *ngIf="cours" class="rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#ebf9fc] to-[#d5f1f9]">
+  <div *ngIf="cours" class="rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#f8fcff] to-[#f0f8ff]">
     <!-- Image -->
     <div class="h-64 w-full overflow-hidden relative">
       <img 
@@ -65,22 +67,34 @@
         </div>
       </div>
 
-      <!-- Actions -->
-      <div class="flex flex-wrap justify-end gap-3 border-t pt-6">
-        <!-- Gérer les sessions -->
-        <a 
-          *ngIf="isAdmin || userRole === 'instructor'" 
-          [routerLink]="['/cours', cours._id, 'sessions']"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          <i class="bi bi-calendar-check-fill"></i> Gérer les sessions
-        </a>
+        <!-- Actions -->
+        <div class="flex flex-wrap justify-between md:justify-end items-center gap-3 border-t pt-6">
+          <div class="flex flex-wrap gap-3">
+            <!-- Gérer les sessions -->
+            <a 
+              *ngIf="isAdmin || userRole === 'instructor'" 
+              [routerLink]="['/cours', cours._id, 'sessions']"
+              class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+            >
+              <i class="bi bi-calendar-check-fill"></i> Gérer les sessions
+            </a>
 
+            <!-- Voir le calendrier -->
+        <button 
+          (click)="goToCalendar()"
+          class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#d0f0f9] to-[#00acc1] text-[#004d61] border border-[#00acc1] rounded-xl shadow-md hover:opacity-90 transition"
+        >
+          <i class="bi bi-calendar-range"></i> Voir le calendrier
+        </button>
+      </div>
+
+      <!-- Groupe d’actions secondaire -->
+      <div class="flex flex-wrap gap-3">
         <!-- Nouvelle session -->
         <a 
           *ngIf="isAdmin || userRole === 'instructor'" 
           [routerLink]="['/cours', cours._id, 'sessions', 'new']"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+          class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
         >
           <i class="bi bi-plus-circle-fill"></i> Nouvelle session
         </a>
@@ -89,7 +103,7 @@
         <button 
           *ngIf="isAdmin"
           (click)="editCours(cours._id)"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+          class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
         >
           <i class="bi bi-pencil-square"></i> Modifier
         </button>
@@ -98,16 +112,9 @@
         <button 
           *ngIf="isAdmin"
           (click)="confirmDelete()" 
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
+          class="flex items-center gap-2 px-4 py-2 w-[190px] justify-center bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
         >
           <i class="bi bi-trash-fill"></i> Supprimer
-        </button>
-        <!-- Voir le calendrier -->
-        <button 
-          (click)="goToCalendar()"
-          class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#d0f0f9] to-[#00acc1] text-[#004d61] border border-[#00acc1] rounded-xl shadow-md hover:opacity-90 transition"
-        >
-          <i class="bi bi-calendar-range"></i> Voir le calendrier
         </button>
       </div>
     </div>

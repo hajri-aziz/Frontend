@@ -1,12 +1,21 @@
 <div class="max-w-xl mx-auto p-6 bg-zenaura-bg rounded-lg shadow-md">
-  <h2 class="text-2xl font-semibold text-zenaura-text mb-4">Créer une nouvelle catégorie</h2>
-
-  <!-- Message de succès -->
-  <div *ngIf="successMessage" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
-    {{ successMessage }}
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-semibold text-zenaura-text">Créer une nouvelle catégorie</h2>
+    <!-- Bouton retour optionnel -->
+    <button 
+      (click)="redirectToCategories()" 
+      class="bg-gradient-to-r from-teal-400 to-cyan-500 hover:from-teal-500 hover:to-cyan-600 text-white px-4 py-2 rounded-full text-sm flex items-center gap-2 shadow-lg transition-all duration-300">
+      ← Retour à la liste
+    </button>
   </div>
 
-  <!-- Message d’erreur -->
+  <!-- Message de succès avec indicateur de redirection -->
+  <div *ngIf="successMessage" class="bg-green-100 text-green-800 px-4 py-2 rounded mb-4 flex items-center justify-between">
+    <span>{{ successMessage }}</span>
+    <span class="text-sm text-green-600">Redirection en cours...</span>
+  </div>
+
+  <!-- Message d'erreur -->
   <div *ngIf="errorMessage" class="bg-red-100 text-red-700 px-4 py-2 rounded mb-4">
     {{ errorMessage }}
   </div>
@@ -40,13 +49,24 @@
       </div>
     </div>
 
-    <!-- Bouton -->
-    <button
-      type="submit"
-      class="bg-zenaura-teal text-white px-6 py-2 rounded shadow hover:bg-teal-700 transition"
-      [disabled]="isSubmitting"
-    >
-      {{ isSubmitting ? 'Enregistrement...' : 'Créer la catégorie' }}
-    </button>
+    <!-- Boutons d'action -->
+    <div class="flex gap-3">
+      <button
+        type="submit"
+        class="bg-zenaura-teal text-white px-6 py-2 rounded shadow hover:bg-teal-700 transition flex-1"
+        [disabled]="isSubmitting"
+      >
+        {{ isSubmitting ? 'Enregistrement...' : 'Créer la catégorie' }}
+      </button>
+      
+      <button
+        type="button"
+        (click)="redirectToCategories()"
+        class="bg-gray-500 text-white px-6 py-2 rounded shadow hover:bg-gray-600 transition"
+        [disabled]="isSubmitting"
+      >
+        Annuler
+      </button>
+    </div>
   </form>
 </div>

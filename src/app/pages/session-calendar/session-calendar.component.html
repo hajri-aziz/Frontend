@@ -21,16 +21,37 @@
         <div *ngFor="let d of ['Lu','Ma','Me','Je','Ve','Sa','Di']">{{ d }}</div>
       </div>
       <div class="grid grid-cols-7 gap-1">
-        <div *ngFor="let day of calendarDays">
+        <div *ngFor="let day of calendarDays" class="relative">
           <button 
             (click)="selectDate(day.date)" 
-            class="w-10 h-10 flex items-center justify-center rounded-full text-sm"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-sm relative"
             [class.bg-[#007299]]="isSelectedDate(day.date)"
             [class.text-white]="isSelectedDate(day.date)"
             [class.text-gray-400]="day.isOtherMonth"
-            [class.hover:bg-[#e0f7f9]]="!isSelectedDate(day.date)">
+            [class.hover:bg-[#e0f7f9]]="!isSelectedDate(day.date)"
+            [class.border-2]="hasSessionOnDate(day.date)"
+            [class.border-green-500]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)"
+            [class.bg-green-50]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)">
             {{ day.date.getDate() }}
+            <!-- Petit point indicateur pour les sessions -->
+            <div *ngIf="hasSessionOnDate(day.date)" 
+                 class="absolute -top-1 -right-1 w-3 h-3 rounded-full"
+                 [class.bg-green-500]="!isSelectedDate(day.date)"
+                 [class.bg-white]="isSelectedDate(day.date)">
+            </div>
           </button>
+        </div>
+      </div>
+      
+      <!-- Légende -->
+      <div class="mt-4 text-xs text-gray-600">
+        <div class="flex items-center gap-2 mb-1">
+          <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+          <span>Dates avec sessions disponibles</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 bg-[#007299] rounded-full"></div>
+          <span>Date sélectionnée</span>
         </div>
       </div>
     </div>

@@ -43,13 +43,21 @@ export class CategoryCreateComponent implements OnInit {
         this.successMessage = 'Catégorie créée avec succès ✅';
         this.form.reset();
         this.isSubmitting = false;
-        // Redirection possible après création :
-        // this.router.navigate(['/categories']);
+        
+        // Redirection vers la liste des catégories après 1.5 secondes
+        setTimeout(() => {
+          this.router.navigate(['/categories']);
+        }, 1500);
       },
       error: (err) => {
         this.errorMessage = 'Erreur lors de la création : ' + err.message;
         this.isSubmitting = false;
       }
     });
+  }
+
+  // Méthode optionnelle pour redirection immédiate
+  redirectToCategories() {
+    this.router.navigate(['/categories']);
   }
 }

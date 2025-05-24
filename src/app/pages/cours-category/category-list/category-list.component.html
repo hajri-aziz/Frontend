@@ -1,32 +1,42 @@
 <div class="max-w-6xl mx-auto p-6">
+  <!-- Bouton retour -->
+  <div class="mb-6">
+    <button 
+      routerLink="/cours"
+      class="px-6 py-3 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold text-sm rounded-xl shadow-md hover:from-[#56e0e0]/90 hover:to-[#007299]/90 transition flex items-center gap-2"
+    >
+      <i class="bi bi-arrow-left"></i>
+      Retour à la liste
+    </button>
+  </div>
+
   <!-- Header -->
-<div class="flex justify-between items-center mb-6">
-  <h2 class="text-3xl font-semibold tracking-tight bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text">
-    Catégories de cours
-  </h2>
-  <a 
-    routerLink="/categories/create"
-    class="px-4 py-2 w-fit bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold text-sm rounded-xl shadow-md hover:from-[#56e0e0]/90 hover:to-[#007299]/90 transition"
-  >
-    ➕ Ajouter
-  </a>
-</div>
-
-
+  <div class="flex justify-between items-center mb-6">
+    <h2 class="text-3xl font-semibold tracking-tight bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text">
+      Catégories de cours
+    </h2>
+    <a 
+      routerLink="/categories/create"
+      class="px-4 py-2 w-fit bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold text-sm rounded-xl shadow-md hover:from-[#56e0e0]/90 hover:to-[#007299]/90 transition"
+    >
+      ➕ Ajouter
+    </a>
+  </div>
+    
   <!-- Alerts -->
   <div *ngIf="loading" class="text-zenaura-gray">Chargement des catégories...</div>
   <div *ngIf="error" class="text-red-600 mb-2">{{ error }}</div>
-
+ 
   <!-- Liste des catégories -->
   <div *ngIf="categories && categories.length > 0" class="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
     <div *ngFor="let cat of categories"
-      class="bg-gradient-to-br from-[#f4fdff] to-[#d5f2ff] shadow-md rounded-xl p-5 transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between">
-      
+      class="bg-gradient-to-br from-[#f8fcff] to-[#f0f8ff] shadow-md rounded-xl p-5 transition-transform transform hover:-translate-y-1 hover:shadow-xl flex flex-col justify-between">
+             
       <div>
         <h3 class="text-lg font-semibold text-zenaura-text mb-2">{{ cat.title }}</h3>
         <p class="text-sm text-zenaura-gray mb-4 line-clamp-3">{{ cat.description }}</p>
       </div>
-
+       
       <!-- Actions -->
       <div class="flex justify-between items-center border-t pt-3 mt-auto text-sm">
         <button [routerLink]="['/categories', cat._id]" class="text-zenaura-teal flex items-center gap-1 hover:underline">
@@ -41,7 +51,7 @@
       </div>
     </div>
   </div>
-
+ 
   <div *ngIf="!loading && categories.length === 0" class="text-zenaura-gray mt-4">
     Aucune catégorie disponible.
   </div>

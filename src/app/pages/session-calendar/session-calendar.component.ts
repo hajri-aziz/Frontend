@@ -13,6 +13,7 @@ export class SessionCalendarComponent implements OnInit {
   selectedDate: Date | null = null;
   currentMonthYear: string = '';
   sessions: any[] = [];
+  allSessions: any[] = []; // Toutes les sessions pour déterminer les dates avec sessions
   bookings: any[] = [];
   availableTimes: string[] = [];
   selectedTime: string = '';
@@ -28,7 +29,32 @@ export class SessionCalendarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId');
+    this.loadAllSessions();
     this.generateCalendar(new Date());
+  }
+
+  /**
+   * Charge toutes les sessions pour pouvoir marquer les dates avec sessions
+   */
+  loadAllSessions(): void {
+    this.sessionService.getAllSessions().subscribe({
+      next: (sessions) => {
+        this.allSessions = sessions;
+      },
+      error: () => {
+        this.errorMessage = 'Erreur lors du chargement des sessions';
+      }
+    });
+  }
+
+  /**
+   * Vérifie si une date donnée a des sessions disponibles
+   */
+  hasSessionOnDate(date: Date): boolean {
+    const formatted = this.formatDate(date);
+    return this.allSessions.some(session => 
+      this.formatDate(new Date(session.startdate)) === formatted
+    );
   }
 
   generateCalendar(date: Date): void {
@@ -73,15 +99,14 @@ export class SessionCalendarComponent implements OnInit {
     this.selectedDate = date;
     this.availableTimes = this.generateAvailableTimes(date);
     const formatted = this.formatDate(date);
-    this.sessionService.getAllSessions().subscribe({
-      next: (all) => {
-        this.sessions = all.filter((s: any) => this.formatDate(new Date(s.startdate)) === formatted);
-        this.sessions.forEach((session) => this.loadBookings(session._id));
-      },
-      error: () => {
-        this.errorMessage = 'Erreur lors du chargement des sessions';
-      }
-    });
+    
+    // Filtre les sessions pour la date sélectionnée
+    this.sessions = this.allSessions.filter((s: any) => 
+      this.formatDate(new Date(s.startdate)) === formatted
+    );
+    
+    // Charge les réservations pour chaque session de cette date
+    this.sessions.forEach((session) => this.loadBookings(session._id));
   }
 
   loadBookings(sessionId: string): void {
@@ -151,7 +176,7 @@ export class SessionCalendarComponent implements OnInit {
         this.selectDate(this.selectedDate!);
       },
       error: () => {
-        this.errorMessage = 'Erreur lors de l’inscription';
+        this.errorMessage = "Erreur lors de l'inscription";
       }
     });
   }
@@ -164,7 +189,7 @@ export class SessionCalendarComponent implements OnInit {
         this.selectDate(this.selectedDate!);
       },
       error: () => {
-        this.errorMessage = 'Erreur lors de l’annulation';
+        this.errorMessage = "Erreur lors de l'annulation";
       }
     });
   }
