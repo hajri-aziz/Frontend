@@ -186,11 +186,7 @@ addMember(groupId: string, newMemberEmail: string): Observable<Group> {
   return this.http.get<Message[]>(`${this.apiUrl}/messages/conversations/${conversationId}`, { headers });
 }
 
-getGroupMessages(groupId: string): Observable<Message[]> {
-    return this.http.get<Message[]>(`${this.apiUrl}/messages/group/${groupId}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-    });
-  }
+
   
 
 
@@ -274,20 +270,9 @@ getMessagesBetweenUsers(otherUserId: string): Observable<any> {
     throw new Error('Method not implemented.');
   }
   getUserGroups(userId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/group/getallGroupByUser/${userId}`);
+    return this.http.get(`${this.apiUrl}/group/getallGroupByUser`, { headers: this.getHeaders() });
   }
  // Rejoindre un groupe
-  joinGroup(groupId: string): Observable<any> {
-    return new Observable((observer) => {
-      this.socket.emit('join-group', { groupId }, (response: any) => {
-        if (response.status === 'success') {
-          observer.next(response);
-        } else {
-          observer.error('Failed to join group');
-        }
-      });
-    });
-  }
 
   // Écouter la création d'un nouveau groupe
   onGroupCreated(): Observable<any> {
@@ -297,32 +282,61 @@ getMessagesBetweenUsers(otherUserId: string): Observable<any> {
     return this.groupCreatedSubject.asObservable();
   }
 
-  // Envoyer un message de groupe
-  sendGroupMessage(groupId: string, content: string, memberIds: string[]): void {
-    this.socket.emit('send-group-message', {
-      groupId,
-      contenu: content, // Backend expects 'contenu'
-      destinataireIds: memberIds
+ joinGroup(groupId: string): void {
+    this.socket.emit('join-group', { groupId });
+  }
+
+  leaveGroup(groupId: string): void {
+    this.socket.emit('leave-group', { groupId });
+  }
+
+
+  getGroupMessages(groupId: string): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/group/getallGroupByUser`);
+  }
+
+  // Écoute des événements socket pour les groupes
+  onNewGroupMessage(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('new-group-message', (message: any) => {
+        observer.next(message);
+      });
+    });
+  }
+ sendGroupMessage(message: { 
+    groupId: string, 
+    content: string, 
+    sender: string 
+  }): void {
+    this.socket.emit('send-group-message', message);
+  }
+
+  // Écouter les nouveaux messages
+  onNewMessageGroup(): Observable<any> {
+    return new Observable(observer => {
+      this.socket.on('new-group-message', (message: any) => {
+        observer.next(message);
+      });
     });
   }
 
-  // Écouter les nouveaux messages de groupe
-  onNewGroupMessage(): Observable<Message> {
-    this.socket.on('new-group-message', (message: any) => {
-      // Map backend message to Message model
-      const mappedMessage: Message = {
-        _id: message._id,
-        conversationId: message.groupId,
-        sender: message.expediteurId,
-        content: message.contenu,
-        timestamp: message.dateEnvoi,
-        status: 'delivered' // Assume delivered for simplicity
-      };
-      this.newGroupMessageSubject.next(mappedMessage);
+  // Gestion des erreurs
+  onError(): Observable<string> {
+    return new Observable(observer => {
+      this.socket.on('error', (err: any) => {
+        observer.next(err);
+      });
     });
-    return this.newGroupMessageSubject.asObservable();
   }
 
+
+   addReaction(postId: string, reactionType: string) {
+        return this.http.post(`/api/posts/${postId}/react`, { type: reactionType });
+    }
+    
+    removeReaction(postId: string) {
+        return this.http.delete(`/api/posts/${postId}/react`);
+    }
   
 }
 
