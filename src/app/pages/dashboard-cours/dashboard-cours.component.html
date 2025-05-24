@@ -1,0 +1,40 @@
+<div class="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow">
+  <!-- Statistiques globales -->
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
+    <div class="bg-gray-100 rounded-lg p-4">
+      <p class="text-sm text-gray-500">Catégories</p>
+      <p class="text-2xl font-bold">{{ totalCategories }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg p-4">
+      <p class="text-sm text-gray-500">Cours</p>
+      <p class="text-2xl font-bold">{{ totalCours }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg p-4">
+      <p class="text-sm text-gray-500">Sessions actives</p>
+      <p class="text-2xl font-bold">{{ totalSessions }}</p>
+    </div>
+    <div class="bg-gray-100 rounded-lg p-4">
+      <p class="text-sm text-gray-500">Inscriptions moy. / session</p>
+      <p class="text-2xl font-bold">{{ moyenneInscriptions }}</p>
+    </div>
+  </div>
+
+  <!-- Graphiques -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div class="bg-white p-4 rounded-lg border">
+      <h3 class="text-sm font-semibold mb-2">Inscriptions par cours</h3>
+      <canvas id="enrollmentChart"></canvas>
+    </div>
+    <div class="bg-white p-4 rounded-lg border">
+      <h3 class="text-sm font-semibold mb-2">Cours par catégorie</h3>
+      <canvas id="categorieChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-wrap gap-4 justify-center">
+    <a routerLink="/categories/create" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Ajouter une catégorie</a>
+    <a routerLink="/cours/create" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Ajouter un cours</a>
+    <a routerLink="/cours/:id/sessions/new" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Créer une session</a>
+  </div>
+</div>

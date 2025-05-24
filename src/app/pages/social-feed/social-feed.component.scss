@@ -359,5 +359,13 @@
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-3px); }
         }
+
+
+        .reaction-like.active { color: #04789d; }
+.reaction-love.active { color: #f33e58; }
+.reaction-haha.active { color: #f7b125; }
+.reaction-wow.active { color: #f7b125; }
+.reaction-sad.active { color: #f7b125; }
+.reaction-angry.active { color: #e9710f; }
 }
 

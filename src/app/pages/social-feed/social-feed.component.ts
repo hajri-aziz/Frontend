@@ -60,6 +60,7 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
   newGroupMessage: any
 expandedGroupChatId: string | null = null;
+post: any
   constructor(
     private postService: PostService,
     private userService: UserService,
@@ -409,23 +410,7 @@ expandedGroupChatId: string | null = null;
     );
   }
 
-  toggleReaction(messageId: string, reaction: string): void {
-    if (!this.currentUser?._id) return;
-
-    this.subscriptions.push(
-      this.postService.toggleReaction(messageId, this.currentUser._id, reaction).subscribe({
-        next: () => {
-          if (this.selectedUser) {
-            this.selectUser(this.selectedUser);
-          }
-        },
-        error: (error) => {
-          console.error("Error toggling reaction:", error);
-          alert("Error toggling reaction");
-        },
-      }),
-    );
-  }
+ 
 
   logout(): void {
     ;["token", "userId", "nom", "prenom", "profileImage", "email", "role"].forEach((key) =>
@@ -835,10 +820,6 @@ sendMessage(): void {
 
     this.expandedChatId = null;
   }
-
-  // Méthode pour développer un chat minimisé
-
-
   // Méthode pour fermer un chat
   closeChat(userId: string): void {
     this.activeChats = this.activeChats.filter(chat => chat.user._id !== userId);
@@ -848,8 +829,6 @@ sendMessage(): void {
       this.selectedUser = null;
     }
   }
-
-
    // Méthode pour charger les messages entre deux utilisateurs
   loadMessages(userId1: string, userId2: string): void {
     this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
@@ -868,8 +847,6 @@ sendMessage(): void {
       }
     });
   }
-
-
 expandChat(userId: string) {
   this.expandedChatId = userId;
 
@@ -951,38 +928,80 @@ expandChat(userId: string) {
 
 
 
-  //GROUPES*************************
-openGroupChat(group: Group): void {
-    // Rejoindre le groupe via socket
-    this.postService.emit('join-group', { groupId: group._id });
+ // Méthodes pour les groupes
 
-    // Vérifier si le chat est déjà ouvert
+
+private setupGroupSocketListeners(): void {
+    // Écoute des nouveaux messages de groupe
+    this.postService.onNewGroupMessage().subscribe((message: Message) => {
+      if (message['groupId'] === this.selectedGroup?._id) {
+        // Vérifier si le message existe déjà
+        const exists = this.groupMessages.some(m => m._id === message._id);
+        if (!exists) {
+          this.groupMessages = [...this.groupMessages, message];
+          this.scrollToBottom('groupMessagesContainer');
+        }
+      }
+    });
+  }
+
+  openGroupChat(group: Group): void {
+    // Rejoindre le groupe via socket
+    this.postService.joinGroup(group._id!);
+
     const existingChat = this.activeGroupChats.find(c => c.group._id === group._id);
     
     if (existingChat) {
-        if (group._id) {
-            this.expandGroupChat(group._id);
-        } else {
-            console.error('Group ID is undefined, cannot expand group chat.');
-        }
-        return;
+      this.expandGroupChat(group._id!);
+      return;
     }
 
     // Ajouter le nouveau chat
     this.activeGroupChats.push({
-        group,
-        isExpanded: true,
-        unreadCount: 0
+      group,
+      isExpanded: true,
+      unreadCount: 0
     });
 
     this.selectedGroup = group;
-    this.expandedGroupChatId = group._id ?? null;
-    if (group._id) {
-        this.loadGroupMessages(group._id);
-    } else {
-        console.error('Group ID is undefined, cannot load group messages.');
-    }
-}
+    this.expandedGroupChatId = group._id!;
+    this.loadGroupMessages(group._id!);
+  }
+
+  loadGroupMessages(groupId: string): void {
+    this.groupMessages = []; // Afficher le loader
+    this.postService.getGroupMessages(groupId).subscribe({
+      next: (messages) => {
+        this.groupMessages = messages;
+        this.scrollToBottom('groupMessagesContainer');
+      },
+      error: (err) => {
+        console.error('Erreur lors du chargement des messages:', err);
+        this.groupMessages = [];
+      }
+    });
+  }
+
+ sendMessageGroup(): void {
+    if (!this.newMessage.trim()) return;
+
+    this.postService.sendGroupMessage({
+      groupId: this.selectedGroup?._id,
+      content: this.newMessage,
+      sender: this.currentUserId
+    });
+
+    // Optimistic UI
+    this.messages.push({
+      _id: Date.now().toString(),
+      content: this.newMessage,
+      sender: this.currentUserId,
+      conversationId: this.selectedGroup?._id ?? '',
+      timestamp: new Date().toISOString()
+    });
+
+    this.newMessage = '';
+  }
 
 expandGroupChat(groupId: string): void {
     const chat = this.activeGroupChats.find(c => c.group._id === groupId);
@@ -1015,50 +1034,9 @@ closeGroupChat(groupId: string): void {
     this.postService.emit('leave-group', { groupId });
 }
 
-loadGroupMessages(groupId: string): void {
-    this.groupMessages = []; // Afficher le loader
-    this.postService.getGroupMessages(groupId).subscribe({
-        next: (messages) => {
-            this.groupMessages = messages;
-            this.scrollToBottom('groupMessagesContainer');
-        },
-        error: (err) => {
-            console.error('Erreur lors du chargement des messages:', err);
-            this.groupMessages = [];
-        }
-    });
-}
 
-sendGroupMessage(): void {
-  if (!this.groupMessageContent.trim() || !this.selectedGroup) return;
 
-  const groupId = this.selectedGroup._id;
-  const content = this.groupMessageContent;
-  const memberIds = this.selectedGroup.members;
 
-  this.postService.sendGroupMessage(groupId, content, memberIds);
-
-  // Optimistic UI
-  if (!this.currentUser) return;
-
-  const newMessage: Message = {
-    _id: 'temp_' + Date.now(),
-    expediteurId: this.currentUser._id,
-    contenu: content,
-    isGroupMessage: true,
-    groupId,
-    destinataireIds: memberIds,
-    dateEnvoi: new Date(),
-    conversationId: groupId,
-    sender: this.currentUser._id ?? '',
-    content: content,
-    timestamp: new Date().toISOString()
-  };
-
-  this.groupMessages = [...this.groupMessages, newMessage];
-  this.groupMessageContent = '';
-  this.scrollToBottom('groupMessagesContainer');
-}
 
 
 // Méthodes utilitaires
@@ -1083,13 +1061,126 @@ onGroupTyping(): void {
    
 }
 
-// N'oubliez pas d'initialiser les écouteurs socket dans ngOnInit
+
+// Dans votre composant
+reactionTypes = [
+    { type: 'like', label: 'J\'aime', icon: '/assets/reactions/like.png' },
+    { type: 'love', label: 'Love', icon: '/assets/reactions/love.png' },
+    { type: 'haha', label: 'Haha', icon: '/assets/reactions/haha.png' },
+    { type: 'wow', label: 'Wow', icon: '/assets/reactions/wow.png' },
+    { type: 'sad', label: 'Triste', icon: '/assets/reactions/sad.png' },
+    { type: 'angry', label: 'Angry', icon: '/assets/reactions/angry.png' }
+];
+
+showReactionMenu: string | null = null;
+
+// Obtenir la réaction de l'utilisateur courant
+getCurrentUserReaction(post: any): any {
+    if (!this.currentUser || !this.currentUser._id || !post.likes) return null;
+    return post.likes.find((like: any) => like.userId === this.currentUser!._id);
+}
+
+// Gérer une réaction
+handleReaction(post: any, reactionType: string) {
+    const currentReaction = this.getCurrentUserReaction(post);
+    
+    // Si l'utilisateur clique sur sa réaction actuelle, on la supprime
+    if (currentReaction && currentReaction.type === reactionType) {
+        this.postService.removeReaction(post._id).subscribe(updatedPost => {
+            // Mettre à jour le post
+        });
+    } 
+    // Sinon on ajoute/modifie la réaction
+    else {
+        this.postService.addReaction(post._id, reactionType).subscribe(updatedPost => {
+            // Mettre à jour le post
+        });
+    }
+}
+
+// Obtenir le résumé des réactions (top 3)
+getReactionSummary(post: any): any[] {
+    if (!post.likes || post.likes.length === 0) return [];
+    
+    const reactionCounts: any = {};
+    post.likes.forEach((like: any) => {
+        reactionCounts[like.type] = (reactionCounts[like.type] || 0) + 1;
+    });
+    
+    return Object.entries(reactionCounts)
+        .sort((a: any, b: any) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([type, count]) => ({ type, count }));
+}
+
+// Obtenir le nombre total de réactions
+getTotalReactions(post: any): number {
+    return post.likes?.length || 0;
+}
+
+// Obtenir l'icône SVG correspondant au type de réaction
+getReactionSvg(type: string): string {
+    switch(type) {
+        case 'like':
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+            </svg>`;
+        case 'love':
+            return `<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="color: #f33e58;">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>`;
+        // Ajouter les autres SVG pour chaque type de réaction
+        default:
+            return '';
+    }
+}
+
+    
+    addReaction(postId: string, reactionType: string) {
+        return this.http.post(`/api/posts/${postId}/react`, { type: reactionType });
+    }
+    
+    removeReaction(postId: string) {
+        return this.http.delete(`/api/posts/${postId}/react`);
+    }
 
 
+    getReactionIcon(reactionType: string): string {
+  // Chemin de base pour les icônes de réactions
+  const basePath = '/assets/reactions/';
+  
+  // Mapping des types de réactions vers leurs icônes
+  const reactionIcons: {[key: string]: string} = {
+    'like': `${basePath}like.png`,
+    'love': `${basePath}love.png`,
+    'haha': `${basePath}haha.png`,
+    'wow': `${basePath}wow.png`,
+    'sad': `${basePath}sad.png`,
+    'angry': `${basePath}angry.png`
+  };
 
+  return reactionIcons[reactionType] || `${basePath}like.png`;
+}
 
+getReactionLabel(reactionType: string): string {
+  const labels: {[key: string]: string} = {
+    'like': 'J\'aime',
+    'love': 'Love',
+    'haha': 'Haha',
+    'wow': 'Wow',
+    'sad': 'Triste',
+    'angry': 'En colère'
+  };
+  return labels[reactionType] || '';
+}
+
+// Pour capitaliser la première lettre (utilisé dans le bouton)
+capitalizeFirstLetter(string: string): string {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+}
 
  
-}
+
 
   // Méthode pour faire défiler vers le
