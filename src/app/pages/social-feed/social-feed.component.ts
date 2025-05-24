@@ -1194,27 +1194,7 @@ getCurrentReactionIcon(post: any): string {
 }
 
 // Obtenir le libellé à afficher
-getReactionLabel(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
-}
 
-// Vérifier si l'utilisateur a réagi
-hasUserReacted(post: any, type: string): boolean {
-    if (!this.currentUser || !post.likes) return false;
-    return this.currentUser && this.currentUser._id
-        ? post.likes.some((like: any) => like.userId === this.currentUser!._id && like.type === type)
-        : false;
-}
-
-// Obtenir la réaction de l'utilisateur
-getUserReaction(post: any): string | null {
-    if (!this.currentUser || !post.likes) return null;
-    const reaction = (post.likes && this.currentUser && this.currentUser._id)
-        ? post.likes.find((like: any) => like.userId === this.currentUser!._id)
-        : null;
-    return reaction ? reaction.type : null;
-}
 
 // Obtenir le SVG d'une réaction
 getReactionSvg(type: string, size: string = '24'): string {
@@ -1240,23 +1220,19 @@ toggleReaction(post: any) {
     }
 }
 
-// Définir une réaction
-setReaction(post: any, type: string) {
-    this.postService.addReaction(post._id, type).subscribe(
-        (updatedPost: any) => {
-            // Mettre à jour le post dans votre state/store
-            post.likes = updatedPost.likes;
-            this.showReactionMenu = null;
-        }
-    );
-}
+
 
 // Supprimer une réaction
-removeReaction(post: any) {
+removeReaction(post: { _id: string; likes: any[] }) {
     this.postService.removeReaction(post._id).subscribe(
         (updatedPost: any) => {
             // Mettre à jour le post dans votre state/store
-            post.likes = updatedPost.likes;
+            if (updatedPost && updatedPost.likes) {
+                post.likes = updatedPost.likes;
+            }
+        },
+        (err: any) => {
+            console.error('Erreur lors de la suppression de la réaction:', err);
         }
     );
 }
@@ -1265,36 +1241,10 @@ removeReaction(post: any) {
 
 
 // Dans votre composant
-reactionTypes = [
-    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
-    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
-    { type: 'haha', label: 'Haha', emoji: '😄', color: '#F7B125' },
-    { type: 'wow', label: 'Wow', emoji: '😲', color: '#F7B125' },
-    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
-    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
-];
 
-showReactionsFor: string | null = null;
-reactionTimeout: any = null;
 
 // Obtenir l'emoji de la réaction actuelle
-getCurrentReactionEmoji(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return this.reactionTypes.find(r => r.type === reaction)?.emoji || '👍';
-}
 
-// Gestion de l'affichage du menu
-keepReactionsVisible() {
-    if (this.reactionTimeout) {
-        clearTimeout(this.reactionTimeout);
-    }
-}
-
-hideReactions() {
-    this.reactionTimeout = setTimeout(() => {
-        this.showReactionsFor = null;
-    }, 300);
-}
 
 handleReactionClick(post: any) {
     if (!this.showReactionsFor) {
@@ -1306,6 +1256,107 @@ handleReactionClick(post: any) {
             this.setReaction(post, 'like');
         }
     }
+}
+//updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Dans votre composant
+reactionTypes = [
+    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
+    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
+    { type: 'haha', label: 'Haha', emoji: '😂', color: '#F7B125' },
+    { type: 'wow', label: 'Wow', emoji: '😯', color: '#F7B125' },
+    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
+    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
+];
+
+showReactionsFor: string | null = null;
+reactionTimeout: any = null;
+
+// Obtenir l'emoji de la réaction actuelle
+getCurrentReactionEmoji(post: any): string {
+    const reaction = this.getUserReaction(post);
+    const foundReaction = this.reactionTypes.find(r => r.type === reaction);
+    return foundReaction ? foundReaction.emoji : '👍';
+}
+
+// Obtenir le libellé de la réaction
+getReactionLabel(post: any): string {
+    const reaction = this.getUserReaction(post);
+    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
+}
+
+// Garder le menu visible
+keepReactionsVisible() {
+    if (this.reactionTimeout) {
+        clearTimeout(this.reactionTimeout);
+    }
+    this.showReactionsFor = this.post._id;
+}
+
+// Cacher le menu avec délai
+hideReactions() {
+    this.reactionTimeout = setTimeout(() => {
+        this.showReactionsFor = null;
+    }, 300);
+}
+
+// Définir une réaction
+setReaction(post: any, type: string): void {
+    this.postService.addReaction(post._id, type).subscribe({
+        next: (updatedPost: any) => {
+            post.likes = updatedPost.likes;
+            this.showReactionsFor = null;
+        },
+        error: (err) => console.error('Erreur réaction:', err)
+    });
+}
+
+// Vérifier si l'utilisateur a réagi
+hasUserReacted(post: any, type: string): boolean {
+    if (!this.currentUser || !post.likes) return false;
+    return post.likes.some((like: any) => 
+        this.currentUser && like.userId === this.currentUser._id && like.type === type
+    );
+}
+
+// Obtenir la réaction de l'utilisateur
+getUserReaction(post: any): string | null {
+    if (!this.currentUser || !post.likes) return null;
+    const reaction = post.likes && this.currentUser ? post.likes.find((like: any) => like.userId === this.currentUser!._id) : null;
+    return reaction ? reaction.type : null;
 }
 
 // Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique

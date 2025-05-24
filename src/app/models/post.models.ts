@@ -11,7 +11,11 @@ export interface Post {
   contenu: string;
   date_creation: string;
   image?: string;
-  likes: string[];
+  likes: {
+    userId: string;
+    type: string; // 'like' | 'love' | 'haha' | 'wow' | 'sad' | 'angry'
+    date?: Date;
+  }[];
   comments?: Comment[];
 }
 
