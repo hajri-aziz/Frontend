@@ -75,9 +75,13 @@ export class CoursService {
 }
 
   // 🔎 Filtres et recherche
-  getCoursByCategory(catId: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/api/cours/categorie/${catId}`, { headers: this.getHeaders() });
-  }
+  getCoursByCategory(categoryId: string): Observable<any> {
+  return this.http.get(`${this.apiUrl}/api/cours/categorie/${categoryId}`, {
+    headers: this.getHeaders()
+  });
+}
+
+
 
 getCoursByPrice(min: number, max: number): Observable<any> {
   return this.http.get(`${this.apiUrl}/api/cours/filter/price?min=${min}&max=${max}`, { headers: this.getHeaders() });
