@@ -13,11 +13,11 @@ export class BookingService {
   constructor(private http: HttpClient) {}
 
   private getAuthHeaders(): HttpHeaders {
-    const token = localStorage.getItem('token');
-    return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
-    });
-  }
+  const token = localStorage.getItem('token');
+  return new HttpHeaders({
+    'Authorization': `Bearer ${token}` // Fix: Use backticks for proper string interpolation
+  });
+}
 
   // Réserver un créneau
   bookTimeSlot(sessionId: string, userId: string, date: string, time: string, motif: string): Observable<any> {
@@ -37,7 +37,8 @@ export class BookingService {
   inscrireUtilisateur(sessionId: string, userId: string): Observable<any> {
     const payload = { user_id: userId };
    // Frontend (dans booking.service.ts ou cours-session.service.ts)
-return this.http.post(`${this.apiUrl}/${sessionId}/inscriptions`, { userId }, { headers: this.getAuthHeaders() });
-
-  }
+    return this.http.post(`${this.apiUrl}/${sessionId}/inscriptions`, { user_id: userId }, {
+    headers: this.getAuthHeaders()
+    });
+}
 }

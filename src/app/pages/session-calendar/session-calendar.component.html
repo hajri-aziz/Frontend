@@ -2,41 +2,48 @@
   <h2 class="text-3xl font-bold text-center text-[#007299] mb-8">Calendrier des sessions</h2>
 
   <!-- Messages -->
-  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md">
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md flex justify-between items-center">
     {{ errorMessage }}
+    <button type="button" class="text-red-700 font-bold text-lg" (click)="errorMessage = null">×</button>
   </div>
-  <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md">
+  <div *ngIf="successMessage" class="mb-4 p-4 bg-blue-100 text-blue-700 rounded-md flex justify-between items-center">
     {{ successMessage }}
+    <button type="button" class="text-blue-700 font-bold text-lg" (click)="successMessage = null">×</button>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     <!-- Calendrier -->
-    <div class="bg-white rounded-xl shadow-md p-4">
+    <div class="bg-gradient-to-br from-[#e6f8ff] to-[#d0f0f9] rounded-xl shadow-md p-4 border border-[#b2e0ff]">
       <div class="flex justify-between items-center mb-4">
-        <button (click)="previousMonth()" class="text-[#007299] hover:underline">&larr;</button>
-        <span class="text-lg font-semibold">{{ currentMonthYear }}</span>
-        <button (click)="nextMonth()" class="text-[#007299] hover:underline">&rarr;</button>
+        <button (click)="previousMonth()" class="text-[#007299] hover:text-[#56e0e0] p-1 rounded-full hover:bg-[#e0f7f9] transition">
+          <i class="bi bi-chevron-left"></i>
+        </button>
+        <span class="text-lg font-semibold text-[#007299]">{{ currentMonthYear }}</span>
+        <button (click)="nextMonth()" class="text-[#007299] hover:text-[#56e0e0] p-1 rounded-full hover:bg-[#e0f7f9] transition">
+          <i class="bi bi-chevron-right"></i>
+        </button>
       </div>
-      <div class="grid grid-cols-7 text-center text-sm font-medium mb-2">
+      <div class="grid grid-cols-7 text-center text-sm font-medium text-[#007299] mb-2">
         <div *ngFor="let d of ['Lu','Ma','Me','Je','Ve','Sa','Di']">{{ d }}</div>
       </div>
       <div class="grid grid-cols-7 gap-1">
         <div *ngFor="let day of calendarDays" class="relative">
           <button 
             (click)="selectDate(day.date)" 
-            class="w-10 h-10 flex items-center justify-center rounded-full text-sm relative"
+            class="w-10 h-10 flex items-center justify-center rounded-full text-sm relative transition-colors"
             [class.bg-[#007299]]="isSelectedDate(day.date)"
             [class.text-white]="isSelectedDate(day.date)"
-            [class.text-gray-400]="day.isOtherMonth"
+            [class.text-gray-500]="day.isOtherMonth"
+            [class.text-[#007299]]="!day.isOtherMonth && !isSelectedDate(day.date)"
             [class.hover:bg-[#e0f7f9]]="!isSelectedDate(day.date)"
             [class.border-2]="hasSessionOnDate(day.date)"
-            [class.border-green-500]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)"
-            [class.bg-green-50]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)">
+            [class.border-[#56e0e0]]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)"
+            [class.bg-[#e0f7f9]]="hasSessionOnDate(day.date) && !isSelectedDate(day.date)">
             {{ day.date.getDate() }}
-            <!-- Petit point indicateur pour les sessions -->
+            <!-- Indicateur de sessions -->
             <div *ngIf="hasSessionOnDate(day.date)" 
-                 class="absolute -top-1 -right-1 w-3 h-3 rounded-full"
-                 [class.bg-green-500]="!isSelectedDate(day.date)"
+                 class="absolute -top-1 -right-1 w-2 h-2 rounded-full"
+                 [class.bg-[#56e0e0]]="!isSelectedDate(day.date)"
                  [class.bg-white]="isSelectedDate(day.date)">
             </div>
           </button>
@@ -44,63 +51,138 @@
       </div>
       
       <!-- Légende -->
-      <div class="mt-4 text-xs text-gray-600">
+      <div class="mt-4 text-xs text-[#007299]">
         <div class="flex items-center gap-2 mb-1">
-          <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-          <span>Dates avec sessions disponibles</span>
+          <div class="w-2 h-2 bg-[#56e0e0] rounded-full"></div>
+          <span>Dates avec sessions</span>
         </div>
         <div class="flex items-center gap-2">
-          <div class="w-3 h-3 bg-[#007299] rounded-full"></div>
+          <div class="w-2 h-2 bg-[#007299] rounded-full"></div>
           <span>Date sélectionnée</span>
         </div>
       </div>
     </div>
 
     <!-- Sessions disponibles -->
-    <div class="md:col-span-2 bg-white rounded-xl shadow-md p-6">
+    <div class="md:col-span-2 bg-gradient-to-br from-[#f0f8ff] to-[#e6f8ff] rounded-xl shadow-md p-6 border border-[#b2e0ff]">
       <h3 class="text-xl font-semibold text-[#007299] mb-4">Sessions disponibles</h3>
       <div *ngIf="selectedDate; else noDate">
-        <div *ngIf="sessions.length > 0; else noSessions" class="space-y-6">
-          <div *ngFor="let session of sessions" class="border border-gray-300 rounded-lg p-4">
-            <div class="flex justify-between items-start flex-col sm:flex-row sm:items-center gap-4">
-              <div>
-                <h4 class="text-lg font-semibold text-gray-800">{{ session.title }}</h4>
-                <p class="text-sm text-gray-600">{{ session.startdate | date:'fullDate' }} - {{ session.startdate | date:'shortTime' }}</p>
-                <p class="text-sm text-gray-600">Lieu : {{ session.location }}</p>
-                <p class="text-sm text-gray-600">Capacité : {{ session.participants.length }}/{{ session.capacity }}</p>
+        <div *ngIf="sessions.length > 0; else noSessions" class="space-y-4">
+          <div *ngFor="let session of sessions" class="border border-[#b2e0ff] rounded-lg p-4 bg-white/50 backdrop-blur-sm">
+            <div class="flex justify-between items-start flex-col sm:flex-row sm:items-start gap-4">
+              <div class="flex-grow">
+                <h4 class="text-lg font-semibold text-[#007299]">{{ session.title || session.cours?.title }}</h4>
+                <p class="text-sm text-[#007299]">{{ session.startdate | date:'fullDate' }} - {{ session.startdate | date:'shortTime' }}</p>
+                <p class="text-sm text-[#007299]">Heure de fin : {{ session.enddate | date:'shortTime' }}</p>
+                <p class="text-sm text-[#007299]" *ngIf="session.location">Lieu : {{ session.location }}</p>
+                <p class="text-sm text-[#007299]" *ngIf="session.professeur">Professeur : {{ session.professeur?.firstname }} {{ session.professeur?.lastname }}</p>
+                <p class="text-sm text-[#007299]">Capacité : {{ (session.participants.length || 0) }}/{{ session.maxparticipants || session.capacity || 'Illimité' }}</p>
               </div>
-              <div class="flex flex-col gap-2 items-end w-full sm:w-auto">
-                <button 
-                  *ngIf="!isRegistered(session)" 
-                  (click)="registerToSession(session._id)"
-                  [disabled]="session.participants.length >= session.capacity"
-                  class="px-4 py-2 text-white bg-[#007299] hover:bg-[#056a8c] rounded-md disabled:opacity-50">
-                  S'inscrire
-                </button>
-                <button 
-                  *ngIf="isRegistered(session)" 
-                  (click)="cancelRegistration(session._id)"
-                  class="px-4 py-2 text-red-600 border border-red-600 rounded-md hover:bg-red-50">
-                  Annuler
-                </button>
+              
+              <!-- Actions - Version utilisateur normal -->
+              <div *ngIf="!isAdmin" class="flex flex-col gap-2 w-full sm:w-40">
+                <div class="flex gap-2">
+                  <button 
+                    *ngIf="!isRegistered(session)" 
+                    (click)="registerToSession(session._id)"
+                    [disabled]="(session.participants.length || 0) >= (session.maxparticipants || session.capacity || 999)"
+                    class="flex items-center gap-2 justify-center flex-1 px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md disabled:opacity-50 hover:opacity-90 transition">
+                    <i class="bi bi-person-check-fill"></i> S'inscrire
+                  </button>
+                  <button 
+                    *ngIf="isRegistered(session)" 
+                    (click)="cancelRegistration(session._id)"
+                    class="flex items-center gap-2 justify-center flex-1 px-3 py-1.5 text-sm text-[#d32f2f] border border-[#d32f2f] rounded-md hover:bg-red-50 transition">
+                    <i class="bi bi-x-circle-fill"></i> Annuler
+                  </button>
+                </div>
 
-                <!-- Créneaux horaires disponibles -->
-                <div *ngIf="availableTimes.length > 0" class="mt-2 w-full sm:w-auto">
-                  <label class="text-xs text-gray-500 block mb-1">Choisissez une heure :</label>
+                <!-- Sélection d'horaire -->
+                <div *ngIf="availableTimes.length > 0 && selectedDate" class="mt-1">
                   <select 
-                    class="w-full border border-gray-300 rounded-md px-2 py-1 text-sm"
+                    class="w-full text-sm border border-[#b2e0ff] rounded-md px-2 py-1.5 bg-white/80 focus:ring-2 focus:ring-[#56e0e0]"
                     [(ngModel)]="selectedTime">
+                    <option value="">Choisir un horaire</option>
                     <option *ngFor="let time of availableTimes" 
                             [value]="time" 
                             [disabled]="isSlotBooked(session._id, selectedDate, time)">
-                      {{ time }} <span *ngIf="isSlotBooked(session._id, selectedDate, time)"> (Réservé) </span>
+                      {{ time }} <span *ngIf="isSlotBooked(session._id, selectedDate, time)"> (Complet) </span>
                     </option>
                   </select>
                   <button 
-                    class="mt-2 px-4 py-1 bg-green-600 hover:bg-green-700 text-white rounded-md text-sm"
+                    class="w-full mt-1 px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md hover:opacity-90 transition"
                     (click)="bookTime(session._id)"
                     [disabled]="!selectedTime || isSlotBooked(session._id, selectedDate, selectedTime)">
-                    Réserver ce créneau
+                    <i class="bi bi-clock-fill mr-1"></i> Réserver
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Actions - Version admin -->
+              <div *ngIf="isAdmin" class="flex flex-col gap-2 w-full sm:w-48">
+                <div class="flex gap-2">
+                  <!-- Bouton pour inscrire un autre utilisateur -->
+                  <button 
+                    (click)="openUserSelectionForRegistration(session._id)"
+                    class="flex items-center gap-2 justify-center px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#28a745] to-[#20c997] rounded-md hover:opacity-90 transition w-full">
+                    <i class="bi bi-person-plus-fill"></i> Inscrire un utilisateur
+                  </button>
+                </div>
+                
+                <div class="flex gap-2">
+                  <!-- Actions pour l'admin lui-même -->
+                  <button 
+                    *ngIf="!isRegistered(session)" 
+                    (click)="registerToSession(session._id)"
+                    [disabled]="(session.participants.length || 0) >= (session.maxparticipants || session.capacity || 999)"
+                    class="flex items-center gap-2 justify-center px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md disabled:opacity-50 hover:opacity-90 transition flex-1">
+                    <i class="bi bi-person-check-fill"></i> M'inscrire
+                  </button>
+                  <button 
+                    *ngIf="isRegistered(session)" 
+                    (click)="cancelRegistration(session._id)"
+                    class="flex items-center gap-2 justify-center px-3 py-1.5 text-sm text-[#d32f2f] border border-[#d32f2f] rounded-md hover:bg-red-50 transition flex-1">
+                    <i class="bi bi-x-circle-fill"></i> Annuler inscription
+                  </button>
+                </div>
+
+                <!-- Sélection d'horaire pour admin -->
+                <div *ngIf="availableTimes.length > 0 && selectedDate" class="mt-1">
+                  <select 
+                    class="w-full text-sm border border-[#b2e0ff] rounded-md px-2 py-1.5 bg-white/80 focus:ring-2 focus:ring-[#56e0e0]"
+                    [(ngModel)]="selectedTime">
+                    <option value="">Choisir un horaire</option>
+                    <option *ngFor="let time of availableTimes" 
+                            [value]="time" 
+                            [disabled]="isSlotBooked(session._id, selectedDate, time)">
+                      {{ time }} <span *ngIf="isSlotBooked(session._id, selectedDate, time)"> (Complet) </span>
+                    </option>
+                  </select>
+                  <button 
+                    class="w-full mt-1 px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md hover:opacity-90 transition"
+                    (click)="bookTime(session._id)"
+                    [disabled]="!selectedTime || isSlotBooked(session._id, selectedDate, selectedTime)">
+                    <i class="bi bi-clock-fill mr-1"></i> Réserver
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Liste des participants (visible pour admin uniquement) -->
+            <div *ngIf="isAdmin && session.participants?.length > 0" class="mt-4 pt-4 border-t border-[#b2e0ff]">
+              <h5 class="text-sm font-semibold text-[#007299] mb-3">Participants inscrits ({{ session.participants.length }}) :</h5>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div *ngFor="let participant of session.participants" 
+                    class="flex items-center justify-between bg-white/70 rounded-md px-3 py-2 text-sm">
+                  <span class="text-[#007299] font-medium">
+                    {{ getUserFullName(participant.user_id) }}
+                  </span>
+                  <button 
+                    (click)="cancelUserRegistration(session._id, resolveUserId(participant.user_id))"
+
+                    class="text-[#d32f2f] hover:bg-red-50 rounded-full w-6 h-6 flex items-center justify-center transition"
+                    title="Annuler l'inscription de cet utilisateur">
+                    <i class="bi bi-x-lg text-xs"></i>
                   </button>
                 </div>
               </div>
@@ -108,12 +190,95 @@
           </div>
         </div>
         <ng-template #noSessions>
-          <p class="text-center text-gray-500">Aucune session pour cette date</p>
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">📅</div>
+            <p class="text-[#007299] text-lg">Aucune session disponible pour cette date</p>
+            <p class="text-[#007299] text-sm opacity-75">Sélectionnez une autre date ou consultez le calendrier</p>
+          </div>
         </ng-template>
       </div>
       <ng-template #noDate>
-        <p class="text-center text-gray-500">Veuillez sélectionner une date</p>
+        <div class="text-center py-8">
+          <div class="text-6xl mb-4">👆</div>
+          <p class="text-[#007299] text-lg">Veuillez sélectionner une date</p>
+          <p class="text-[#007299] text-sm opacity-75">Cliquez sur une date dans le calendrier pour voir les sessions disponibles</p>
+        </div>
       </ng-template>
+    </div>
+  </div>
+
+  <!-- Modal de sélection d'utilisateur pour admin -->
+  <div *ngIf="showUserSelection" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-md w-full max-h-[80vh] overflow-y-auto shadow-2xl" (click)="$event.stopPropagation()">
+      <!-- En-tête de la modal -->
+      <div class="flex justify-between items-center p-6 border-b border-gray-200">
+        <h5 class="text-xl font-semibold text-[#007299]">
+          <i class="bi bi-person-plus-fill mr-2"></i>
+          Inscrire un utilisateur
+        </h5>
+        <button 
+          type="button" 
+          class="text-gray-400 hover:text-gray-600 text-2xl font-light"
+          (click)="closeUserSelection()">
+          ×
+        </button>
+      </div>
+      
+      <!-- Corps de la modal -->
+      <div class="p-6">
+        <!-- Afficher le titre de la session -->
+        <div class="mb-4 p-3 bg-gradient-to-br from-[#e6f8ff] to-[#d0f0f9] rounded-lg border border-[#b2e0ff]">
+          <p class="text-sm text-[#007299]">
+            <i class="bi bi-calendar-event-fill mr-1"></i>
+            Session : {{ getSelectedSessionTitle() }}
+          </p>
+        </div>
+
+        <label for="userSelect" class="block text-sm font-medium text-[#007299] mb-3">
+          Sélectionner un utilisateur à inscrire :
+        </label>
+        <div *ngIf="allUsers.length > 0; else noUsers">
+          <select 
+            id="userSelect"
+            class="w-full border border-[#b2e0ff] rounded-lg px-4 py-3 bg-white focus:ring-2 focus:ring-[#56e0e0] focus:border-[#56e0e0] transition"
+            [(ngModel)]="selectedUserForRegistration">
+            <option value="">-- Choisir un utilisateur --</option>
+            <option 
+              *ngFor="let user of allUsers" 
+              [value]="user._id">
+              {{ user.firstname }} {{ user.lastname }} ({{ user.email }})
+            </option>
+          </select>
+        </div>
+        <ng-template #noUsers>
+          <p class="text-sm text-[#d32f2f]">Aucun utilisateur disponible pour l'inscription.</p>
+        </ng-template>
+        
+        <div class="mt-4 p-3 bg-gradient-to-br from-[#e6f8ff] to-[#d0f0f9] rounded-lg border border-[#b2e0ff]">
+          <p class="text-sm text-[#007299]">
+            <i class="bi bi-info-circle mr-1"></i>
+            L'utilisateur sera inscrit à la session ci-dessus.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Pied de la modal -->
+      <div class="flex justify-end gap-3 p-6 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+        <button 
+          type="button" 
+          class="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition"
+          (click)="closeUserSelection()">
+          Annuler
+        </button>
+        <button 
+          type="button" 
+          class="px-4 py-2 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md hover:opacity-90 transition disabled:opacity-50"
+          (click)="registerUserToSessionAsAdmin()"
+          [disabled]="!selectedUserForRegistration">
+          <i class="bi bi-check-lg mr-1"></i>
+          Confirmer l'inscription
+        </button>
+      </div>
     </div>
   </div>
 </div>

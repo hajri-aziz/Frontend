@@ -1,40 +1,52 @@
-<div class="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow">
-  <!-- Statistiques globales -->
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 text-center">
-    <div class="bg-gray-100 rounded-lg p-4">
-      <p class="text-sm text-gray-500">Catégories</p>
-      <p class="text-2xl font-bold">{{ totalCategories }}</p>
-    </div>
-    <div class="bg-gray-100 rounded-lg p-4">
-      <p class="text-sm text-gray-500">Cours</p>
-      <p class="text-2xl font-bold">{{ totalCours }}</p>
-    </div>
-    <div class="bg-gray-100 rounded-lg p-4">
-      <p class="text-sm text-gray-500">Sessions actives</p>
-      <p class="text-2xl font-bold">{{ totalSessions }}</p>
-    </div>
-    <div class="bg-gray-100 rounded-lg p-4">
-      <p class="text-sm text-gray-500">Inscriptions moy. / session</p>
-      <p class="text-2xl font-bold">{{ moyenneInscriptions }}</p>
-    </div>
-  </div>
+<div class="min-h-screen bg-[#f4feff] flex items-center justify-center p-4">
+  <div class="w-full max-w-3xl bg-white rounded-xl shadow-md border border-[#56e0e0] p-6">
+    
+    <!-- Titre -->
+    <h1 class="text-xl font-bold font-poppins text-[#444444] mb-6 text-center">TABLEAU DE BORD COURS</h1>
 
-  <!-- Graphiques -->
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-    <div class="bg-white p-4 rounded-lg border">
-      <h3 class="text-sm font-semibold mb-2">Inscriptions par cours</h3>
-      <canvas id="enrollmentChart"></canvas>
+    <!-- Statistiques en ligne -->
+    <div class="flex flex-wrap justify-between gap-4 mb-6">
+      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+        <p class="text-[#636262] text-sm font-medium">Catégories</p>
+        <p class="text-[#444444] text-xl font-bold mt-1">{{ totalCategories }}</p>
+      </div>
+      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+        <p class="text-[#636262] text-sm font-medium">Cours</p>
+        <p class="text-[#444444] text-xl font-bold mt-1">{{ totalCours }}</p>
+      </div>
+      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+        <p class="text-[#636262] text-sm font-medium">Sessions</p>
+        <p class="text-[#444444] text-xl font-bold mt-1">{{ totalSessions }}</p>
+      </div>
+      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+        <p class="text-[#636262] text-sm font-medium">Inscriptions</p>
+        <p class="text-[#444444] text-xl font-bold mt-1">{{ moyenneInscriptions }}</p>
+      </div>
     </div>
-    <div class="bg-white p-4 rounded-lg border">
-      <h3 class="text-sm font-semibold mb-2">Cours par catégorie</h3>
-      <canvas id="categorieChart"></canvas>
-    </div>
-  </div>
 
-  <!-- Actions -->
-  <div class="flex flex-wrap gap-4 justify-center">
-    <a routerLink="/categories/create" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Ajouter une catégorie</a>
-    <a routerLink="/cours/create" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Ajouter un cours</a>
-    <a routerLink="/cours/:id/sessions/new" class="px-6 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white rounded-xl shadow hover:opacity-90 transition">Créer une session</a>
+    <!-- Graphiques côte à côte -->
+    <div class="flex flex-col md:flex-row gap-4 mb-6">
+      <div class="flex-1 bg-white rounded-lg p-4 border border-[#56e0e0]/20">
+        <h3 class="text-[#636262] text-sm font-medium mb-3 text-center">INSCRIPTIONS PAR COURS</h3>
+        <canvas id="enrollmentChart" class="h-40 w-full"></canvas>
+      </div>
+      <div class="flex-1 bg-white rounded-lg p-4 border border-[#56e0e0]/20">
+        <h3 class="text-[#636262] text-sm font-medium mb-3 text-center">COURS PAR CATÉGORIE</h3>
+        <canvas id="categorieChart" class="h-40 w-full"></canvas>
+      </div>
+    </div>
+
+    <!-- Boutons en ligne -->
+    <div class="flex flex-wrap justify-center gap-3">
+      <a routerLink="/categories/create" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+        Ajouter catégorie
+      </a>
+      <a routerLink="/cours/create" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+        Ajouter cours
+      </a>
+      <a routerLink="/cours/:id/sessions/new" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+        Créer session
+      </a>
+    </div>
   </div>
 </div>
