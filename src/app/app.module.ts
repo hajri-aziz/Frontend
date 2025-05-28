@@ -67,6 +67,8 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
+import { ToastComponent } from './pages/toast/toast.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 
@@ -116,6 +118,7 @@ import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours
     UnauthorizedComponent,
     SessionCalendarComponent,
     DashboardCoursComponent,
+    ToastComponent,
   ],
  
   imports: [
@@ -124,7 +127,8 @@ import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours
     ReactiveFormsModule,
     HttpClientModule,
     FormsModule,
-    MatDialogModule
+    MatDialogModule,
+    BrowserAnimationsModule,
   ],
   bootstrap: [AppComponent]
 })

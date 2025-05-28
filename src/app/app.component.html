@@ -1,28 +1,42 @@
 <!-- Layout avec sidebar (pour admin) -->
+
+
 <div *ngIf="getLayoutType() === 'sidebar'" class="flex min-h-screen bg-[#f4feff]">
   <!-- Sidebar -->
   <div class="w-64 h-screen fixed bg-[#f4feff] border-r border-[#cbd5e0]">
+
     <app-sidebar></app-sidebar>
   </div>
 
   <!-- Contenu principal -->
   <div class="flex-1 p-6 ml-64">
+  
     <router-outlet></router-outlet>
+
   </div>
+  <app-toast></app-toast>
 </div>
 
 <!-- Layout avec navbar (pour autres utilisateurs) -->
 <div *ngIf="getLayoutType() === 'navbar'" class="min-h-screen bg-[#f4feff]">
   <!-- Navbar -->
+
   <app-navbar></app-navbar>
+ 
 
   <!-- Contenu principal -->
   <div class="p-6">
     <router-outlet></router-outlet>
+   
+    
   </div>
+  <app-toast></app-toast>
 </div>
 
 <!-- Layout sans sidebar ni navbar (login, signup) -->
 <div *ngIf="getLayoutType() === 'simple'" class="min-h-screen flex items-center justify-center bg-white">
+  
   <router-outlet></router-outlet>
+  
+  <app-toast></app-toast>
 </div>
