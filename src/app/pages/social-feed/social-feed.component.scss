@@ -449,3 +449,46 @@
   border: none;
   border-radius: 20px;
 }
+
+/* Style pour la zone de messages */
+#groupMessagesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  
+  /* Permet aux messages de prendre la largeur nécessaire */
+  .message-container {
+    max-width: 90%;
+    word-wrap: break-word;
+  }
+  
+  /* Style pour les messages reçus */
+  .received-message {
+    align-self: flex-start;
+  }
+  
+  /* Style pour les messages envoyés */
+  .sent-message {
+    align-self: flex-end;
+  }
+}
+
+/* Style pour le textarea qui s'agrandit */
+textarea {
+  transition: height 0.2s;
+  min-height: 40px;
+  max-height: 120px;
+}
+
+.resize-y {
+  resize: vertical; /* Allow vertical resizing only */
+}
+
+#groupMessagesContainer {
+  overscroll-behavior: contain; /* Prevent scroll from affecting parent elements */
+}
+
+/* Ensure message bubbles wrap text properly */
+.break-words {
+  word-break: break-word;
+}

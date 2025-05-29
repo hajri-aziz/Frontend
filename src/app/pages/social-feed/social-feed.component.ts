@@ -1421,6 +1421,7 @@ async sendMessageGroup() {
     console.error('Échec de l\'envoi:', error);
     this.showError('Échec de l\'envoi du message');
   }
+ this.groupMessageContent = '';
 }
 
 // Gestion des messages entrants corrigée
