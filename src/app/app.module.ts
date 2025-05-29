@@ -67,6 +67,7 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
+import { MessagesComponent } from './pages/messages/messages.component';
 
 
 
@@ -116,6 +117,7 @@ import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours
     UnauthorizedComponent,
     SessionCalendarComponent,
     DashboardCoursComponent,
+    MessagesComponent,
   ],
  
   imports: [

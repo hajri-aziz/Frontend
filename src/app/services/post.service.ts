@@ -1,7 +1,7 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, Subject, throwError } from 'rxjs';
+import { Observable, Subject, throwError,BehaviorSubject } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Post, Comment, Group, Message } from '../models/post.models';
 import { User } from '../models/user.model';
@@ -9,6 +9,11 @@ import io from 'socket.io-client';
 
 @Injectable({providedIn: 'root'})
 export class PostService {
+  //GROUP 
+
+
+
+
   private socket: any; // Use 'any' or proper interface if available
   private readonly SOCKET_URL = 'http://localhost:3000';
   //private readonly SOCKET_URL = 'https://backend-5uj8.onrender.com';
@@ -277,44 +282,9 @@ async getGroupMessages(groupId: string): Promise<Message[]> {
     console.log('Group messages fetched:', response);
     return response ?? [];
 }
- // Rejoindre un groupe
-
-  // Écouter la création d'un nouveau groupe
-
-
-  // Écouter les nouveaux messages
-  onNewMessageGroup(): Observable<any> {
-    return new Observable(observer => {
-      this.socket.on('new-group-message', (message: any) => {
-        observer.next(message);
-      });
-    });
-  }
-async sendGroupMessage(data: { groupId: string, contenu: string, sender: string }): Promise<void> {
-    console.log("📤 Emitting send-group-message with data:", data);
-    return new Promise((resolve, reject) => {
-        this.socket.emit('send-group-message', data, (response: any) => {
-            if (response?.status === 'success') {
-                console.log("✅ Successfully sent group message");
-                resolve();
-            } else {
-                console.error("❌ Failed to send group message:", response);
-                reject(new Error('Failed to send group message'));
-            }
-        });
-    });
-}
-
-
-
-
-  //***************************** REST API GROUP *************************** */
-
 getUserGroups(userId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/group/getallGroupByUser`, { headers: this.getHeaders() });
 }
-
-// Rejoindre un groupe
 joinGroup(groupId: string): void {
     this.socket.emit('join-group', { groupId }, (response: any) => {
         if (response?.status === 'success') {
@@ -324,12 +294,9 @@ joinGroup(groupId: string): void {
         }
     });
 }
-
 leaveGroup(groupId: string): void {
     this.socket.emit('leave-group', { groupId });
 }
-
-// Écouter la création d'un nouveau groupe
 onGroupCreated(): Observable<any> {
     return new Observable(observer => {
         this.socket.on('group-created', (data: any) => {
@@ -337,22 +304,6 @@ onGroupCreated(): Observable<any> {
         });
     });
 }
-
-// Récupérer les messages d'un groupe
-
-
-// Écoute des nouveaux messages de groupe
-onNewGroupMessage(): Observable<Message> {
-    return new Observable(observer => {
-        this.socket.on('new-group-message', (message: Message) => {
-            observer.next(message);
-        });
-    });
-}
-
-
-
-// Gestion des erreurs
 onError(): Observable<string> {
     return new Observable(observer => {
         this.socket.on('error', (err: any) => {
@@ -363,6 +314,65 @@ onError(): Observable<string> {
 
 
 
+
+// Méthode d'envoi corrigée
+async sendGroupMessage(data: {
+  groupId: string;
+  content: string;
+  senderId: string;
+}): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!this.socket.connected) {
+      reject(new Error('Socket non connecté'));
+      return;
+    }
+
+    this.socket.emit('send-group-message', {
+      groupId: data.groupId,
+      contenu: data.content,
+      expediteurId: data.senderId
+    }, (response: { status: string; error?: string }) => {
+      if (response.status === 'success') {
+        resolve();
+      } else {
+        reject(new Error(response.error || 'Erreur inconnue'));
+      }
+    });
+  });
+}
+
+// Écoute des messages corrigée
+onNewGroupMessage(): Observable<{
+  _id: string;
+  content: string;
+  senderId: string;
+  timestamp: Date;
+  groupId: string;
+}> {
+  return new Observable((observer) => {
+    const handler = (message: {
+      _id: string;
+      contenu: string;
+      expediteurId: string;
+      dateEnvoi: string;
+      groupId: string;
+    }) => {
+      observer.next({
+        _id: message._id,
+        content: message.contenu,
+        senderId: message.expediteurId,
+        timestamp: new Date(message.dateEnvoi),
+        groupId: message.groupId
+      });
+    };
+
+    this.socket.on('new-group-message', handler);
+
+    return () => {
+      this.socket.off('new-group-message', handler);
+    };
+  });
+}
 //************************************REACTION********************* */
 
    addReaction(postId: string, reactionType: any) {

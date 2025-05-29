@@ -52,44 +52,78 @@
         </section>
 
         <!-- Contact Form Section -->
-        <section class="mt-12 sm:mt-16 bg-white py-12 sm:py-16 px-4 sm:px-6">
-            <h2 class="text-center text-3xl sm:text-4xl md:text-3xl font-bold font-poppins max-w-3xl mx-auto">
-                <span class="text-zinc-900">Envoyez-nous un</span>
-                <span class="text-teal-300"> Message</span>
-            </h2>
-            <div class="mt-12 max-w-2xl mx-auto">
-                <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 p-6 sm:p-8">
-                    <div class="space-y-6">
-                        <!-- Name -->
-                        <div>
-                            <label for="name" class="block text-zinc-900 text-base font-semibold font-poppins">Nom</label>
-                            <input type="text" id="name" placeholder="Votre nom" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
-                        </div>
-                        <!-- Email -->
-                        <div>
-                            <label for="email" class="block text-zinc-900 text-base font-semibold font-poppins">Email</label>
-                            <input type="email" id="email" placeholder="Votre email" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
-                        </div>
-                        <!-- Subject -->
-                        <div>
-                            <label for="subject" class="block text-zinc-900 text-base font-semibold font-poppins">Sujet</label>
-                            <input type="text" id="subject" placeholder="Sujet de votre message" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300">
-                        </div>
-                        <!-- Message -->
-                        <div>
-                            <label for="message" class="block text-zinc-900 text-base font-semibold font-poppins">Message</label>
-                            <textarea id="message" placeholder="Votre message" rows="5" class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300"></textarea>
-                        </div>
-                        <!-- Submit Button -->
-                        <div class="flex justify-center">
-                            <button class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
-                                Envoyer
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+<section class="mt-12 sm:mt-16 bg-white py-12 sm:py-16 px-4 sm:px-6">
+  <h2 class="text-center text-3xl sm:text-4xl md:text-3xl font-bold font-poppins max-w-3xl mx-auto">
+    <span class="text-zinc-900">Envoyez-nous un</span>
+    <span class="text-teal-300"> Message</span>
+  </h2>
+  <div class="mt-12 max-w-2xl mx-auto">
+    <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 p-6 sm:p-8">
+      <!-- Display Success or Error Messages -->
+      <div *ngIf="successMessage" class="mb-4 text-green-600 text-center font-poppins">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="mb-4 text-red-600 text-center font-poppins">{{ errorMessage }}</div>
+      
+      <form (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- Name -->
+        <div>
+          <label for="name" class="block text-zinc-900 text-base font-semibold font-poppins">Nom</label>
+          <input 
+            type="text" 
+            id="name" 
+            [(ngModel)]="message.name" 
+            name="name" 
+            placeholder="Votre nom" 
+            class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300" 
+            required>
+        </div>
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-zinc-900 text-base font-semibold font-poppins">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="message.email" 
+            name="email" 
+            placeholder="Votre email" 
+            class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300" 
+            required>
+        </div>
+        <!-- Subject -->
+        <div>
+          <label for="subject" class="block text-zinc-900 text-base font-semibold font-poppins">Sujet</label>
+          <input 
+            type="text" 
+            id="subject" 
+            [(ngModel)]="message.subject" 
+            name="subject" 
+            placeholder="Sujet de votre message" 
+            class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300" 
+            required>
+        </div>
+        <!-- Message -->
+        <div>
+          <label for="message" class="block text-zinc-900 text-base font-semibold font-poppins">Message</label>
+          <textarea 
+            id="message" 
+            [(ngModel)]="message.message" 
+            name="message" 
+            placeholder="Votre message" 
+            rows="5" 
+            class="mt-2 w-full p-3 border border-neutral-400 rounded-lg text-zinc-600 text-base font-normal font-poppins focus:outline-none focus:ring-2 focus:ring-teal-300" 
+            required></textarea>
+        </div>
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+          <button 
+            type="submit" 
+            class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
+            Envoyer
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
 
         <!-- Contact Info Section -->
         <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">

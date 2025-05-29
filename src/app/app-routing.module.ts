@@ -42,6 +42,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
+import { MessagesComponent } from './pages/messages/messages.component';
 
 
 const routes: Routes = [
@@ -117,6 +118,8 @@ const routes: Routes = [
   { path: 'navbar', component: NavbarComponent },
 
   { path: 'unauthorized', component: UnauthorizedComponent },
+
+  { path: 'messages', component: MessagesComponent },
 
   // Redirection en cas d'URL inconnue
   { path: '**', redirectTo: '' }

@@ -21,6 +21,7 @@ import { HttpClient } from "@angular/common/http"
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
 
+  messageSubscription: Subscription | undefined;
   selectedGroup: any
   currentUser: User | null = null
   posts: Post[] = []
@@ -60,7 +61,7 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
 
   // ViewChild pour le scrolling automatique
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
-  @ViewChild('groupMessagesContainer') groupMessagesContainer!: ElementRef;
+  @ViewChild('groupMessagesContainer') private groupMessagesContainer!: ElementRef;
   newGroupMessage: any
 expandedGroupChatId: string | null = null;
 post: any
@@ -106,6 +107,7 @@ post: any
 
   // Méthodes existantes restantes...
   ngOnInit() {
+     this.postService.connect(this.currentUserId);
     this.checkServerConnection();
     this.loadCurrentUser();
     this.currentUserId = localStorage.getItem('userId') || '';
@@ -113,6 +115,8 @@ post: any
     this.loadUsers();
     this.loadGroups();
     this.listenForTyping();
+    this.setupSocketListeners();
+    this.setupSocketListenersGroup();
 
     this.userService.getAllUsers().subscribe(data => {
       this.users = data;
@@ -427,7 +431,11 @@ post: any
     this.postService.disconnect();
     this.destroy$.next();
   this.destroy$.complete();  
+     this.subscriptions.forEach(sub => sub.unsubscribe());
   }
+
+
+
 
   getSafeImageUrl(imagePath: string | undefined): string {
     if (!imagePath) {
@@ -1395,43 +1403,53 @@ setReaction(post: Post, type: string) {
     }
   }
 
-  private setupGroupSocketListeners(): void {
-    console.log("🔔 Listening for new-group-message");
-    this.postService.onNewGroupMessage().subscribe((message: Message) => {
-      console.log("📥 Received new group message:", message);
-      const chat = this.activeGroupChats.find(c => c.group._id === message["groupId"]);
-      if (chat) {
-        const exists = chat.groupMessages?.some(m => m._id === message._id) ?? false;
-        if (!exists) {
-          chat.groupMessages = [...(chat.groupMessages || []), message];
-          if (message["groupId"] === this.selectedGroup?._id) {
-            this.groupMessages = [...this.groupMessages, message];
-            this.scrollToBottom('groupMessagesContainer');
-          }
-        } else {
-          chat.groupMessages = chat.groupMessages?.map(m => m._id === message._id ? message : m);
-          if (message["groupId"] === this.selectedGroup?._id) {
-            this.groupMessages = this.groupMessages.map(m => m._id === message._id ? message : m);
-          }
-        }
-        if (message["groupId"] !== this.expandedGroupChatId && chat.isExpanded === false) {
-          chat.unreadCount = (chat.unreadCount || 0) + 1;
-        }
-      }
-    });
+async sendMessageGroup() {
+  if (!this.groupMessageContent.trim() || !this.selectedGroup || !this.currentUser) {
+    return;
   }
 
-  sendMessageGroup(): void {
-    console.log("🔧 Sending group message - content:", this.groupMessageContent, "groupId:", this.selectedGroup?._id);
-    if (!this.groupMessageContent.trim() || !this.selectedGroup) return;
-
-    this.postService.sendGroupMessage({
+  try {
+    await this.postService.sendGroupMessage({
       groupId: this.selectedGroup._id,
-      contenu: this.groupMessageContent,
-      sender: this.currentUser?._id || ''
-    }).then(() => {
-      this.groupMessageContent = '';
-    }).catch(err => console.error("🔴 Error sending message:", err));
+      content: this.groupMessageContent,
+      senderId: this.currentUser._id!
+    });
+    
+    this.groupMessageContent = '';
+    this.scrollToBottom('groupMessagesContainer');
+  } catch (error) {
+    console.error('Échec de l\'envoi:', error);
+    this.showError('Échec de l\'envoi du message');
   }
+ this.groupMessageContent = '';
+}
+
+// Gestion des messages entrants corrigée
+private setupSocketListenersGroup() {
+  this.messageSubscription = this.postService.onNewGroupMessage().subscribe({
+    next: (message) => {
+      if (message.groupId === this.selectedGroup?._id) {
+        this.groupMessages.push({
+          _id: message._id,
+          content: message.content,
+          sender: message.senderId,
+          timestamp: message.timestamp,
+          isCurrentUser: message.senderId === this.currentUser?._id
+        });
+        this.cdr.detectChanges();
+        this.scrollToBottom('groupMessagesContainer');
+      }
+    },
+    error: (err) => console.error('Erreur socket:', err)
+  });
+}
+
+// Simple error display method
+showError(message: string): void {
+  alert(message);
+}
+
+
+  
 
   }
