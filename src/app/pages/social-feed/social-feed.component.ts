@@ -7,7 +7,7 @@ import type { User } from "../../models/user.model"
 import { UserService } from "../../services/user.service"
 import { PostService } from "../../services/post.service"
 import type { Subscription } from "rxjs"
-import { forkJoin } from 'rxjs';
+import { forkJoin, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http"
 
@@ -47,6 +47,7 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   isTyping: boolean = false;
   typingTimeout: any;
   groupMessageContent: string = '';
+  private destroy$ = new Subject<void>();
   // Nouvelles propriétés ajoutées
   activeChats: any[] = []; // Pour gérer plusieurs chats ouverts
   expandedChatId: string | null = null; // Pour savoir quel chat est développé
@@ -54,10 +55,12 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
     group: Group;
     isExpanded: boolean;
     unreadCount: number;
+    groupMessages: any[];
 }> = [];
 
   // ViewChild pour le scrolling automatique
   @ViewChild('messagesContainer') private messagesContainer!: ElementRef;
+  @ViewChild('groupMessagesContainer') groupMessagesContainer!: ElementRef;
   newGroupMessage: any
 expandedGroupChatId: string | null = null;
 post: any
@@ -422,6 +425,8 @@ post: any
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => sub.unsubscribe());
     this.postService.disconnect();
+    this.destroy$.next();
+  this.destroy$.complete();  
   }
 
   getSafeImageUrl(imagePath: string | undefined): string {
@@ -481,20 +486,7 @@ post: any
     });
   }
 
-  loadGroups() {
-    this.http.get<any[]>('http://localhost:3000/group/getallGroupByUser', {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).subscribe(
-      (data: any[]) => {
-        this.groups = data;
-        console.log('Groupes chargés :', data);
-      },
-      (error: any) => {
-        console.error('Erreur lors du chargement des groupes :', error);
-      }
-    );
-  }
-
+ 
   openGroup(groupId: string) {
     console.log('Ouverture du groupe avec ID :', groupId);
   }
@@ -931,88 +923,13 @@ expandChat(userId: string) {
  // Méthodes pour les groupes
 
 
-private setupGroupSocketListeners(): void {
-    // Écoute des nouveaux messages de groupe
-    this.postService.onNewGroupMessage().subscribe((message: Message) => {
-      if (message['groupId'] === this.selectedGroup?._id) {
-        // Vérifier si le message existe déjà
-        const exists = this.groupMessages.some(m => m._id === message._id);
-        if (!exists) {
-          this.groupMessages = [...this.groupMessages, message];
-          this.scrollToBottom('groupMessagesContainer');
-        }
-      }
-    });
-  }
 
-  openGroupChat(group: Group): void {
-    // Rejoindre le groupe via socket
-    this.postService.joinGroup(group._id!);
 
-    const existingChat = this.activeGroupChats.find(c => c.group._id === group._id);
-    
-    if (existingChat) {
-      this.expandGroupChat(group._id!);
-      return;
-    }
+ 
 
-    // Ajouter le nouveau chat
-    this.activeGroupChats.push({
-      group,
-      isExpanded: true,
-      unreadCount: 0
-    });
 
-    this.selectedGroup = group;
-    this.expandedGroupChatId = group._id!;
-    this.loadGroupMessages(group._id!);
-  }
 
-  loadGroupMessages(groupId: string): void {
-    this.groupMessages = []; // Afficher le loader
-    this.postService.getGroupMessages(groupId).subscribe({
-      next: (messages) => {
-        this.groupMessages = messages;
-        this.scrollToBottom('groupMessagesContainer');
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des messages:', err);
-        this.groupMessages = [];
-      }
-    });
-  }
 
- sendMessageGroup(): void {
-    if (!this.newMessage.trim()) return;
-
-    this.postService.sendGroupMessage({
-      groupId: this.selectedGroup?._id,
-      content: this.newMessage,
-      sender: this.currentUserId
-    });
-
-    // Optimistic UI
-    this.messages.push({
-      _id: Date.now().toString(),
-      content: this.newMessage,
-      sender: this.currentUserId,
-      conversationId: this.selectedGroup?._id ?? '',
-      timestamp: new Date().toISOString()
-    });
-
-    this.newMessage = '';
-  }
-
-expandGroupChat(groupId: string): void {
-    const chat = this.activeGroupChats.find(c => c.group._id === groupId);
-    if (chat) {
-        chat.isExpanded = true;
-        chat.unreadCount = 0;
-        this.selectedGroup = chat.group;
-        this.expandedGroupChatId = groupId;
-        this.loadGroupMessages(groupId);
-    }
-}
 
 minimizeGroupChat(): void {
     if (this.expandedGroupChatId) {
@@ -1194,27 +1111,7 @@ getCurrentReactionIcon(post: any): string {
 }
 
 // Obtenir le libellé à afficher
-getReactionLabel(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
-}
 
-// Vérifier si l'utilisateur a réagi
-hasUserReacted(post: any, type: string): boolean {
-    if (!this.currentUser || !post.likes) return false;
-    return this.currentUser && this.currentUser._id
-        ? post.likes.some((like: any) => like.userId === this.currentUser!._id && like.type === type)
-        : false;
-}
-
-// Obtenir la réaction de l'utilisateur
-getUserReaction(post: any): string | null {
-    if (!this.currentUser || !post.likes) return null;
-    const reaction = (post.likes && this.currentUser && this.currentUser._id)
-        ? post.likes.find((like: any) => like.userId === this.currentUser!._id)
-        : null;
-    return reaction ? reaction.type : null;
-}
 
 // Obtenir le SVG d'une réaction
 getReactionSvg(type: string, size: string = '24'): string {
@@ -1240,23 +1137,19 @@ toggleReaction(post: any) {
     }
 }
 
-// Définir une réaction
-setReaction(post: any, type: string) {
-    this.postService.addReaction(post._id, type).subscribe(
-        (updatedPost: any) => {
-            // Mettre à jour le post dans votre state/store
-            post.likes = updatedPost.likes;
-            this.showReactionMenu = null;
-        }
-    );
-}
+
 
 // Supprimer une réaction
-removeReaction(post: any) {
+removeReaction(post: { _id: string; likes: any[] }) {
     this.postService.removeReaction(post._id).subscribe(
         (updatedPost: any) => {
             // Mettre à jour le post dans votre state/store
-            post.likes = updatedPost.likes;
+            if (updatedPost && updatedPost.likes) {
+                post.likes = updatedPost.likes;
+            }
+        },
+        (err: any) => {
+            console.error('Erreur lors de la suppression de la réaction:', err);
         }
     );
 }
@@ -1265,36 +1158,10 @@ removeReaction(post: any) {
 
 
 // Dans votre composant
-reactionTypes = [
-    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
-    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
-    { type: 'haha', label: 'Haha', emoji: '😄', color: '#F7B125' },
-    { type: 'wow', label: 'Wow', emoji: '😲', color: '#F7B125' },
-    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
-    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
-];
 
-showReactionsFor: string | null = null;
-reactionTimeout: any = null;
 
 // Obtenir l'emoji de la réaction actuelle
-getCurrentReactionEmoji(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return this.reactionTypes.find(r => r.type === reaction)?.emoji || '👍';
-}
 
-// Gestion de l'affichage du menu
-keepReactionsVisible() {
-    if (this.reactionTimeout) {
-        clearTimeout(this.reactionTimeout);
-    }
-}
-
-hideReactions() {
-    this.reactionTimeout = setTimeout(() => {
-        this.showReactionsFor = null;
-    }, 300);
-}
 
 handleReactionClick(post: any) {
     if (!this.showReactionsFor) {
@@ -1307,11 +1174,264 @@ handleReactionClick(post: any) {
         }
     }
 }
+//updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
 
-// Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Dans votre composant
+reactionTypes = [
+    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
+    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
+    { type: 'haha', label: 'Haha', emoji: '😂', color: '#F7B125' },
+    { type: 'wow', label: 'Wow', emoji: '😯', color: '#F7B125' },
+    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
+    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
+];
+
+showReactionsFor: string | null = null;
+reactionTimeout: any = null;
+
+// Obtenir l'emoji de la réaction actuelle
+getCurrentReactionEmoji(post: any): string {
+    const reaction = this.getUserReaction(post);
+    const foundReaction = this.reactionTypes.find(r => r.type === reaction);
+    return foundReaction ? foundReaction.emoji : '👍';
 }
+
+// Obtenir le libellé de la réaction
+getReactionLabel(post: any): string {
+    const reaction = this.getUserReaction(post);
+    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
+}
+
+// Garder le menu visible
+keepReactionsVisible() {
+    if (this.reactionTimeout) {
+        clearTimeout(this.reactionTimeout);
+    }
+    this.showReactionsFor = this.post._id;
+}
+
+// Cacher le menu avec délai
+hideReactions() {
+    this.reactionTimeout = setTimeout(() => {
+        this.showReactionsFor = null;
+    }, 300);
+}
+
+
+
+// Vérifier si l'utilisateur a réagi
+hasUserReacted(post: any, type: string): boolean {
+    if (!this.currentUser || !post.likes) return false;
+    return post.likes.some((like: any) => 
+        this.currentUser && like.userId === this.currentUser._id && like.type === type
+    );
+}
+
+// Obtenir la réaction de l'utilisateur
+getUserReaction(post: any): string | null {
+    if (!this.currentUser || !post.likes) return null;
+    const reaction = post.likes && this.currentUser ? post.likes.find((like: any) => like.userId === this.currentUser!._id) : null;
+    return reaction ? reaction.type : null;
+}
+
+
+
+
+
+
+
+
+startHideReactionsTimer() {
+  this.reactionTimeout = setTimeout(() => {
+    this.showReactionsFor = null;
+  }, 300);
+}
+
+// Nouvelle méthode pour annuler le timer
+cancelHideReactionsTimer() {
+  if (this.reactionTimeout) {
+    clearTimeout(this.reactionTimeout);
+  }
+}
+
+// Méthode setReaction corrigée
+setReaction(post: Post, type: string) {
+  console.log('Tentative de réaction:', {postId: post._id, type});
+  
+  if (!post._id) {
+    console.error('post._id is undefined, cannot add reaction.');
+    return;
+  }
+  this.postService.addReaction(post._id, type).subscribe(
+    (updatedPost: any) => {
+      console.log('Réponse du serveur:', updatedPost);
+      
+      // 1. Trouver l'index du post dans votre tableau
+      const postIndex = this.posts.findIndex(p => p._id === post._id);
+      
+      // 2. Mettre à jour le post spécifique
+      if (postIndex !== -1) {
+        this.posts[postIndex] = { 
+          ...this.posts[postIndex], 
+          likes: updatedPost.likes 
+        };
+        
+        // 3. Déclencher le changement (si nécessaire)
+        this.posts = [...this.posts]; // Crée une nouvelle référence
+      }
+      
+      // 4. Fermer le menu des réactions
+      this.showReactionsFor = null;
+    },
+    (err) => {
+      console.error('Erreur:', err);
+      // Gérer l'erreur visuellement
+    }
+  );
+}
+// Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique
+
 
  
 
 
   // Méthode pour faire défiler vers le
+
+  //*******************************GROUP********************** */
+
+
+  loadGroups(): void {
+    // You need to fetch the list of groups first, then for each group, fetch its messages if needed.
+    // Here, just load the groups list (assuming you have a method for that).
+    // If you want to load messages for each group, loop through the groups and call getGroupMessages(group._id).
+    // For now, let's assume you want to load the groups list only.
+    this.postService.getUserGroups(this.currentUserId).subscribe({
+      next: (groups) => {
+        this.groups = groups;
+      },
+      error: (error) => {
+        console.error('Error loading groups:', error);
+        this.groups = [];
+      }
+    });
+  }
+
+  async openGroupChat(group: Group): Promise<void> {
+    console.log(`Opening group chat for group ${group._id} as user ${this.currentUser?._id}`);
+    await this.postService.joinGroup(group._id!);
+    const existingChat = this.activeGroupChats.find(c => c.group._id === group._id);
+
+    if (existingChat) {
+      this.expandGroupChat(group._id!);
+      return;
+    }
+
+    this.activeGroupChats.push({
+      group,
+      isExpanded: true,
+      unreadCount: 0,
+      groupMessages: []
+    });
+
+    this.selectedGroup = group;
+    this.expandedGroupChatId = group._id!;
+    await this.loadGroupMessages(group._id!);
+  }
+
+  async loadGroupMessages(groupId: string): Promise<void> {
+    console.log(`Loading messages for group ${groupId}`);
+    try {
+      this.groupMessages = await this.postService.getGroupMessages(groupId);
+      this.scrollToBottom('groupMessagesContainer');
+    } catch (error) {
+      console.error('Failed to load group messages:', error);
+    }
+  }
+
+  expandGroupChat(groupId: string): void {
+    console.log(`Expanding group chat for group ${groupId}`);
+    const chat = this.activeGroupChats.find(c => c.group._id === groupId);
+    if (chat) {
+      chat.isExpanded = true;
+      chat.unreadCount = 0;
+      this.selectedGroup = chat.group;
+      this.expandedGroupChatId = groupId;
+      this.groupMessages = chat.groupMessages || [];
+      this.loadGroupMessages(groupId); // Recharger les messages
+      this.scrollToBottom('groupMessagesContainer');
+    }
+  }
+
+  private setupGroupSocketListeners(): void {
+    console.log("🔔 Listening for new-group-message");
+    this.postService.onNewGroupMessage().subscribe((message: Message) => {
+      console.log("📥 Received new group message:", message);
+      const chat = this.activeGroupChats.find(c => c.group._id === message["groupId"]);
+      if (chat) {
+        const exists = chat.groupMessages?.some(m => m._id === message._id) ?? false;
+        if (!exists) {
+          chat.groupMessages = [...(chat.groupMessages || []), message];
+          if (message["groupId"] === this.selectedGroup?._id) {
+            this.groupMessages = [...this.groupMessages, message];
+            this.scrollToBottom('groupMessagesContainer');
+          }
+        } else {
+          chat.groupMessages = chat.groupMessages?.map(m => m._id === message._id ? message : m);
+          if (message["groupId"] === this.selectedGroup?._id) {
+            this.groupMessages = this.groupMessages.map(m => m._id === message._id ? message : m);
+          }
+        }
+        if (message["groupId"] !== this.expandedGroupChatId && chat.isExpanded === false) {
+          chat.unreadCount = (chat.unreadCount || 0) + 1;
+        }
+      }
+    });
+  }
+
+  sendMessageGroup(): void {
+    console.log("🔧 Sending group message - content:", this.groupMessageContent, "groupId:", this.selectedGroup?._id);
+    if (!this.groupMessageContent.trim() || !this.selectedGroup) return;
+
+    this.postService.sendGroupMessage({
+      groupId: this.selectedGroup._id,
+      contenu: this.groupMessageContent,
+      sender: this.currentUser?._id || ''
+    }).then(() => {
+      this.groupMessageContent = '';
+    }).catch(err => console.error("🔴 Error sending message:", err));
+  }
+
+  }

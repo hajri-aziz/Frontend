@@ -118,6 +118,8 @@ export class CoursListComponent implements OnInit {
   }
 
   filterByCategory(): void {
+    console.log('Categories:', this.categories);
+
     if (!this.selectedCategory) {
       this.resetFilters();
       return;

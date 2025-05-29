@@ -107,7 +107,7 @@
         <h4 class="font-poppins text-md font-semibold">{{ event.titre }}</h4>
         <p class="text-sm text-gray-600 font-poppins">{{ event.description }}</p>
         <p class="text-sm text-gray-600 font-poppins">{{ event.date | date:'yyyy-MM-dd' }} {{ event.heure_debut }}</p>
-        <p class="text-sm font-poppins">Durée: {{ event.duree }} min | Capacité: {{ event.capacite }} | Participants: {{ event.participants?.length || 0 }}</p>
+        <p class="text-sm font-poppins">Durée: {{ event.duree }} min | Capacité: {{ event.capacite }} | Participants: {{ event.participants.length || 0 }}</p>
         <ng-container *ngIf="editingEvenement?._id !== event._id; else editEventForm">
           <div class="flex space-x-2 mt-2">
             <button (click)="editEvenement(event)" class="text-blue-500 hover:text-blue-700">

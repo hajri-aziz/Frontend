@@ -1,8 +1,8 @@
 <div class="max-w-6xl mx-auto p-6">
-  <!-- Bouton de retour -->
+  <!-- Bouton de retour - Style amélioré -->
   <button 
     (click)="goBack()" 
-    class="flex items-center gap-2 mb-6 text-[#007299] hover:text-[#56e0e0] transition"
+    class="flex items-center gap-2 mb-6 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
   >
     <i class="bi bi-arrow-left"></i>
     Retour au cours
@@ -20,18 +20,23 @@
   </div>
 
   <!-- Détails de la session -->
-  <div *ngIf="!isLoading && session" class="rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#ebf9fc] to-[#d5f1f9]">
+  <div *ngIf="!isLoading && session" class="rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#f8fcff] to-[#f0f8ff]">
+    <!-- En-tête avec image de fond -->
+    <div class="h-48 w-full bg-gradient-to-br from-[#56e0e0] to-[#007299] flex items-center justify-center">
+      <i class="bi bi-calendar-event text-white text-6xl"></i>
+    </div>
+
     <div class="p-6">
       <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
         <div>
           <h1 class="text-2xl font-semibold text-[#007299] mb-2">{{ session.title }}</h1>
-          <p class="text-lg font-medium bg-gradient-to-br from-[#56e0e0] to-[#007299] text-transparent bg-clip-text">
-            {{ cours.price }} {{ cours.currency }}
-          </p>
+          <div class="flex items-center gap-2 text-sm text-gray-600">
+            <i class="bi bi-calendar-event"></i>
+            {{ session.startdate | date:'medium' }} - {{ session.enddate | date:'shortTime' }}
+          </div>
         </div>
-        <div class="text-sm text-gray-600">
-          <i class="bi bi-calendar-event mr-1"></i> 
-          {{ session.startdate | date:'medium' }} - {{ session.enddate | date:'shortTime' }}
+        <div class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white px-3 py-1 rounded-full text-sm font-medium">
+          {{ cours.price }} {{ cours.currency }}
         </div>
       </div>
 
@@ -39,34 +44,34 @@
         <p class="whitespace-pre-line">{{ session.description || 'Aucune description disponible' }}</p>
       </div>
 
-      <!-- Métadonnées -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white bg-opacity-50 rounded-lg mb-6">
-        <div class="flex items-center gap-3">
-          <i class="bi bi-geo-alt-fill text-[#007299] text-lg"></i>
+      <!-- Métadonnées - Version compacte -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
+          <i class="bi bi-geo-alt-fill text-[#007299] text-xl"></i>
           <div>
             <p class="text-xs text-gray-500">Lieu</p>
             <p class="font-medium">{{ session.location || 'Non spécifié' }}</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <i class="bi bi-people-fill text-[#007299] text-lg"></i>
+        <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
+          <i class="bi bi-people-fill text-[#007299] text-xl"></i>
           <div>
             <p class="text-xs text-gray-500">Participants</p>
             <p class="font-medium">{{ session.participants?.length || 0 }}/{{ session.capacity }}</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <i class="bi bi-person-fill text-[#007299] text-lg"></i>
+        <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
+          <i class="bi bi-person-fill text-[#007299] text-xl"></i>
           <div>
             <p class="text-xs text-gray-500">Instructeur</p>
             <p class="font-medium">{{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-3">
-          <i class="bi bi-book text-[#007299] text-lg"></i>
+        <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
+          <i class="bi bi-book text-[#007299] text-xl"></i>
           <div>
             <p class="text-xs text-gray-500">Cours</p>
             <p class="font-medium">{{ cours.title }}</p>
@@ -74,43 +79,48 @@
         </div>
       </div>
 
-      <!-- Actions -->
-<div class="flex flex-wrap justify-end gap-3 border-t pt-6">
-  <!-- Inscription/Désinscription -->
-  <button 
-    *ngIf="!isInstructor"
-    (click)="isRegistered() ? cancelRegistration() : registerToSession()"
-    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-  >
-    <i class="bi" [class.bi-calendar-check]="!isRegistered()" [class.bi-calendar-x]="isRegistered()"></i>
-    {{ isRegistered() ? 'Se désinscrire' : 'S\'inscrire' }}
-  </button>
+      <!-- Actions - Réorganisées -->
+      <div class="flex flex-wrap justify-between gap-3 border-t pt-6">
+        <!-- Boutons gauche -->
+        <div class="flex gap-3">
+          <!-- Accès au calendrier -->
+          <button 
+            (click)="goToCalendar()" 
+            class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#b2f0e9] to-[#4fb6cf] text-[#06455e] rounded-xl shadow-md hover:opacity-90 transition"
+          >
+            <i class="bi bi-calendar3"></i> Calendrier
+          </button>
+        </div>
 
-  <!-- Modifier (admin/instructeur) -->
-  <button 
-    *ngIf="isInstructor"
-    (click)="editSession()"
-    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
-  >
-    <i class="bi bi-pencil-square"></i> Modifier
-  </button>
+        <!-- Boutons droite -->
+        <div class="flex gap-3">
+          <!-- Inscription/Désinscription -->
+          <button 
+            *ngIf="!isInstructor"
+            (click)="isRegistered() ? cancelRegistration() : registerToSession()"
+            class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+          >
+            <i class="bi" [class.bi-calendar-check]="!isRegistered()" [class.bi-calendar-x]="isRegistered()"></i>
+            {{ isRegistered() ? 'Désinscrire' : 'S\'inscrire' }}
+          </button>
 
-  <!-- Supprimer (admin/instructeur) -->
-  <button 
-    *ngIf="isInstructor"
-    (click)="deleteSession()" 
-    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
-  >
-    <i class="bi bi-trash-fill"></i> Supprimer
-  </button>
+          <!-- Actions instructeur -->
+          <ng-container *ngIf="isInstructor">
+            <button 
+              (click)="editSession()"
+              class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
+            >
+              <i class="bi bi-pencil-square"></i> Modifier
+            </button>
 
-  <!-- Accès au calendrier (visible pour tous) -->
-  <button 
-    (click)="goToCalendar()" 
-    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#b2f0e9] to-[#4fb6cf] text-[#06455e] rounded-xl shadow-md hover:opacity-90 transition"
-  >
-    <i class="bi bi-calendar3"></i> Voir le calendrier
-  </button>
+            <button 
+              (click)="deleteSession()" 
+              class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"
+            >
+              <i class="bi bi-trash-fill"></i> Supprimer
+            </button>
+          </ng-container>
+        </div>
       </div>
     </div>
   </div>

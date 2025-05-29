@@ -15,7 +15,7 @@ export class CoursSessionService {
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('token');
     return new HttpHeaders({
-      'Authorization': `Bearer ${token}`
+      'Authorization': `Bearer ${token}` // Fix: Use backticks for proper string interpolation
     });
   }
 
@@ -52,18 +52,15 @@ export class CoursSessionService {
 
   // Gestion des inscriptions
 
-  inscrireUtilisateur(sessionId: string, userId: string): Observable<any> {
-    const body = { user_id: userId }; // ✅ seul user_id dans body
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    });
-    console.log("Body envoyé pour inscription :", body);
-    return this.http.post(
-      `http://localhost:3000/api/courssessions/${sessionId}/inscriptions`,
-      body,
-      { headers }
-    );
-  }
+ inscrireUtilisateur(sessionId: string, userId: string): Observable<any> {
+  const body = { user_id: userId };
+  console.log("Body envoyé pour inscription :", body);
+  return this.http.post(
+    `${this.apiUrl}/${sessionId}/inscriptions`,
+    body,
+    { headers: this.getAuthHeaders() } // Use the consistent getAuthHeaders method
+  );
+}
 
 
 
