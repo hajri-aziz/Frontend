@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
+import { ToastService } from './services/toast.service';
 
 @Component({
   selector: 'app-root',
@@ -8,7 +9,11 @@ import { UserService } from './services/user.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  constructor(public router: Router, private userService: UserService) {}
+  constructor(public router: Router, private userService: UserService, private toastService: ToastService) { 
+    this.toastService.showSuccess('Toast test: ça marche !');
+  }
+  
+
 
   // Méthode pour déterminer le layout à afficher
   getLayoutType(): 'sidebar' | 'navbar' | 'simple' {
