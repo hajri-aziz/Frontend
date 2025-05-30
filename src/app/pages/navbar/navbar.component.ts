@@ -1,11 +1,7 @@
 import { Component, HostListener, OnInit, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-<<<<<<< HEAD
 import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
-=======
-import { UserService } from 'src/app/services/user.service';// Assurez-vous que le chemin est correct
->>>>>>> a6a830f7537612230eade83570a76cd218bb7a20
 
 @Component({
   selector: 'app-navbar',
@@ -14,27 +10,22 @@ import { UserService } from 'src/app/services/user.service';// Assurez-vous que 
 })
 export class NavbarComponent {
 
-<<<<<<< HEAD
-  constructor(public router: Router,private userService: UserService,private toastService:ToastService) {}
-=======
+  constructor(public router: Router,private userService: UserService,private toastService:ToastService, private elementRef: ElementRef) {}
   profileImageUrl: string = 'assets/Ellipse 23.png'; // Image par défaut
   nom?: string;
   prenom?: string;
   isMobileMenuOpen = false;
  
 
-  constructor(private elementRef: ElementRef,public router: Router, private userService: UserService) {
-  }
+ 
 
    ngOnInit(): void {
     this.loadUserProfile();
   }
->>>>>>> a6a830f7537612230eade83570a76cd218bb7a20
 
   toggleMenu() {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
-<<<<<<< HEAD
   logout() {
     this.userService.logout().subscribe({
       next: () => {
@@ -49,7 +40,6 @@ export class NavbarComponent {
       }
     });
   }
-=======
 
   private loadUserProfile(): void {
   const token = localStorage.getItem('token');
@@ -102,5 +92,4 @@ onDocumentClick(event: MouseEvent) {
     this.isProfileMenuOpen = false;
   }
 }
->>>>>>> a6a830f7537612230eade83570a76cd218bb7a20
 }
