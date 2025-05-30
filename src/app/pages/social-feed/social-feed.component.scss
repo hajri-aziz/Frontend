@@ -548,19 +548,36 @@ body {
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
-/* En-tête du post */
 .post-header {
-    padding: 20px;
+    padding: 8px 12px;
     border-bottom: 1px solid #f0f2f5;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 0;
+    line-height: 1.2; /* Réduit l'espace entre les lignes si texte multiligne */
 }
 
 .user-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    padding: 2px 0; /* 2px en haut/bas, 0 sur les côtés */
+}
+
+.user-info > * {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+/* Pour réduire la taille de l'avatar */
+.user-avatar {
+    width: 32px;  /* Taille réduite */
+    height: 32px; /* Taille réduite */
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid #e3f2fd; /* Bordure plus fine */
 }
 
 .avatar {
@@ -665,6 +682,8 @@ body {
     border-top: 1px solid #e4e6ea;
     border-bottom: 1px solid #e4e6ea;
     margin: 0;
+ 
+   
 }
 
 .reaction-section {
@@ -945,6 +964,9 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'Poppins', sans-serif;
+      padding: 6px 12px;
+    font-size: 12px;
+    border-radius: 18px;
 }
 
 .comment-submit:hover {
@@ -1006,5 +1028,23 @@ body {
 
 .add-member-btn:active {
     transform: translateY(0);
+}
+
+/* Ajoutez dans votre CSS */
+.highlight {
+    background-color: #fffde7;
+    padding: 0 2px;
+    border-radius: 2px;
+    font-weight: 500;
+}
+
+.search-match {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { background-color: #fffde7; }
+    50% { background-color: #fff9c4; }
+    100% { background-color: #fffde7; }
 }
 
