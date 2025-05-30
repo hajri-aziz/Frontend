@@ -1,4 +1,3 @@
-
 import { Injectable } from '@angular/core';
 import { Evenement, Participant } from '../models/evenement.model';
 import { Observable } from 'rxjs/internal/Observable';

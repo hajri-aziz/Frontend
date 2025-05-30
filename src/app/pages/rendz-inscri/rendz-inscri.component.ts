@@ -271,6 +271,7 @@ export class RendzInscriComponent implements OnInit {
     }
   }
 
+
   loadEvents(): void {
     this.evenementService.getAllEvenements().subscribe({
       next: (data) => {
@@ -306,4 +307,11 @@ export class RendzInscriComponent implements OnInit {
       }
     });
   }
+  
+  hasAvailabilitiesOnDate(date: Date): boolean {
+  return this.availabilities.some(slot => {
+    const slotDate = new Date(slot.date); // Assurez-vous que `slot.date` existe
+    return slotDate.toDateString() === date.toDateString();
+  });
+}
 }

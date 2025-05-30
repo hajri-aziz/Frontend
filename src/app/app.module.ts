@@ -67,8 +67,10 @@ import { ForgotPasswordComponent } from './pages/forgot-password/forgot-password
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
+import { MessagesComponent } from './pages/messages/messages.component';
 import { ToastComponent } from './pages/toast/toast.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SessionLoginComponent } from './pages/session-login/session-login.component';
 
 
 
@@ -118,7 +120,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     UnauthorizedComponent,
     SessionCalendarComponent,
     DashboardCoursComponent,
+    MessagesComponent,
     ToastComponent,
+    SessionLoginComponent,
   ],
  
   imports: [

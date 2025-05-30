@@ -62,8 +62,6 @@ export class CoursSessionService {
   );
 }
 
-
-
   getInscriptions(sessionId: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/${sessionId}/inscriptions`, {
       headers: this.getAuthHeaders()

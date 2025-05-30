@@ -6,10 +6,12 @@ import type { Post, Comment, Group, Message } from "../../models/post.models"
 import type { User } from "../../models/user.model"
 import { UserService } from "../../services/user.service"
 import { PostService } from "../../services/post.service"
-import type { Subscription } from "rxjs"
-import { forkJoin, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import type { Observable, Subscription } from "rxjs"
+import { forkJoin, of, Subject } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http"
+import { Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 
 @Component({
@@ -65,13 +67,17 @@ export class SocialFeedComponent implements OnInit, OnDestroy {
   newGroupMessage: any
 expandedGroupChatId: string | null = null;
 post: any
+  
   constructor(
     private postService: PostService,
     private userService: UserService,
     private groupService: PostService,
-    private http: HttpClient,
     private cdr: ChangeDetectorRef,
+    private router: Router,
+    private http: HttpClient,
+    private sanitizer: DomSanitizer,
   ) {}
+ 
 
 
   onTyping(): void {
@@ -172,67 +178,87 @@ post: any
       return defaultImage;
     }
   }
+private loadPosts(): void {
+  this.subscriptions.push(
+    this.postService.getPosts().subscribe({
+      next: (posts) => {
+        console.log('Posts received from API:', posts);
 
-  private loadPosts(): void {
-    this.subscriptions.push(
-      this.postService.getPosts().subscribe({
-        next: (posts) => {
-          console.log('Posts received from API:', posts);
+        // Trier les posts par date de création décroissante
+        const sortedPosts = [...posts].sort((a, b) => 
+          new Date(b.date_creation).getTime() - new Date(a.date_creation).getTime()
+        );
 
-          const userRequests = posts.map((post) =>
-            this.userService.getUserById((post.idAuteur as any)?._id || post.idAuteur).pipe(
-              map((user) => ({
-                post,
-                user: user || {
-                  _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
-                  nom: post.idAuteur?.nom || 'Utilisateur',
-                  prenom: post.idAuteur?.prenom || 'Inconnu',
-                  profileImage: 'https://i.pravatar.cc/150?u=default',
-                },
-              }))
-            )
-          );
+        const userRequests = sortedPosts.map((post) =>
+          this.userService.getUserById((post.idAuteur as any)?._id || post.idAuteur).pipe(
+            map((user) => {
+              const userData = user || {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: post.idAuteur?.nom || 'Utilisateur',
+                prenom: post.idAuteur?.prenom || 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              };
+              if (!userData.prenom || !userData.nom) {
+                console.warn(`Utilisateur ${userData._id} n'a pas de prénom ou de nom défini.`);
+              }
+              return { post, user: userData };
+            }),
+            catchError(() => of({
+              post,
+              user: {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: 'Utilisateur',
+                prenom: 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              }
+            }))
+          )
+        );
 
-          forkJoin(userRequests).subscribe({
-            next: (results) => {
-              this.posts = results.map(({ post, user }) => ({
-                ...post,
-                idAuteur: {
-                  _id: user._id,
-                  nom: user.nom,
-                  prenom: user.prenom,
-                  profileImage: user.profileImage,
-                },
-                comments: [],
-                date_creation: new Date(post.date_creation).toISOString(),
-              }));
-              console.log('Processed posts:', this.posts);
-              this.loadCommentsForPosts();
-            },
-            error: (error) => {
-              console.error('Error fetching user data:', error);
-              this.posts = posts.map((post) => ({
-                ...post,
-                idAuteur: {
-                  _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
-                  nom: 'Utilisateur',
-                  prenom: 'Inconnu',
-                  profileImage: 'https://i.pravatar.cc/150?u=default',
-                },
-                comments: [],
-                date_creation: new Date(post.date_creation).toISOString(),
-              }));
-              this.loadCommentsForPosts();
-            },
-          });
-        },
-        error: (error) => {
-          console.error('Error loading posts:', error);
-          alert('Erreur lors du chargement des posts');
-        },
-      })
-    );
-  }
+        forkJoin(userRequests).subscribe({
+          next: (results) => {
+            this.posts = results.map(({ post, user }) => ({
+              ...post,
+              idAuteur: {
+                _id: user._id,
+                nom: user.nom,
+                prenom: user.prenom,
+                profileImage: user.profileImage,
+              },
+              comments: [],
+              date_creation: new Date(post.date_creation).toISOString(),
+            }));
+            console.log('Processed posts:', this.posts);
+            this.loadCommentsForPosts();
+          },
+          error: (error) => {
+            console.error('Error in forkJoin:', error);
+            this.posts = sortedPosts.map((post) => ({
+              ...post,
+              idAuteur: {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: 'Utilisateur',
+                prenom: 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              },
+              comments: [],
+              date_creation: new Date(post.date_creation).toISOString(),
+            }));
+            this.loadCommentsForPosts();
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading posts:', error);
+        alert('Erreur lors du chargement des posts');
+      },
+    })
+  );
+}
+
+getFullName(user: any): string {
+  return `${user.prenom || 'Prénom'} ${user.nom || 'Nom'}`;
+}
 
   private loadCommentsForPosts(): void {
     this.posts.forEach((post) => {
@@ -287,30 +313,46 @@ post: any
     }
   }
 
-  addPost(): void {
-    if (!this.validatePost() || !this.currentUser) {
-      console.warn("Post validation failed or no current user");
-      return;
-    }
-
-    const formData = this.createPostFormData();
-    console.log("FormData prepared:", {
-      titre: this.newPost.titre,
-      contenu: this.newPost.contenu,
-      hasImage: !!this.selectedFile,
-    });
-
-    this.subscriptions.push(
-      this.postService.addPost(formData).subscribe({
-        next: (post) => {
-          console.log("Post added successfully:", post);
-          this.resetPostForm();
-        },
-        error: (error) => this.handlePostError(error),
-      }),
-    );
+ addPost(): void {
+  if (!this.validatePost() || !this.currentUser) {
+    console.warn("Post validation failed or no current user");
+    return;
   }
 
+  const formData = this.createPostFormData();
+  console.log("FormData prepared:", {
+    titre: this.newPost.titre,
+    contenu: this.newPost.contenu,
+    hasImage: !!this.selectedFile,
+  });
+
+  this.subscriptions.push(
+    this.postService.addPost(formData).subscribe({
+      next: (post) => {
+        console.log("Post added successfully:", post);
+        
+        // Créer l'objet utilisateur minimal pour l'affichage immédiat
+        const userData = {
+          _id: this.currentUser!._id ?? '',
+          nom: this.currentUser!.nom,
+          prenom: this.currentUser!.prenom,
+          profileImage: this.currentUser!.profileImage || 'https://i.pravatar.cc/150?u=default'
+        };
+
+        // Ajouter le nouveau post au début du tableau
+        this.posts.unshift({
+          ...post,
+          idAuteur: userData,
+          comments: [],
+          date_creation: new Date().toISOString()
+        });
+
+        this.resetPostForm();
+      },
+      error: (error) => this.handlePostError(error),
+    })
+  );
+}
   private validatePost(): boolean {
     return !!(this.newPost.titre?.trim() && this.newPost.contenu?.trim() && this.currentUser?._id);
   }
@@ -402,20 +444,6 @@ post: any
     alert(`Post partagé: ${post.contenu.substring(0, 30)}...`);
   }
 
-  addMemberToGroup(groupId: string): void {
-    const newMemberId = prompt("email du nouveau membre :");
-    if (!newMemberId?.trim()) return;
-
-    this.subscriptions.push(
-      this.postService.addMember(groupId, newMemberId).subscribe({
-        next: () => this.loadGroups(),
-        error: (error) => {
-          console.error("Error adding member:", error);
-          alert("l'utilisateur déjà membre du groupe");
-        },
-      }),
-    );
-  }
 
  
 
@@ -499,99 +527,7 @@ post: any
     console.log('Ouverture du groupe avec ID :', groupId);
   }
 
-  openCreateGroupModal() {
-    this.showCreateGroupModal = true;
-    this.newGroupName = '';
-    this.tempEmail = '';
-    this.tempUsers = [];
-  }
-
-  closeCreateGroupModal() {
-    this.showCreateGroupModal = false;
-    this.newGroupName = '';
-    this.tempEmail = '';
-    this.tempUsers = [];
-  }
-
-  addUserToTempList() {
-    if (!this.tempEmail) {
-      alert('Veuillez entrer un email.');
-      return;
-    }
-
-    const normalizedEmail = this.tempEmail.trim().toLowerCase();
-    console.log('Email saisi (normalisé) :', normalizedEmail);
-
-    if (this.tempUsers.some(user => user.email === normalizedEmail)) {
-      alert('Cet email a déjà été ajouté.');
-      return;
-    }
-
-    this.postService.getUserByEmail(normalizedEmail).subscribe(
-      (user) => {
-        console.log('Utilisateur trouvé (frontend) :', user);
-        if (user && user._id) {
-          this.tempUsers.push({ email: normalizedEmail, id: user._id });
-          this.tempEmail = '';
-        } else {
-          alert('Utilisateur non trouvé avec cet email.');
-        }
-      },
-      (error) => {
-        console.error('Erreur lors de la recherche de l\'utilisateur (frontend) :', error);
-        alert('Utilisateur non trouvé avec cet email.');
-      }
-    );
-  }
-
-  removeUserFromTempList(email: string) {
-    this.tempUsers = this.tempUsers.filter(user => user.email !== email);
-  }
-
-  createGroup() {
-    if (!this.newGroupName) {
-      alert('Veuillez entrer un nom pour le groupe.');
-      return;
-    }
-
-    if (this.tempUsers.length < 3) {
-      alert('Vous devez ajouter au moins 3 utilisateurs pour créer un groupe.');
-      return;
-    }
-
-    if (!this.currentUserId) {
-      alert('Utilisateur non authentifié. Veuillez vous connecter.');
-      return;
-    }
-
-    const groupData = {
-      name: this.newGroupName,
-      creator: this.currentUserId,
-      members: this.tempUsers.map(user => user.id),
-      admins: [this.currentUserId],
-    };
-
-    this.http.post('http://localhost:3000/group/create', groupData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    }).subscribe(
-      (response: any) => {
-        console.log('Groupe créé avec succès :', response.group);
-        this.groups.push(response.group);
-        this.closeCreateGroupModal();
-        this.showModal = true;
-      },
-      (error) => {
-        console.error('Erreur lors de la création du groupe :', error);
-        alert('Erreur lors de la création du groupe.');
-      }
-    );
-  }
-
-  closeModal() {
-    this.showModal = false;
-    this.newGroupName = '';
-    this.tempUsers = [];
-  }
+ 
 
   private validateUserData(): void {
     if (!this.currentUser) {
@@ -829,24 +765,7 @@ sendMessage(): void {
       this.selectedUser = null;
     }
   }
-   // Méthode pour charger les messages entre deux utilisateurs
-  loadMessages(userId1: string, userId2: string): void {
-    this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
-      next: (response) => {
-        this.messages = response;
-        // Formater les messages si nécessaire
-        this.messages = this.messages.map(msg => ({
-          ...msg,
-          sender: msg["expediteurId"]._id,
-          content: msg['contenu'],
-          timestamp: msg['dateEnvoi']
-        }));
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des messages:', err);
-      }
-    });
-  }
+ 
 expandChat(userId: string) {
   this.expandedChatId = userId;
 
@@ -987,351 +906,6 @@ onGroupTyping(): void {
 }
 
 
-// Dans votre composant
-
-
-
-
-// Obtenir la réaction de l'utilisateur courant
-getCurrentUserReaction(post: any): any {
-    if (!this.currentUser || !this.currentUser._id || !post.likes) return null;
-    return post.likes.find((like: any) => like.userId === this.currentUser!._id);
-}
-
-// Gérer une réaction
-handleReaction(post: any, reactionType: string) {
-    const currentReaction = this.getCurrentUserReaction(post);
-    
-    // Si l'utilisateur clique sur sa réaction actuelle, on la supprime
-    if (currentReaction && currentReaction.type === reactionType) {
-        this.postService.removeReaction(post._id).subscribe(updatedPost => {
-            // Mettre à jour le post
-        });
-    } 
-    // Sinon on ajoute/modifie la réaction
-    else {
-        this.postService.addReaction(post._id, reactionType).subscribe(updatedPost => {
-            // Mettre à jour le post
-        });
-    }
-}
-
-// Obtenir le résumé des réactions (top 3)
-getReactionSummary(post: any): any[] {
-    if (!post.likes || post.likes.length === 0) return [];
-    
-    const reactionCounts: any = {};
-    post.likes.forEach((like: any) => {
-        reactionCounts[like.type] = (reactionCounts[like.type] || 0) + 1;
-    });
-    
-    return Object.entries(reactionCounts)
-        .sort((a: any, b: any) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([type, count]) => ({ type, count }));
-}
-
-// Obtenir le nombre total de réactions
-getTotalReactions(post: any): number {
-    return post.likes?.length || 0;
-}
-
-
-
-    
-    addReaction(postId: string, reactionType: string) {
-        return this.http.post(`/api/posts/${postId}/react`, { type: reactionType });
-    }
-    
-   
-
-
-    getReactionIcon(reactionType: string): string {
-  // Chemin de base pour les icônes de réactions
-  const basePath = '/assets/reactions/';
-  
-  // Mapping des types de réactions vers leurs icônes
-  const reactionIcons: {[key: string]: string} = {
-    'like': `${basePath}like.png`,
-    'love': `${basePath}love.png`,
-    'haha': `${basePath}haha.png`,
-    'wow': `${basePath}wow.png`,
-    'sad': `${basePath}sad.png`,
-    'angry': `${basePath}angry.png`
-  };
-
-  return reactionIcons[reactionType] || `${basePath}like.png`;
-}
-
-
-// Pour capitaliser la première lettre (utilisé dans le bouton)
-capitalizeFirstLetter(string: string): string {
- return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-
-
-
-
-
-
-
-// Obtenir le SVG d'une réaction
-
-
-
-// Obtenir le nombre total de réactions
-getReactionCount(post: any): number {
-    return post.likes?.length || 0;
-}
-
-// Obtenir les 3 réactions principales
-getTopReactions(post: any): any[] {
-    if (!post.likes || post.likes.length === 0) return [];
-    
-    const reactionCounts: any = {};
-    post.likes.forEach((like: any) => {
-        reactionCounts[like.type] = (reactionCounts[like.type] || 0) + 1;
-    });
-    
-    return Object.entries(reactionCounts)
-        .sort((a: any, b: any) => b[1] - a[1])
-        .slice(0, 3)
-        .map(([type, count]) => ({ type, count }));
-}
-
-// Basculer la réaction
-
-
-
-
-
-
-// Dans votre composant
-
-
-showReactionMenu: string | null = null;
-
-// Obtenir l'icône SVG de la réaction actuelle
-getCurrentReactionIcon(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return this.getReactionSvg(reaction || 'like', '20');
-}
-
-// Obtenir le libellé à afficher
-
-
-// Obtenir le SVG d'une réaction
-getReactionSvg(type: string, size: string = '24'): string {
-    const svgs: {[key: string]: string} = {
-        'like': `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="#04789d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5"></path>
-                </svg>`,
-        'love': `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="#f33e58" stroke="#f33e58" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"></path>
-                </svg>`,
-        // Ajouter les autres SVG pour chaque type de réaction
-    };
-    return svgs[type] || svgs['like'];
-}
-
-// Basculer la réaction
-toggleReaction(post: any) {
-    const currentReaction = this.getUserReaction(post);
-    if (currentReaction) {
-        this.removeReaction(post);
-    } else {
-        this.setReaction(post, 'like');
-    }
-}
-
-
-
-// Supprimer une réaction
-removeReaction(post: { _id: string; likes: any[] }) {
-    this.postService.removeReaction(post._id).subscribe(
-        (updatedPost: any) => {
-            // Mettre à jour le post dans votre state/store
-            if (updatedPost && updatedPost.likes) {
-                post.likes = updatedPost.likes;
-            }
-        },
-        (err: any) => {
-            console.error('Erreur lors de la suppression de la réaction:', err);
-        }
-    );
-}
-
-
-
-
-// Dans votre composant
-
-
-// Obtenir l'emoji de la réaction actuelle
-
-
-handleReactionClick(post: any) {
-    if (!this.showReactionsFor) {
-        // Si le menu n'est pas visible, basculer like/unlike
-        const currentReaction = this.getUserReaction(post);
-        if (currentReaction) {
-            this.removeReaction(post);
-        } else {
-            this.setReaction(post, 'like');
-        }
-    }
-}
-//updateeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Dans votre composant
-reactionTypes = [
-    { type: 'like', label: 'J\'aime', emoji: '👍', color: '#1877F2' },
-    { type: 'love', label: 'Love', emoji: '❤️', color: '#F33E58' },
-    { type: 'haha', label: 'Haha', emoji: '😂', color: '#F7B125' },
-    { type: 'wow', label: 'Wow', emoji: '😯', color: '#F7B125' },
-    { type: 'sad', label: 'Triste', emoji: '😢', color: '#F7B125' },
-    { type: 'angry', label: 'En colère', emoji: '😡', color: '#E9710F' }
-];
-
-showReactionsFor: string | null = null;
-reactionTimeout: any = null;
-
-// Obtenir l'emoji de la réaction actuelle
-getCurrentReactionEmoji(post: any): string {
-    const reaction = this.getUserReaction(post);
-    const foundReaction = this.reactionTypes.find(r => r.type === reaction);
-    return foundReaction ? foundReaction.emoji : '👍';
-}
-
-// Obtenir le libellé de la réaction
-getReactionLabel(post: any): string {
-    const reaction = this.getUserReaction(post);
-    return reaction ? this.reactionTypes.find(r => r.type === reaction)?.label || 'J\'aime' : 'J\'aime';
-}
-
-// Garder le menu visible
-keepReactionsVisible() {
-    if (this.reactionTimeout) {
-        clearTimeout(this.reactionTimeout);
-    }
-    this.showReactionsFor = this.post._id;
-}
-
-// Cacher le menu avec délai
-hideReactions() {
-    this.reactionTimeout = setTimeout(() => {
-        this.showReactionsFor = null;
-    }, 300);
-}
-
-
-
-// Vérifier si l'utilisateur a réagi
-hasUserReacted(post: any, type: string): boolean {
-    if (!this.currentUser || !post.likes) return false;
-    return post.likes.some((like: any) => 
-        this.currentUser && like.userId === this.currentUser._id && like.type === type
-    );
-}
-
-// Obtenir la réaction de l'utilisateur
-getUserReaction(post: any): string | null {
-    if (!this.currentUser || !post.likes) return null;
-    const reaction = post.likes && this.currentUser ? post.likes.find((like: any) => like.userId === this.currentUser!._id) : null;
-    return reaction ? reaction.type : null;
-}
-
-
-
-
-
-
-
-
-startHideReactionsTimer() {
-  this.reactionTimeout = setTimeout(() => {
-    this.showReactionsFor = null;
-  }, 300);
-}
-
-// Nouvelle méthode pour annuler le timer
-cancelHideReactionsTimer() {
-  if (this.reactionTimeout) {
-    clearTimeout(this.reactionTimeout);
-  }
-}
-
-// Méthode setReaction corrigée
-setReaction(post: Post, type: string) {
-  console.log('Tentative de réaction:', {postId: post._id, type});
-  
-  if (!post._id) {
-    console.error('post._id is undefined, cannot add reaction.');
-    return;
-  }
-  this.postService.addReaction(post._id, type).subscribe(
-    (updatedPost: any) => {
-      console.log('Réponse du serveur:', updatedPost);
-      
-      // 1. Trouver l'index du post dans votre tableau
-      const postIndex = this.posts.findIndex(p => p._id === post._id);
-      
-      // 2. Mettre à jour le post spécifique
-      if (postIndex !== -1) {
-        this.posts[postIndex] = { 
-          ...this.posts[postIndex], 
-          likes: updatedPost.likes 
-        };
-        
-        // 3. Déclencher le changement (si nécessaire)
-        this.posts = [...this.posts]; // Crée une nouvelle référence
-      }
-      
-      // 4. Fermer le menu des réactions
-      this.showReactionsFor = null;
-    },
-    (err) => {
-      console.error('Erreur:', err);
-      // Gérer l'erreur visuellement
-    }
-  );
-}
-// Le reste des méthodes (getUserReaction, hasUserReacted, etc.) reste identique
-
 
  
 
@@ -1341,7 +915,7 @@ setReaction(post: Post, type: string) {
   //*******************************GROUP********************** */
 
 
-  loadGroups(): void {
+loadGroups(): void {
     // You need to fetch the list of groups first, then for each group, fetch its messages if needed.
     // Here, just load the groups list (assuming you have a method for that).
     // If you want to load messages for each group, loop through the groups and call getGroupMessages(group._id).
@@ -1357,7 +931,7 @@ setReaction(post: Post, type: string) {
     });
   }
 
-  async openGroupChat(group: Group): Promise<void> {
+async openGroupChat(group: Group): Promise<void> {
     console.log(`Opening group chat for group ${group._id} as user ${this.currentUser?._id}`);
     await this.postService.joinGroup(group._id!);
     const existingChat = this.activeGroupChats.find(c => c.group._id === group._id);
@@ -1379,7 +953,7 @@ setReaction(post: Post, type: string) {
     await this.loadGroupMessages(group._id!);
   }
 
-  async loadGroupMessages(groupId: string): Promise<void> {
+async loadGroupMessages(groupId: string): Promise<void> {
     console.log(`Loading messages for group ${groupId}`);
     try {
       this.groupMessages = await this.postService.getGroupMessages(groupId);
@@ -1389,7 +963,7 @@ setReaction(post: Post, type: string) {
     }
   }
 
-  expandGroupChat(groupId: string): void {
+expandGroupChat(groupId: string): void {
     console.log(`Expanding group chat for group ${groupId}`);
     const chat = this.activeGroupChats.find(c => c.group._id === groupId);
     if (chat) {
@@ -1402,7 +976,6 @@ setReaction(post: Post, type: string) {
       this.scrollToBottom('groupMessagesContainer');
     }
   }
-
 async sendMessageGroup() {
   if (!this.groupMessageContent.trim() || !this.selectedGroup || !this.currentUser) {
     return;
@@ -1423,7 +996,6 @@ async sendMessageGroup() {
   }
  this.groupMessageContent = '';
 }
-
 // Gestion des messages entrants corrigée
 private setupSocketListenersGroup() {
   this.messageSubscription = this.postService.onNewGroupMessage().subscribe({
@@ -1443,13 +1015,579 @@ private setupSocketListenersGroup() {
     error: (err) => console.error('Erreur socket:', err)
   });
 }
-
 // Simple error display method
 showError(message: string): void {
   alert(message);
 }
+//**********************************REACTIONS********************************* */
 
 
+
+// Dans votre composant
+activeReactionMenu: string | null = null;
+
+reactionTypes = [
+  { type: 'like', emoji: '👍', label: 'J\'aime' },
+  { type: 'love', emoji: '❤️', label: 'J\'adore' },
+  { type: 'haha', emoji: '😂', label: 'Haha' },
+  { type: 'wow', emoji: '😮', label: 'Wow' },
+  { type: 'sad', emoji: '😢', label: 'Triste' },
+  { type: 'angry', emoji: '😠', label: 'Grrr' }
+];
+
+toggleReactionMenu(postId: string) {
+  this.activeReactionMenu = this.activeReactionMenu === postId ? null : postId;
+}
+
+
+
+getReactionColorClass(post: any): any {
+  const reaction = post.likes?.find((r: any) => r.userId === this.currentUser?._id);
+  if (!reaction) return {};
   
+  return {
+    'text-blue-500': reaction.type === 'like',
+    'text-red-500': reaction.type === 'love',
+    'text-yellow-500': ['haha', 'wow', 'sad'].includes(reaction.type),
+    'text-orange-500': reaction.type === 'angry'
+  };
+}
+
+
+showReactionsFor: string | null = null;
+
+
+
+
+
+setReaction(post: any, reactionType: string) {
+  // Sauvegarde de l'état original pour rollback si besoin
+  const originalLikes = [...(post.likes || [])];
+
+  // Mise à jour immédiate de l'UI avant la requête API (votre code existant)
+  const userReaction = {
+    userId: this.currentUser!._id,
+    type: reactionType,
+    date: new Date()
+  };
+
+  if (this.hasUserReacted(post)) {
+    post.likes = post.likes.map((reaction: any) => 
+      reaction.userId === this.currentUser!._id ? userReaction : reaction
+    );
+  } else {
+    post.likes = [...(post.likes || []), userReaction];
+  }
+
+  // Envoi de la requête API (votre code existant)
+  this.postService.reactToPost(post._id, reactionType).subscribe({
+    next: (updatedPost) => {
+      // 1. On garde votre synchronisation existante
+      post.likes = updatedPost.likes;
+      
+      // 2. Ajout du rafraîchissement automatique
+      setTimeout(() => {
+        this.postService.getPostById(post._id).subscribe(freshPost => {
+          // Mise à jour en profondeur sans perdre les références
+          Object.assign(post, freshPost);
+        });
+      }, 1000); // Délai ajustable (1000ms = 1s)
+    },
+    error: (err) => {
+      console.error('Erreur API:', err);
+      // Rollback UI (votre code existant)
+      post.likes = originalLikes;
+    }
+  });
+}
+
+// Gestion de l'affichage des réactions
+keepReactionsVisible() {
+  // Ne rien faire, garde simplement le menu visible
+}
+
+hideReactions() {
+  setTimeout(() => {
+    this.showReactionsFor = null;
+  }, 300);
+}
+
+
+// Dans votre composant
+getUniqueReactions(post: any): any[] {
+    if (!post.likes) return [];
+    const reactionsMap = new Map();
+    post.likes.forEach((reaction: any) => {
+        reactionsMap.set(reaction.type, {
+            type: reaction.type,
+            count: (reactionsMap.get(reaction.type)?.count || 0) + 1
+        });
+    });
+    return Array.from(reactionsMap.values());
+}
+
+getReactionUsers(post: any, type: string): string[] {
+    if (!post.likes) return [];
+    return post.likes
+        .filter((r: any) => r.type === type)
+        .map((r: any) => r.userId?.name || 'Anonyme');
+}
+
+getReactionEmoji(type: string): string {
+    const found = this.reactionTypes.find(rt => rt.type === type);
+    return found ? found.emoji : '👍';
+}
+
+
+handleReactionClick(post: any) {
+  // Si l'utilisateur a déjà réagi, on supprime sa réaction
+  if (this.hasUserReacted(post)) {
+    this.removeReaction(post);
+  } else {
+    // Sinon on ajoute un like par défaut
+    this.setReaction(post, 'like');
+  }
+}
+
+hasUserReacted(post: any): boolean {
+  if (!post.likes || !this.currentUser) return false;
+  return post.likes.some((reaction: any) => 
+    this.currentUser && reaction.userId === this.currentUser._id
+  );
+}
+
+removeReaction(post: any) {
+  this.postService.removeReaction(post._id).subscribe({
+    next: (updatedPost) => {
+      // Mettre à jour le post dans votre liste
+      const index = this.posts.findIndex(p => p._id === post._id);
+      if (index !== -1) {
+        this.posts[index] = updatedPost;
+      }
+    },
+    error: (err) => {
+      console.error('Erreur lors de la suppression:', err);
+    }
+  });
+}
+  
+
+
+// Retourne le type de réaction de l'utilisateur courant
+getCurrentReactionType(post: any): string | null {
+  if (!post.likes || !this.currentUser) return null;
+  const reaction = post.likes.find((r: any) => this.currentUser && r.userId === this.currentUser._id);
+  return reaction?.type || null;
+}
+
+// Retourne l'emoji correspondant à la réaction actuelle
+getCurrentReactionEmoji(post: any): string {
+  const type = this.getCurrentReactionType(post);
+  const reaction = this.reactionTypes.find(rt => rt.type === type);
+  return reaction?.emoji || '👍';
+}
+
+// Retourne le label approprié
+getReactionLabel(post: any): string {
+  if (!post.likes?.length) return 'J\'aime';
+  
+  const type = this.getCurrentReactionType(post);
+  if (type) {
+    return this.reactionTypes.find(rt => rt.type === type)?.label || 'J\'aime';
+  }
+  
+  return post.likes.length === 1 
+    ? '1 réaction' 
+    : `${post.likes.length} réactions`;
+}
+
+
+
+
+
+
+
+
+
+// Unifier la gestion des réactions
+async handleReaction(post: any, reactionType?: string) {
+  try {
+    // Si pas de type spécifié et que l'utilisateur a déjà réagi, on supprime
+    if (!reactionType && this.hasUserReacted(post)) {
+      await this.removeReaction(post);
+      return;
+    }
+    
+    // Si pas de type spécifié, on met like par défaut
+    const typeToApply = reactionType || 'like';
+    await this.applyReaction(post, typeToApply);
+  } catch (error) {
+    console.error('Erreur de réaction:', error);
+  } finally {
+    this.activeReactionMenu = null;
+  }
+}
+
+// Version améliorée de applyReaction
+ async applyReaction(post: any, reactionType: string) {
+  // Sauvegarde pour rollback
+  const originalLikes = [...(post.likes || [])];
+  
+  // Optimistic UI update
+  this.updatePostReactionOptimistically(post, reactionType);
+  
+  try {
+    const updatedPost = await this.postService.reactToPost(post._id, reactionType).toPromise();
+    
+    // Mise à jour immédiate
+    this.updatePostInList(updatedPost);
+    
+    // Rafraîchissement différé pour synchronisation serveur
+    setTimeout(() => this.refreshPost(post._id), 500);
+  } catch (error) {
+    console.error('Erreur API:', error);
+    // Rollback
+    post.likes = originalLikes;
+    if (typeof error === 'object' && error !== null && 'status' in error && (error as any).status === 401) {
+      this.router.navigate(['/login']);
+    }
+  }
+}
+
+private updatePostReactionOptimistically(post: any, reactionType: string) {
+  const userReaction = {
+    userId: this.currentUser!._id,
+    type: reactionType,
+    date: new Date()
+  };
+
+  if (this.hasUserReacted(post)) {
+    post.likes = post.likes.map((reaction: any) => 
+      reaction.userId === this.currentUser!._id ? userReaction : reaction
+    );
+  } else {
+    post.likes = [...(post.likes || []), userReaction];
+  }
+}
+
+private updatePostInList(updatedPost: any) {
+  const index = this.posts.findIndex(p => p._id === updatedPost._id);
+  if (index !== -1) {
+    // Mise à jour en profondeur pour conserver les références
+    Object.assign(this.posts[index], updatedPost);
+  }
+}
+
+// Méthode pour rafraîchir un post
+refreshPost(postId: string) {
+  this.postService.getPostById(postId).subscribe({
+    next: (updatedPost) => {
+      this.updatePostInList(updatedPost);
+    },
+    error: (err) => {
+      console.error('Erreur de rafraîchissement:', err);
+    }
+  });
+}
+//************************Creer un nouveau group ********************************** */
+
+
+
+ 
+
+
+ addMemberToGroup(groupId: string): void {
+    const newMemberId = prompt("email du nouveau membre :");
+    if (!newMemberId?.trim()) return;
+
+    this.subscriptions.push(
+      this.postService.addMember(groupId, newMemberId).subscribe({
+        next: () => this.loadGroups(),
+        error: (error) => {
+          console.error("Error adding member:", error);
+          alert("l'utilisateur déjà membre du groupe");
+        },
+      }),
+    );
+  }
+openCreateGroupModal() {
+    this.showCreateGroupModal = true;
+    this.newGroupName = '';
+    this.tempEmail = '';
+    this.tempUsers = [];
+  }
+
+  closeCreateGroupModal() {
+    this.showCreateGroupModal = false;
+    this.newGroupName = '';
+    this.tempEmail = '';
+    this.tempUsers = [];
+  }
+
+addUserToTempList() {
+  if (!this.tempEmail) {
+    alert('Veuillez entrer un email.');
+    return;
+  }
+
+  const normalizedEmail = this.tempEmail.trim().toLowerCase();
+  console.log('Email saisi (normalisé) :', normalizedEmail); // Log pour déboguer
+
+  // Vérifier si l'email existe déjà dans la liste temporaire
+  if (this.tempUsers.some(user => user.email === normalizedEmail)) {
+    alert('Cet email a déjà été ajouté.');
+    return;
+  }
+
+  // Vérifier si l'email existe dans la base de données
+  this.groupService.getUserByEmail(normalizedEmail).subscribe(
+    (user) => {
+      console.log('Utilisateur trouvé (frontend) :', user); // Log pour déboguer
+      if (user && user._id) {
+        this.tempUsers.push({ email: normalizedEmail, id: user._id });
+        this.tempEmail = ''; // Réinitialiser le champ email
+      } else {
+        alert('Utilisateur non trouvé avec cet email.');
+      }
+    },
+    (error) => {
+      console.error('Erreur lors de la recherche de l\'utilisateur (frontend) :', error);
+      alert('Utilisateur non trouvé avec cet email.');
+    }
+  );
+}
+  removeUserFromTempList(email: string) {
+    this.tempUsers = this.tempUsers.filter(user => user.email !== email);
+  }
+
+  createGroup() {
+    if (!this.newGroupName) {
+      alert('Veuillez entrer un nom pour le groupe.');
+      return;
+    }
+
+    if (this.tempUsers.length < 3) {
+      alert('Vous devez ajouter au moins 3 utilisateurs pour créer un groupe.');
+      return;
+    }
+
+    if (!this.currentUserId) {
+      alert('Utilisateur non authentifié. Veuillez vous connecter.');
+      return;
+    }
+
+    const groupData = {
+      name: this.newGroupName,
+      creator: this.currentUserId,
+      members: this.tempUsers.map(user => user.id),
+      admins: [this.currentUserId],
+      
+    };
+
+    this.http.post('http://localhost:3000/group/create', groupData, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    }).subscribe(
+      (response: any) => {
+        console.log('Groupe créé avec succès :', response.group);
+        this.groups.push(response.group);
+        this.closeCreateGroupModal();
+        this.showModal = true; // Afficher le modale de confirmation
+      },
+      (error) => {
+        console.error('Erreur lors de la création du groupe :', error);
+        alert('Erreur lors de la création du groupe.');
+      }
+    );
+  }
+
+  closeModal() {
+    this.showModal = false;
+    this.newGroupName = '';
+    this.tempUsers = [];
+  }
+
+  //********************UPDATE DELET POST BY USER CREATED ************* */
+
+  // Variables de classe
+activePostMenu: string | null = null;
+editingPost: any = null;
+editPostForm = { titre: '', contenu: '' };
+
+// Vérifie si l'utilisateur courant est l'auteur du post
+isPostAuthor(post: any): boolean {
+  return !!(this.currentUser && post.idAuteur._id === this.currentUser._id);
+}
+
+// Gère l'affichage du menu
+togglePostMenu(postId: string): void {
+  this.activePostMenu = this.activePostMenu === postId ? null : postId;
+}
+
+// Commence l'édition d'un post
+startEditPost(post: any): void {
+  this.editingPost = post;
+  this.editPostForm = {
+    titre: post.titre,
+    contenu: post.contenu
+  };
+  this.activePostMenu = null; // Ferme le menu
+}
+
+// Annule l'édition
+cancelEdit(): void {
+  this.editingPost = null;
+}
+
+// Sauvegarde les modifications
+saveEditedPost(): void {
+  if (!this.editingPost) return;
+
+  this.postService.updatePost(this.editingPost._id, this.editPostForm).subscribe({
+    next: (updatedPost) => {
+      const index = this.posts.findIndex(p => p._id === updatedPost._id);
+      if (index !== -1) {
+        this.posts[index] = {
+          ...this.posts[index],
+          titre: updatedPost.titre,
+          contenu: updatedPost.contenu
+        };
+      }
+      this.editingPost = null;
+    },
+    error: (err) => {
+      console.error('Erreur lors de la mise à jour:', err);
+    }
+  });
+}
+
+// Confirme la suppression
+confirmDeletePost(postId: string): void {
+  if (confirm('Êtes-vous sûr de vouloir supprimer ce post ?')) {
+    this.deletePost(postId);
+  }
+  this.activePostMenu = null;
+}
+
+// Supprime le post
+deletePost(postId: string): void {
+  this.postService.deletePost(postId).subscribe({
+    next: () => {
+      this.posts = this.posts.filter(post => post._id !== postId);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la suppression:', err);
+    }
+  });
+}
+
+
+
+//user nom prenom
+
+
+private loadUserData(userId: string): Observable<any> {
+  return this.userService.getUserById(userId).pipe(
+    map(user => ({
+      _id: userId,
+      nom: user?.nom || user?.name || 'Utilisateur',
+      prenom: user?.prenom || user?.firstName || 'Inconnu',
+      profileImage: user?.profileImage || 'assets/profil.png'
+    })),
+    catchError(() => of({
+      _id: userId,
+      nom: 'Utilisateur',
+      prenom: 'Inconnu',
+      profileImage: 'assets/profil.png'
+    }))
+  );
+}
+
+private loadPostsWithUserData(): void {
+  this.subscriptions.push(
+    this.postService.getPosts().pipe(
+      switchMap(posts => {
+        const postsWithUsers$ = posts.map(post => {
+          const userId = typeof post.idAuteur === 'object' ? post.idAuteur._id : post.idAuteur;
+          return this.loadUserData(userId).pipe(
+            map(user => ({
+              ...post,
+              idAuteur: user,
+              date_creation: new Date(post.date_creation).toISOString()
+            }))
+          );
+        });
+        return forkJoin(postsWithUsers$);
+      })
+    ).subscribe({
+      next: (posts) => {
+        this.posts = posts;
+        console.log('Posts with user data:', this.posts);
+      },
+      error: (error) => {
+        console.error('Error loading posts:', error);
+      }
+    })
+  );
+}
+
+//*******************************SEARCH MESSAGE********************* */
+// Ajoutez ces propriétés à votre composant
+searchQuery: string = '';
+filteredMessages: any[] = [];
+filterMessages() {
+    if (!this.searchQuery.trim()) {
+        this.filteredMessages = this.messages ? [...this.messages] : [];
+        return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredMessages = (this.messages || []).filter(message => {
+        const content = message.content?.toLowerCase() || '';
+        const senderName = message.sender === this.currentUser?._id 
+            ? 'vous' 
+            : this.selectedUser?.prenom?.toLowerCase() || '';
+        return content.includes(query) || senderName.includes(query);
+    });
+}
+// Ajoutez cette méthode au composant
+highlightText(text: string): string {
+    if (!this.searchQuery.trim()) return text;
+    
+    const query = this.searchQuery.toLowerCase();
+    return text.replace(new RegExp(query, 'gi'), match => 
+        `<span class="highlight search-match">${match}</span>`
+    );
+}
+// Méthode pour charger les messages entre deux utilisateurs
+loadMessages(userId1: string, userId2: string): void {
+  this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
+    next: (response) => {
+      this.messages = response.map((msg: any) => ({
+        ...msg,
+        sender: msg["expediteurId"]._id,
+        content: msg['contenu'],
+        timestamp: msg['dateEnvoi']
+      }));
+      this.filterMessages(); // Appel après avoir reçu et formaté les messages
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des messages:', err);
+    }
+  });
+}
+
+
+highlightSearch(text: string): SafeHtml {
+    if (!this.searchQuery?.trim()) {
+      return text;
+    }
+    
+    const searchRegex = new RegExp(this.searchQuery, 'gi');
+    return this.sanitizer.bypassSecurityTrustHtml(
+      text.replace(searchRegex, match => 
+        `<span class="bg-yellow-100 text-gray-900 px-0.5 rounded">${match}</span>`
+      )
+    );
+  }
 
   }

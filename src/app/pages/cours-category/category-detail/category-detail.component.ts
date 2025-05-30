@@ -59,4 +59,8 @@ export class CategoryDetailComponent implements OnInit {
   goToList() {
     this.router.navigate(['/categories']);
   }
+  goBack(): void {
+  this.router.navigate(['/categories']);
+}
+
 }

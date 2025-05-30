@@ -1,5 +1,5 @@
 <div class="max-w-6xl mx-auto p-6">
-  <!-- Bouton de retour - Style amélioré -->
+  <!-- Bouton de retour -->
   <button 
     (click)="goBack()" 
     class="flex items-center gap-2 mb-6 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
@@ -8,12 +8,12 @@
     Retour au cours
   </button>
 
-  <!-- Messages d'erreur -->
+  <!-- Message d’erreur général -->
   <div *ngIf="error" class="p-4 mb-6 text-red-700 bg-red-100 rounded-lg">
     {{ error }}
   </div>
 
-  <!-- Chargement -->
+  <!-- Chargement de la session -->
   <div *ngIf="isLoading" class="text-center mt-10">
     <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[#007299] mx-auto"></div>
     <p class="mt-2 text-sm text-gray-600">Chargement de la session...</p>
@@ -21,18 +21,19 @@
 
   <!-- Détails de la session -->
   <div *ngIf="!isLoading && session" class="rounded-lg overflow-hidden shadow-lg bg-gradient-to-br from-[#f8fcff] to-[#f0f8ff]">
-    <!-- En-tête avec image de fond -->
+    <!-- En-tête -->
     <div class="h-48 w-full bg-gradient-to-br from-[#56e0e0] to-[#007299] flex items-center justify-center">
       <i class="bi bi-calendar-event text-white text-6xl"></i>
     </div>
 
     <div class="p-6">
+      <!-- Titre & date -->
       <div class="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
         <div>
           <h1 class="text-2xl font-semibold text-[#007299] mb-2">{{ session.title }}</h1>
           <div class="flex items-center gap-2 text-sm text-gray-600">
             <i class="bi bi-calendar-event"></i>
-            {{ session.startdate | date:'medium' }} - {{ session.enddate | date:'shortTime' }}
+            {{ session.startdate | date:'medium' }} – {{ session.enddate | date:'shortTime' }}
           </div>
         </div>
         <div class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white px-3 py-1 rounded-full text-sm font-medium">
@@ -40,11 +41,12 @@
         </div>
       </div>
 
+      <!-- Description -->
       <div class="prose max-w-none text-gray-700 mb-6">
         <p class="whitespace-pre-line">{{ session.description || 'Aucune description disponible' }}</p>
       </div>
 
-      <!-- Métadonnées - Version compacte -->
+      <!-- Métadonnées -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
           <i class="bi bi-geo-alt-fill text-[#007299] text-xl"></i>
@@ -53,7 +55,6 @@
             <p class="font-medium">{{ session.location || 'Non spécifié' }}</p>
           </div>
         </div>
-
         <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
           <i class="bi bi-people-fill text-[#007299] text-xl"></i>
           <div>
@@ -61,7 +62,6 @@
             <p class="font-medium">{{ session.participants?.length || 0 }}/{{ session.capacity }}</p>
           </div>
         </div>
-
         <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
           <i class="bi bi-person-fill text-[#007299] text-xl"></i>
           <div>
@@ -69,7 +69,6 @@
             <p class="font-medium">{{ cours.instructor_id?.nom }} {{ cours.instructor_id?.prenom }}</p>
           </div>
         </div>
-
         <div class="bg-white bg-opacity-50 p-3 rounded-lg flex items-center gap-3">
           <i class="bi bi-book text-[#007299] text-xl"></i>
           <div>
@@ -79,11 +78,10 @@
         </div>
       </div>
 
-      <!-- Actions - Réorganisées -->
+      <!-- Actions -->
       <div class="flex flex-wrap justify-between gap-3 border-t pt-6">
-        <!-- Boutons gauche -->
+        <!-- Calendrier -->
         <div class="flex gap-3">
-          <!-- Accès au calendrier -->
           <button 
             (click)="goToCalendar()" 
             class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#b2f0e9] to-[#4fb6cf] text-[#06455e] rounded-xl shadow-md hover:opacity-90 transition"
@@ -92,17 +90,30 @@
           </button>
         </div>
 
-        <!-- Boutons droite -->
+        <!-- Inscription / Désinscription & actions instructeur -->
         <div class="flex gap-3">
-          <!-- Inscription/Désinscription -->
-          <button 
+          <!-- Inscription / désinscription -->
+          <button
             *ngIf="!isInstructor"
-            (click)="isRegistered() ? cancelRegistration() : registerToSession()"
+            (click)="toggleRegistration()"
+            [disabled]="inscriptionLoading"
             class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white rounded-xl shadow-md hover:opacity-90 transition"
           >
-            <i class="bi" [class.bi-calendar-check]="!isRegistered()" [class.bi-calendar-x]="isRegistered()"></i>
-            {{ isRegistered() ? 'Désinscrire' : 'S\'inscrire' }}
+            <ng-container *ngIf="!inscriptionLoading; else spinner">
+              <i class="bi"
+                 [class.bi-calendar-check]="!isRegistered()"
+                 [class.bi-calendar-x]="isRegistered()"></i>
+              {{ isRegistered() ? 'Désinscrire' : 'S\'inscrire' }}
+            </ng-container>
+            <ng-template #spinner>
+              <span class="animate-spin inline-block w-4 h-4 border-2 border-white rounded-full"></span>
+            </ng-template>
           </button>
+
+          <!-- Message de feedback inscription -->
+          <p *ngIf="inscriptionMessage" class="self-center text-sm text-gray-700">
+            {{ inscriptionMessage }}
+          </p>
 
           <!-- Actions instructeur -->
           <ng-container *ngIf="isInstructor">
@@ -112,7 +123,6 @@
             >
               <i class="bi bi-pencil-square"></i> Modifier
             </button>
-
             <button 
               (click)="deleteSession()" 
               class="flex items-center gap-2 px-4 py-2 bg-gradient-to-br from-[#ff6b6b] to-[#d32f2f] text-white rounded-xl shadow-md hover:opacity-90 transition"

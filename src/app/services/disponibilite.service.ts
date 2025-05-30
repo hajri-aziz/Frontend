@@ -4,6 +4,15 @@ import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Disponibilite } from '../models/disponibilite.model';
 
+export interface Message {
+  _id?: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  createdAt?: Date;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -86,6 +95,35 @@ export class DisponibiliteService {
       catchError((error) => {
         console.error('Erreur:', error);
         return throwError('Erreur lors du filtrage des disponibilités');
+      })
+    );
+  }
+  // Récupérer tous les messages
+  getMessages(): Observable<Message[]> {
+    return this.http.get<Message[]>(`${this.apiUrl}/contact/`,{ headers: this.getAuthHeaders() }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la récupération des messages', error);
+        return throwError('Erreur serveur');
+      })
+    );
+  }
+
+  // Créer un message
+  createMessage(message: Message): Observable<Message> {
+    return this.http.post<Message>(`${this.apiUrl}/contact/`, message).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la création du message', error);
+        return throwError('Erreur serveur');
+      })
+    );
+  }
+
+  // Supprimer un message
+  deleteMessage(id: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/contact/${id}`,{ headers: this.getAuthHeaders() }).pipe(
+      catchError((error) => {
+        console.error('Erreur lors de la suppression du message', error);
+        return throwError('Erreur serveur');
       })
     );
   }

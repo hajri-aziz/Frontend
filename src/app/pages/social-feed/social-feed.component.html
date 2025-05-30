@@ -10,8 +10,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
 <body class="bg-[#f4feff] min-h-screen flex items-center justify-center overflow-hidden">
-    <div class="w-full max-w-6xl px-4 py-6">
-        <!-- Navbar -->
+    <div class="w-full max-w-6xl px-4 py-6 mt-6">
+
         <nav class="bg-transparent rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] mb-6">
             <div class="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
                 <div class="text-2xl font-bold font-['Helvetica_Neue'] text-[#04789d]">SocialFeed</div>
@@ -23,13 +23,8 @@
                 <!-- Create Post -->
                 <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] p-4 mb-6">
                     <div *ngIf="currentUser; else userLoading" class="flex items-center space-x-2 mb-4">
-                        <img [src]="getProfileImageUrl(currentUser.profileImage)" 
-                             [alt]="'Photo de ' + (currentUser.prenom || 'utilisateur')"
-                             class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
-                             (error)="handleImageError($event)">
-                        <span class="font-medium font-poppins text-[#080808]">
-                            {{ (currentUser.prenom || 'Prénom') + ' ' + (currentUser.nom || 'Nom') }}
-                        </span>
+                        
+                      
                     </div>
                     <ng-template #userLoading>
                         <div class="flex items-center space-x-2 mb-4 animate-pulse">
@@ -69,142 +64,220 @@
                     </div>
                 </div>
                 
-                <!-- Posts -->
-                <div class="space-y-6">
-                    <div *ngFor="let post of posts" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] overflow-hidden">
-                        <div class="p-4 flex items-center space-x-2 border-b border-[#cfd0d4]">
-                            <ng-container *ngIf="post.idAuteur.profileImage; else defaultProfileIcon">
-                                <img [src]="getProfileImageUrl(post.idAuteur.profileImage)"
-                                     [alt]="'Photo de ' + (post.idAuteur.prenom || 'utilisateur')"
-                                     class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]"
-                                     (error)="handleImageError($event)">
-                            </ng-container>
-                            <ng-template #defaultProfileIcon>
-                                <img src="assets/profil.png"
-                                     alt="Photo de profil par défaut"
-                                     class="w-10 h-10 rounded-full object-cover border border-[#e5e7eb]">
-                            </ng-template>
-                            <div>
-                                <div class="font-medium font-poppins text-[#080808]">
-                                    {{ (post.idAuteur.prenom || 'Prénom') + ' ' + (post.idAuteur.nom || 'Nom') }}
-                                </div>
-                                <div class="text-xs text-[#66676b] font-poppins">{{ post.date_creation | date:'medium' }}</div>
-                            </div>
-                        </div>
-                        <div class="px-4 py-2">
-                            <h2 class="text-lg font-poppins text-[#080808] mb-2">{{ post.titre }}</h2>
-                            <p class="mb-3 text-sm font-poppins text-[#080808]">{{ post.contenu }}</p>
-                            <img *ngIf="post.image"
-                                 [src]="getImageUrl(post.image)"
-                                 alt="Post image"
-                                 class="w-full h-64 object-cover rounded-lg"
-                                 (error)="handlePostImageError($event)">
-                        </div>
-                        <div class="px-4 py-2 border-t border-b border-[#cfd0d4] flex justify-between text-sm text-[#66676b] font-poppins">
-                            <div>{{ post.likes.length }} j'aime</div>
-                            <div>{{ post.comments?.length || 0 }} commentaires</div>
-                        </div>
-                   <div class="px-4 py-2 flex flex-col sm:flex-row justify-between border-b border-[#cfd0d4] gap-2">
-    <!-- Bouton Réactions -->
-    <div class="relative group">
-        <button 
-            (click)="handleReactionClick(post)"
-            (mouseenter)="showReactionsFor = post._id ?? null"
-            (mouseleave)="hideReactions()"
-            class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition relative"
-            [class.text-blue-500]="hasUserReacted(post, 'like')"
-            [class.text-red-500]="hasUserReacted(post, 'love')"
-            [class.text-yellow-500]="hasUserReacted(post, 'haha') || hasUserReacted(post, 'wow') || hasUserReacted(post, 'sad')"
-            [class.text-orange-500]="hasUserReacted(post, 'angry')"
-        >
-            <span class="emoji-reaction">
-                {{ getCurrentReactionEmoji(post) }}
-            </span>
-            <span class="font-poppins">{{ getReactionLabel(post) }}</span>
-        </button>
-        
-        <!-- Menu des réactions (style Facebook) -->
-        <div *ngIf="showReactionsFor === post._id" 
-             class="absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-full p-1 border border-gray-200 flex"
-             (mouseenter)="keepReactionsVisible()"
-             (mouseleave)="hideReactions()">
-             
-            <button *ngFor="let reaction of reactionTypes" 
-                    class="transform transition-transform hover:scale-150 mx-1"
-                    (click)="setReaction(post, reaction.type)">
-                <span class="text-2xl">{{ reaction.emoji }}</span>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Bouton Commenter (inchangé) -->
-    <button class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span class="font-poppins">Commenter</span>
-    </button>
-    
-    <!-- Bouton Partager (inchangé) -->
-    <button (click)="sharePost(post)"
-            class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-        </svg>
-        <span class="font-poppins">Partager</span>
-    </button>
-</div>
-                        <!-- Commentaire Section -->
-                        <div class="p-4 space-y-3">
-                            <div *ngFor="let comment of post.comments" class="flex space-x-2">
-                                <ng-container *ngIf="comment.idAuteur.profileImage; else defaultProfileIcon">
-                                    <img [src]="getProfileImageUrl(comment.idAuteur.profileImage)"
-                                         [alt]="'Photo de ' + (comment.idAuteur.prenom || 'utilisateur')"
-                                         class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]"
-                                         (error)="handleImageError($event)">
-                                </ng-container>
-                                <ng-template #defaultProfileIcon>
-                                    <img src="assets/profil.png"
-                                         alt="Photo de profil par défaut"
-                                         class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]">
-                                </ng-template>
-                                <div class="bg-[#f1f2f5] rounded-lg px-3 py-2 flex-1">
-                                    <div class="font-medium text-sm font-poppins text-[#080808]">
-                                        {{ (comment.idAuteur.prenom || 'Prénom') + ' ' + (comment.idAuteur.nom || 'Nom') }}
-                                    </div>
-                                    <p class="text-sm font-poppins text-[#080808]">{{ comment.contenu }}</p>
-                                    <div class="text-xs text-[#66676b] font-poppins">{{ comment.date_creation | date:'short' }}</div>
-                                </div>
-                            </div>
-                            <div class="flex space-x-2 mt-3" *ngIf="post._id">
-                                <ng-container *ngIf="currentUser?.profileImage; else defaultProfileIcon">
-                                    <img [src]="getProfileImageUrl(currentUser?.profileImage)"
-                                         [alt]="'Votre photo de profil'"
-                                         class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]"
-                                         (error)="handleImageError($event)">
-                                </ng-container>
-                                <ng-template #defaultProfileIcon>
-                                    <img src="assets/profil.png"
-                                         alt="Photo de profil par défaut"
-                                         class="w-8 h-8 rounded-full object-cover border border-[#e5e7eb]">
-                                </ng-template>
-                                <div class="flex-1 flex">
-                                    <input
-                                        [(ngModel)]="newCommentContents[post._id]"
-                                        class="flex-1 bg-[#f1f2f5] rounded-l-full px-4 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
-                                        placeholder="Écrire un commentaire..."
-                                    >
-                                    <button
-                                        (click)="addComment(post)"
-                                        class="bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-r-full px-4 py-2 hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
-                                    >
-                                        Envoyer
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+
+
+<!-- Posts -->
+<div class="space-y-6">
+    <div *ngFor="let post of posts" class="post-card">
+        <!-- En-tête du post avec menu déroulant -->
+        <div class="post-header">
+            <div class="user-info">
+                <ng-container *ngIf="post.idAuteur.profileImage; else defaultProfileIcon">
+                    <img [src]="getProfileImageUrl(post.idAuteur.profileImage)"
+                         [alt]="'Photo de ' + (post.idAuteur.prenom || 'utilisateur')"
+                         class="avatar"
+                         (error)="handleImageError($event)">
+                </ng-container>
+                <ng-template #defaultProfileIcon>
+                    <img src="assets/profil.png"
+                         alt="Photo de profil par défaut"
+                         class="avatar">
+                </ng-template>
+                <div class="user-details">
+                    <!-- Modification : Utilisation de getFullName pour afficher nom et prénom -->
+                    <h3>{{ getFullName(post.idAuteur) }}</h3>
+                    <div class="timestamp">{{ post.date_creation | date:'medium' }}</div>
+                </div>
+            </div>
+            
+            <!-- Menu des trois points (uniquement pour l'auteur) -->
+            <div class="relative" *ngIf="isPostAuthor(post)">
+                <button (click)="togglePostMenu(post._id!)" class="menu-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                    </svg>
+                </button>
+                
+                <!-- Menu déroulant -->
+                <div *ngIf="activePostMenu === post._id" class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10">
+                    <div class="py-1">
+                        <button (click)="startEditPost(post)" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                            Modifier
+                        </button>
+                        <button (click)="confirmDeletePost(post._id)" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100">
+                            Supprimer
+                        </button>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Contenu du post (mode édition ou visualisation) -->
+        <div class="post-content">
+            <div *ngIf="editingPost?._id === post._id; else viewMode">
+                <!-- Mode édition -->
+                <input [(ngModel)]="editPostForm.titre" 
+                       class="w-full border border-[#c4c4c4] rounded-lg p-2 mb-2 font-poppins text-lg">
+                <textarea [(ngModel)]="editPostForm.contenu"
+                          class="w-full border border-[#c4c4c4] rounded-lg p-2 mb-2 font-poppins text-sm"
+                          rows="3"></textarea>
+                <div class="flex justify-end space-x-2">
+                    <button (click)="cancelEdit()" 
+                            class="px-4 py-2 text-sm font-poppins text-gray-600 hover:bg-gray-100 rounded-lg">
+                        Annuler
+                    </button>
+                    <button (click)="saveEditedPost()"
+                            class="px-4 py-2 text-sm font-poppins text-white bg-[#007299] hover:bg-[#005a7a] rounded-lg">
+                        Enregistrer
+                    </button>
+                </div>
+            </div>
+            <ng-template #viewMode>
+                <!-- Mode visualisation -->
+                <h2 class="post-title">{{ post.titre }}</h2>
+                <p class="post-text">{{ post.contenu }}</p>
+                <img *ngIf="post.image"
+                     [src]="getImageUrl(post.image)"
+                     alt="Post image"
+                     class="post-image"
+                     (error)="handlePostImageError($event)">
+            </ng-template>
+        </div>
+
+        <!-- Stats du post (likes et commentaires) -->
+        <div class="post-stats">
+            <div class="stat-item">{{ post.likes.length }} j'aime</div>
+            <div class="stat-item">{{ post.comments?.length || 0 }} commentaires</div>
+        </div>
+
+        <!-- Actions du post (réactions, commenter, partager) -->
+        <div class="reactions-bar">
+            <!-- Zone J'aime -->
+            <div class="reaction-section">
+                <div class="relative group">
+                    <button 
+                        (click)="toggleReactionMenu(post._id!)"
+                        class="reaction-btn"
+                        [ngClass]="getReactionColorClass(post)"
+                        [class.active]="getCurrentReactionEmoji(post) !== '👍'"
+                        [class.like]="getCurrentReactionEmoji(post) === '👍'"
+                        [class.love]="getCurrentReactionEmoji(post) === '❤️'"
+                        [class.wow]="getCurrentReactionEmoji(post) === '😮'"
+                        [class.angry]="getCurrentReactionEmoji(post) === '😠'"
+                        aria-label="Réagir au post"
+                    >
+                        <span class="emoji">{{ getCurrentReactionEmoji(post) }}</span>
+                        <span>{{ getReactionLabel(post) }}</span>
+                    </button>
+                    <!-- Menu des réactions -->
+                    <div *ngIf="activeReactionMenu === post._id" 
+                         class="reaction-menu"
+                         (mouseleave)="activeReactionMenu = null">
+                        <button *ngFor="let reaction of reactionTypes" 
+                                class="reaction-option"
+                                (click)="applyReaction(post, reaction.type)"
+                                [title]="reaction.label"
+                                [attr.aria-label]="reaction.label">
+                            <span>{{ reaction.emoji }}</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zone Commenter -->
+            <div class="reaction-section">
+                <button 
+                    class="reaction-btn"
+                    aria-label="Commenter le post"
+                >
+                    <span class="emoji">💬</span>
+                    <span>Commenter</span>
+                </button>
+            </div>
+
+            <!-- Zone Partager -->
+            <div class="reaction-section">
+                <button 
+                    class="reaction-btn"
+                    aria-label="Partager le post"
+                >
+                    <span class="emoji">📤</span>
+                    <span>Partager</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Liste des réactions -->
+        <div *ngIf="(post.likes?.length || 0) > 0" class="reactions-display">
+            <div class="reaction-avatars">
+                <span *ngFor="let reaction of getUniqueReactions(post)" 
+                      class="reaction-emoji"
+                      [title]="getReactionUsers(post, reaction.type).join(', ')">
+                    {{ getReactionEmoji(reaction.type) }}
+                </span>
+            </div>
+            <span class="reaction-count">
+                {{ post.likes.length }} réaction<span *ngIf="post.likes.length > 1">s</span>
+            </span>
+        </div>
+
+        <!-- Section des commentaires -->
+        <div class="comments-section">
+            <div *ngFor="let comment of post.comments" class="comment">
+                <ng-container *ngIf="comment.idAuteur.profileImage; else defaultCommentProfileIcon">
+                    <img [src]="getProfileImageUrl(comment.idAuteur.profileImage)"
+                         [alt]="'Photo de ' + (comment.idAuteur.prenom || 'utilisateur')"
+                         class="comment-avatar"
+                         (error)="handleImageError($event)">
+                </ng-container>
+                <ng-template #defaultCommentProfileIcon>
+                    <img src="assets/profil.png"
+                         alt="Photo de profil par défaut"
+                         class="comment-avatar">
+                </ng-template>
+                <div class="comment-content">
+                    <div class="comment-author">
+                        {{ (comment.idAuteur.prenom || 'Prénom') + ' ' + (comment.idAuteur.nom || 'Nom') }}
+                    </div>
+                    <div class="comment-text">{{ comment.contenu }}</div>
+                    <div class="comment-time">{{ comment.date_creation | date:'short' }}</div>
+                </div>
+            </div>
+            
+            <!-- Formulaire d'ajout de commentaire -->
+            <div class="comment-form" *ngIf="post._id">
+                <ng-container *ngIf="currentUser?.profileImage; else defaultCurrentUserProfileIcon">
+                    <img [src]="getProfileImageUrl(currentUser?.profileImage)"
+                         [alt]="'Votre photo de profil'"
+                         class="comment-form-avatar"
+                         (error)="handleImageError($event)">
+                </ng-container>
+                <ng-template #defaultCurrentUserProfileIcon>
+                    <img src="assets/profil.png"
+                         alt="Photo de profil par défaut"
+                         class="comment-form-avatar">
+                </ng-template>
+                <div class="comment-input-container">
+                    <input
+                        [(ngModel)]="newCommentContents[post._id]"
+                        class="comment-input"
+                        placeholder="Écrire un commentaire..."
+                    >
+                    <button
+                        (click)="addComment(post)"
+                        class="comment-submit"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M15.964.686a.5.5 0 0 0-.65-.65L.767 5.855H.766l-.452.18a.5.5 0 0 0-.082.887l.41.26.001.002 4.995 3.178 3.178 4.995.002.002.26.41a.5.5 0 0 0 .886-.083l6-15Zm-1.833 1.89L6.637 10.07l-.215-.338a.5.5 0 0 0-.154-.154l-.338-.215 7.494-7.494 1.178-.471-.47 1.178Z"/>
+                    </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
             </div>
 
             <!-- Sidebar - User List & Groups -->
@@ -258,13 +331,16 @@
       <div class="relative">
         <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
           <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
-            <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" class="absolute w-full h-full object-cover" (error)="handleImageError($event)">
+            <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
+                 class="absolute w-full h-full object-cover" 
+                 (error)="handleImageError($event)">
           </ng-container>
           <ng-template #defaultIcon>
-            <img src="assets/profil.png" alt="Photo de profil par défaut" class="absolute w-full h-full object-cover">
+            <img src="assets/profil.png" alt="Photo de profil par défaut" 
+                 class="absolute w-full h-full object-cover">
           </ng-template>
           <ng-container *ngIf="group.members?.length > 0 && group.members[0]?.profileImage">
-            <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre"
+            <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
                  class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
                  (error)="handleImageError($event)">
           </ng-container>
@@ -274,18 +350,102 @@
       <div class="ml-3 flex-1">
         <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
         <p class="text-sm text-gray-500">{{ group.members?.length || 0 }} membres</p>
+        
       </div>
-      <button (click)="$event.stopPropagation(); group._id && addMemberToGroup(group._id)"
-              class="text-sm text-[#04789d] font-poppins hover:text-[#036582] px-2 py-1 rounded hover:bg-blue-50 transition-colors">
-        Ajouter membre
-      </button>
+       <button 
+                    (click)="group._id && addMemberToGroup(group._id)"
+                    class="text-sm text-[#04789d] font-poppins"
+                >
+                    Ajouter membre
+                </button>
+      
     </div>
   </div>
+  <!-- Bouton pour ouvrir le modale -->
   <div class="mt-3">
     <button (click)="openCreateGroupModal()"
             class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90">
       Créer un groupe
     </button>
+  </div>
+
+  <!-- Modale pour créer un groupe -->
+  <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96">
+      <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
+      <!-- Champ pour le nom du groupe -->
+      <input 
+        [(ngModel)]="newGroupName"
+        class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+        placeholder="Nom du groupe"
+      >
+      <!-- Champ pour ajouter un email -->
+      <div class="flex space-x-2 mb-3">
+        <input 
+          [(ngModel)]="tempEmail"
+          class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
+          placeholder="Email de l'utilisateur à inviter"
+        >
+        <button 
+          (click)="addUserToTempList()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+        >
+          Ajouter
+        </button>
+      </div>
+      <!-- Liste des utilisateurs temporairement ajoutés -->
+      <div class="max-h-40 overflow-y-auto mb-3">
+        <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
+        <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
+          <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
+          <button 
+            (click)="removeUserFromTempList(user.email)"
+            class="text-sm text-red-500 font-poppins"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+      <!-- Boutons du modale -->
+      <div class="flex justify-end space-x-2">
+        <button 
+          (click)="closeCreateGroupModal()"
+          class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
+        >
+          Annuler
+        </button>
+        <button 
+          [disabled]="tempUsers.length < 3"
+          (click)="createGroup()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
+        >
+          Créer ({{ tempUsers.length }}/3)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale de confirmation -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96">
+      <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
+      <p class="text-sm font-poppins text-[#080808] mb-2"><strong>Nom du groupe :</strong> {{ newGroupName }}</p>
+      <p class="text-sm font-poppins text-[#080808] mb-4">
+        <strong>Utilisateurs invités :</strong> 
+        <span *ngIf="tempUsers.length === 0">Aucun utilisateur invité</span>
+        <span *ngFor="let user of tempUsers; let isLast=last">
+          {{ user.email }}{{ isLast ? '' : ', ' }}
+        </span>
+      </p>
+      <div class="flex justify-end">
+        <button 
+          (click)="closeModal()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -457,52 +617,73 @@
                 </button>
             </div>
         </div>
-        
-        <!-- Zone des messages -->
-        <div class="flex-1 p-3 overflow-y-auto bg-gray-50" #messagesContainer>
-            <!-- Loader -->
-            <div *ngIf="messages === null" class="flex justify-center items-center h-full">
-                <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#04789d]"></div>
+        <!-- Barre de recherche -->
+        <div class="p-2 bg-white border-b border-gray-200 sticky top-0 z-10">
+            <div class="relative">
+                <input 
+                    type="text" 
+                    [(ngModel)]="searchQuery"
+                    (input)="filterMessages()"
+                    placeholder="🔍 Rechercher un mot..."
+                    class="w-full pl-8 pr-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#04789d]"
+                >
+                <svg class="absolute left-2 top-2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
             </div>
+        </div>
+        
+        
+       <!-- Zone des messages -->
+<div class="flex-1 p-3 overflow-y-auto bg-gray-50" #messagesContainer>
+    <!-- Loader -->
+    <div *ngIf="messages === null" class="flex justify-center items-center h-full">
+        <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-[#04789d]"></div>
+    </div>
 
-            <!-- Messages -->
-            <div *ngIf="messages && messages.length > 0">
-                <div *ngFor="let message of messages" class="mb-3">
-                    <!-- Message reçu -->
-                    <div *ngIf="message.sender !== currentUser?._id" class="flex items-start">
-                        <img [src]="getProfileImageUrl(selectedUser.profileImage)" 
-                             class="w-6 h-6 rounded-full mr-2 mt-1 object-cover"
-                             (error)="handleImageError($event)">
-                        <div class="bg-white border border-gray-200 px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
-                            <p class="text-sm text-gray-800">{{ message.content }}</p>
-                            <div class="text-xs text-gray-500 mt-1 text-right">
-                                {{ message.timestamp | date:'HH:mm' }}
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Message envoyé -->
-                    <div *ngIf="message.sender === currentUser?._id" class="flex justify-end">
-                        <div class="bg-gradient-to-r from-[#04789d] to-[#56e0e0] text-white px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
-                            <p class="text-sm">{{ message.content }}</p>
-                            <div class="flex items-center justify-end mt-1">
-                                <span class="text-xs text-white/70 mr-1">
-                                    {{ message.timestamp | date:'HH:mm' }}
-                                </span>
-                            </div>
-                        </div>
+    <!-- Messages -->
+    <div *ngIf="filteredMessages && filteredMessages.length > 0">
+        <div *ngFor="let message of filteredMessages" class="mb-3">
+            <!-- Message reçu -->
+            <div *ngIf="message.sender !== currentUser?._id" class="flex items-start">
+                <img [src]="getProfileImageUrl(selectedUser.profileImage)" 
+                     class="w-6 h-6 rounded-full mr-2 mt-1 object-cover"
+                     (error)="handleImageError($event)">
+                <div class="bg-white border border-gray-200 px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
+                    <p class="text-sm text-gray-800" [innerHTML]="highlightSearch(message.content)"></p>
+                    <div class="text-xs text-gray-500 mt-1 text-right">
+                        {{ message.timestamp | date:'HH:mm' }}
                     </div>
                 </div>
             </div>
-
-            <!-- Aucun message -->
-            <div *ngIf="messages && messages.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-                <p>Aucun message échangé pour le moment</p>
+            
+            <!-- Message envoyé -->
+            <div *ngIf="message.sender === currentUser?._id" class="flex justify-end">
+                <div class="bg-gradient-to-r from-[#04789d] to-[#56e0e0] text-white px-3 py-2 rounded-lg max-w-[70%] shadow-sm">
+                    <p class="text-sm" [innerHTML]="highlightSearch(message.content)"></p>
+                    <div class="flex items-center justify-end mt-1">
+                        <span class="text-xs text-white/70 mr-1">
+                            {{ message.timestamp | date:'HH:mm' }}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
+    </div>
+
+    <!-- Aucun résultat de recherche -->
+    <div *ngIf="searchQuery && filteredMessages.length === 0" class="flex justify-center py-4 text-gray-500 text-sm">
+        Aucun résultat pour "{{ searchQuery }}"
+    </div>
+
+    <!-- Aucun message (seulement si pas de recherche) -->
+    <div *ngIf="!searchQuery && filteredMessages.length === 0" class="flex flex-col items-center justify-center h-full text-gray-500">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+        <p>Aucun message échangé pour le moment</p>
+    </div>
+</div>
         
         <!-- Zone de saisie -->
         <div class="p-3 border-t border-gray-200 bg-white rounded-b-lg">

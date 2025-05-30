@@ -1,50 +1,86 @@
 <div class="min-h-screen bg-[#f4feff] flex items-center justify-center p-4">
-  <div class="w-full max-w-3xl bg-white rounded-xl shadow-md border border-[#56e0e0] p-6">
+  <div class="w-full max-w-4xl bg-white rounded-xl shadow-md border border-[#56e0e0] p-6">
     
-    <!-- Titre -->
-    <h1 class="text-xl font-bold font-poppins text-[#444444] mb-6 text-center">TABLEAU DE BORD COURS</h1>
+    <!-- Titre et Filtres -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+      <h1 class="text-xl font-bold font-poppins text-[#444444]">TABLEAU DE BORD COURS</h1>
+      
+      <div class="mt-3 md:mt-0">
+        <select [(ngModel)]="selectedRange" (change)="onDateRangeChange()" 
+                class="border border-[#56e0e0] rounded-lg px-3 py-1 text-sm">
+          <option *ngFor="let range of dateRanges" [value]="range.value">{{range.label}}</option>
+        </select>
+      </div>
+    </div>
 
     <!-- Statistiques en ligne -->
-    <div class="flex flex-wrap justify-between gap-4 mb-6">
-      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
         <p class="text-[#636262] text-sm font-medium">Catégories</p>
         <p class="text-[#444444] text-xl font-bold mt-1">{{ totalCategories }}</p>
       </div>
-      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+      <div class="bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
         <p class="text-[#636262] text-sm font-medium">Cours</p>
         <p class="text-[#444444] text-xl font-bold mt-1">{{ totalCours }}</p>
       </div>
-      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+      <div class="bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
         <p class="text-[#636262] text-sm font-medium">Sessions</p>
         <p class="text-[#444444] text-xl font-bold mt-1">{{ totalSessions }}</p>
       </div>
-      <div class="flex-1 min-w-[150px] bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
-        <p class="text-[#636262] text-sm font-medium">Inscriptions</p>
+      <div class="bg-white rounded-lg shadow-sm p-3 text-center border border-[#56e0e0]/20">
+        <p class="text-[#636262] text-sm font-medium">Inscriptions moy.</p>
         <p class="text-[#444444] text-xl font-bold mt-1">{{ moyenneInscriptions }}</p>
       </div>
     </div>
 
-    <!-- Graphiques côte à côte -->
-    <div class="flex flex-col md:flex-row gap-4 mb-6">
-      <div class="flex-1 bg-white rounded-lg p-4 border border-[#56e0e0]/20">
+    <!-- Graphiques principaux -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div class="bg-white rounded-lg p-4 border border-[#56e0e0]/20">
         <h3 class="text-[#636262] text-sm font-medium mb-3 text-center">INSCRIPTIONS PAR COURS</h3>
-        <canvas id="enrollmentChart" class="h-40 w-full"></canvas>
+        <canvas id="enrollmentChart" class="h-48 w-full"></canvas>
       </div>
-      <div class="flex-1 bg-white rounded-lg p-4 border border-[#56e0e0]/20">
+      <div class="bg-white rounded-lg p-4 border border-[#56e0e0]/20">
         <h3 class="text-[#636262] text-sm font-medium mb-3 text-center">COURS PAR CATÉGORIE</h3>
-        <canvas id="categorieChart" class="h-40 w-full"></canvas>
+        <canvas id="categorieChart" class="h-48 w-full"></canvas>
       </div>
     </div>
 
-    <!-- Boutons en ligne -->
+    <!-- Indicateurs TOP -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+      <div class="bg-white p-4 rounded-lg border border-[#56e0e0]/20">
+        <h3 class="text-sm font-semibold mb-2 text-[#636262]">TOP COURS</h3>
+        <p class="text-lg">
+          <span class="font-medium">{{ topCours.titre || 'Aucun' }}</span> 
+          <span class="text-blue-600 ml-2">({{ topCours.count }} inscriptions)</span>
+        </p>
+      </div>
+      <div class="bg-white p-4 rounded-lg border border-[#56e0e0]/20">
+        <h3 class="text-sm font-semibold mb-2 text-[#636262]">CATÉGORIE POPULAIRE</h3>
+        <p class="text-lg">
+          <span class="font-medium">{{ popularCategory.nom || 'Aucune' }}</span> 
+          <span class="text-blue-600 ml-2">({{ popularCategory.count }} cours)</span>
+        </p>
+      </div>
+    </div>
+
+    <!-- Graphique d'évolution -->
+    <div class="bg-white rounded-lg p-4 border border-[#56e0e0]/20 mb-6">
+      <h3 class="text-[#636262] text-sm font-medium mb-3 text-center">ÉVOLUTION DES INSCRIPTIONS</h3>
+      <canvas id="evolutionChart" class="h-64 w-full"></canvas>
+    </div>
+
+    <!-- Boutons d'action -->
     <div class="flex flex-wrap justify-center gap-3">
-      <a routerLink="/categories/create" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+      <a routerLink="/categories/create" 
+         class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg shadow hover:opacity-90 transition">
         Ajouter catégorie
       </a>
-      <a routerLink="/cours/create" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+      <a routerLink="/cours/create" 
+         class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg shadow hover:opacity-90 transition">
         Ajouter cours
       </a>
-      <a routerLink="/cours/:id/sessions/new" class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg">
+      <a routerLink="/cours/:id/sessions/new" 
+         class="px-5 py-2 bg-gradient-to-r from-[#56e0e0] to-[#007299] text-white text-sm font-semibold rounded-lg shadow hover:opacity-90 transition">
         Créer session
       </a>
     </div>

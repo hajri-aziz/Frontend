@@ -7,19 +7,23 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Helvetica+Neue:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 <body class="bg-[#f4feff] min-h-screen flex items-center justify-center overflow-hidden">
-<div class="w-full max-w-7xl px-4 py-6 lg:py-0 lg:pt-[162.8px]">
-  <div class="w-full max-w-[800.77px] mx-auto">
-    <h1 class="text-3xl font-bold font-['Helvetica_Neue'] text-[#04789d] mb-6 text-center">Espace Patient</h1>
+<div class="w-full max-w-7xl mx-auto px-4 py-6">
+    <div class="w-full max-w-[800.77px] mx-auto">
 
-    <!-- Messages -->
-    <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md font-poppins">
-      {{ errorMessage }}
-    </div>
-    <div *ngIf="successMessage" class="mb-4 p-4 bg-green-100 text-green-700 rounded-md font-poppins">
-      {{ successMessage }}
-    </div>
+  <h2 class="text-3xl font-bold text-center text-[#007299] mb-8 font-['Helvetica_Neue']">Espace Patient</h2>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="mb-4 p-4 bg-red-100 text-red-700 rounded-md flex justify-between items-center font-poppins">
+    {{ errorMessage }}
+    <button type="button" class="text-red-700 font-bold text-lg" (click)="errorMessage = null">×</button>
+  </div>
+  <div *ngIf="successMessage" class="mb-4 p-4 bg-blue-100 text-blue-700 rounded-md flex justify-between items-center font-poppins">
+    {{ successMessage }}
+    <button type="button" class="text-blue-700 font-bold text-lg" (click)="successMessage = null">×</button>
+  </div>
 
     <!-- Tabs -->
     <div class="border-b border-[#cfd0d4]">
@@ -43,180 +47,198 @@
       </ul>
     </div>
 
-    <!-- Appointments Tab Content -->
-    <div *ngIf="activeTab === 'appointments'" class="mt-6">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Calendar Card -->
-        <div class="md:col-span-1 bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
-          <div class="p-6 border-b border-[#cfd0d4]">
-            <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300">Sélectionnez une date</h2>
-            <p class="text-sm text-[#66676b] font-poppins">Consultez les disponibilités des psychologues</p>
+  <!-- Appointments Tab Content -->
+  <div *ngIf="activeTab === 'appointments'" class="mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Calendar Card -->
+      <div class="md:col-span-1 bg-white rounded-xl  p-4 shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+        <div class="flex justify-between items-center mb-4">
+          <button (click)="previousMonth()" class="text-[#007299] hover:text-[#56e0e0] p-1 rounded-full hover:bg-[#e0f7f9] transition">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <span class="text-lg font-semibold text-[#007299] font-['Helvetica_Neue']">{{ currentMonthYear }}</span>
+          <button (click)="nextMonth()" class="text-[#007299] hover:text-[#56e0e0] p-1 rounded-full hover:bg-[#e0f7f9] transition">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+        <div class="grid grid-cols-7 text-center text-sm font-medium text-[#007299] mb-2 font-poppins">
+          <div *ngFor="let d of ['Lu','Ma','Me','Je','Ve','Sa','Di']">{{ d }}</div>
+        </div>
+        <div class="grid grid-cols-7 gap-1">
+          <div *ngFor="let day of calendarDays" class="relative">
+            <button
+              (click)="day?.date && selectDate(day.date)"
+              class="w-10 h-10 flex items-center justify-center rounded-full text-sm font-poppins transition-colors"
+              [class.bg-[#007299]]="day?.date && isSelectedDate(day.date)"
+              [class.text-white]="day?.date && isSelectedDate(day.date)"
+              [class.text-gray-500]="day?.isOtherMonth"
+              [class.text-[#007299]]="day?.date && !day.isOtherMonth && !isSelectedDate(day.date)"
+              [class.hover:bg-[#e0f7f9]]="day?.date && !isSelectedDate(day.date)"
+              [class.border-2]="day?.date && hasAvailabilitiesOnDate(day.date)"
+              [class.border-[#56e0e0]]="day?.date && hasAvailabilitiesOnDate(day.date) && !isSelectedDate(day.date)"
+              [class.bg-[#e0f7f9]]="day?.date && hasAvailabilitiesOnDate(day.date) && !isSelectedDate(day.date)"
+            >
+              {{ day?.day || '-' }}
+              <!-- Indicateur de disponibilités -->
+              <div *ngIf="day?.date && hasAvailabilitiesOnDate(day.date)"
+                   class="absolute -top-1 -right-1 w-2 h-2 rounded-full"
+                   [class.bg-[#56e0e0]]="!isSelectedDate(day.date)"
+                   [class.bg-white]="isSelectedDate(day.date)">
+              </div>
+            </button>
           </div>
-          <div class="p-6">
-            <div class="flex justify-between items-center mb-4">
-              <button class="text-[#66676b] hover:text-[#04789d]" (click)="previousMonth()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-              </button>
-              <span class="text-lg font-medium font-['Helvetica_Neue']">{{ currentMonthYear }}</span>
-              <button class="text-[#66676b] hover:text-[#04789d]" (click)="nextMonth()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-              </button>
-            </div>
-            <div class="grid grid-cols-7 gap-1 text-center">
-              <div class="text-sm font-poppins text-[#66676b]" *ngFor="let dayName of ['lu', 'ma', 'me', 'je', 've', 'sa', 'di']">{{ dayName }}</div>
-              <div *ngFor="let day of calendarDays" class="text-center">
+        </div>
+        <!-- Légende -->
+        <div class="mt-4 text-xs text-[#007299] font-poppins">
+
+        </div>
+      </div>
+
+      <!-- Availabilities Card -->
+             <div class="md:col-span-2 bg-white rounded-xl  p-6 shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
+
+        <h3 class="text-xl font-semibold text-[#007299] mb-4 font-['Helvetica_Neue']">Disponibilités</h3>
+        <div *ngIf="selectedDate; else noDateSelected">
+          <div *ngIf="availabilities.length > 0; else noAvailabilities" class="space-y-4">
+            <div *ngFor="let slot of availabilities" class="border border-[#b2e0ff] rounded-lg p-4 bg-white/50 backdrop-blur-sm">
+              <div class="flex justify-between items-start flex-col sm:flex-row sm:items-start gap-4">
+                <div class="flex-grow">
+                  <h4 class="text-lg font-semibold text-[#007299] font-['Helvetica_Neue']">{{ slot.id_psychologue.nom || 'Psychologue' }}</h4>
+                  <p class="text-sm text-[#007299] font-poppins">{{ selectedDate | date:'dd MMMM yyyy':'':'fr' }}</p>
+                  <p class="text-sm text-[#007299] font-poppins">{{ slot.heure_debut }} - {{ slot.heure_fin }}</p>
+                </div>
                 <button
-                  class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-poppins"
-                  [class.bg-[#04789d]="day?.date && isSelectedDate(day.date)"
-                  [class.text-white]="day?.date && isSelectedDate(day.date)"
-                  [class.text-[#8c939c]="day?.isOtherMonth"
-                  [class.hover:bg-[#f1f2f5]="day?.date && !isSelectedDate(day.date)"
-                  (click)="day?.date && selectDate(day.date)"
+                  class="flex items-center justify-center w-full sm:w-40 px-3 py-1.5 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md hover:opacity-90 transition"
+                  (click)="openAppointmentModal(slot)"
                 >
-                  {{ day?.day || '-' }}
+                  <i class="bi bi-person-check-fill mr-1"></i> Prendre rendez-vous
                 </button>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Availabilities Card -->
-        <div class="md:col-span-2 bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
-          <div class="p-6 border-b border-[#cfd0d4]">
-            <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300">Disponibilités</h2>
-            <p class="text-sm text-[#66676b] font-poppins">
-              {{ selectedDate ? (selectedDate | date:'dd MMMM yyyy':'':'fr') : 'Sélectionnez une date pour voir les disponibilités' }}
-            </p>
-          </div>
-          <div class="p-6">
-            <div *ngIf="selectedDate; else noDateSelected">
-              <div *ngIf="availabilities.length > 0; else noAvailabilities" class="space-y-4">
-                <div *ngFor="let slot of availabilities" class="flex flex-col sm:flex-row items-center justify-between p-4 border border-[#c4c4c4] rounded-lg">
-                  <div class="mb-4 sm:mb-0">
-                    <h3 class="font-medium font-['Helvetica_Neue'] text-[#080808]">{{ slot.id_psychologue.nom || 'Psychologue' }}</h3>
-                    <p class="text-sm text-[#66676b] font-poppins">{{ slot.heure_debut }} - {{ slot.heure_fin }}</p>
-                  </div>
-                  <button
-                    class="flex items-center justify-center w-full sm:w-[160px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2"
-                    (click)="openAppointmentModal(slot)"
-                  >
-                    Prendre rendez-vous
-                  </button>
-                </div>
-              </div>
-              <ng-template #noAvailabilities>
-                <div class="text-center py-8 text-[#66676b] font-poppins">
-                  Aucune disponibilité pour cette date
-                </div>
-              </ng-template>
+          <ng-template #noAvailabilities>
+            <div class="text-center py-8">
+              <div class="text-6xl mb-4">📅</div>
+              <p class="text-[#007299] text-lg font-poppins">Aucune disponibilité pour cette date</p>
+              <p class="text-[#007299] text-sm opacity-75 font-poppins">Sélectionnez une autre date ou consultez le calendrier</p>
             </div>
-            <ng-template #noDateSelected>
-              <div class="text-center py-8 text-[#66676b] font-poppins">
-                Veuillez sélectionner une date pour voir les disponibilités
-              </div>
-            </ng-template>
-          </div>
+          </ng-template>
         </div>
+        <ng-template #noDateSelected>
+          <div class="text-center py-8">
+            <div class="text-6xl mb-4">👆</div>
+            <p class="text-[#007299] text-lg font-poppins">Veuillez sélectionner une date</p>
+            <p class="text-[#007299] text-sm opacity-75 font-poppins">Cliquez sur une date dans le calendrier pour voir les disponibilités</p>
+          </div>
+        </ng-template>
       </div>
     </div>
+  </div>
 
-    <!-- Events Tab Content -->
-    <div *ngIf="activeTab === 'events'" class="mt-6">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <div *ngFor="let event of events" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
-          <div class="p-6 border-b border-[#cfd0d4]">
-            <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300">{{ event.titre }}</h2>
-            <p class="text-sm text-[#66676b] font-poppins">{{ event.date | date:'dd MMMM yyyy':'':'fr' }} à {{ event.heure_debut }}</p>
-          </div>
-          <div class="p-6">
-            <p class="text-sm mb-4 font-poppins text-[#080808]">{{ event.description }}</p>
-            <div class="flex flex-col sm:flex-row items-center gap-4 text-sm text-[#66676b] font-poppins mb-4">
-              <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
-                  <circle cx="12" cy="12" r="10"></circle>
-                  <polyline points="12 6 12 12 16 14"></polyline>
-                </svg>
-                {{ event.duree }} min
-              </div>
-              <div class="flex items-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                  <circle cx="9" cy="7" r="4"></circle>
-                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-                </svg>
-                {{ event.participants.length }}/{{ event.capacite }}
-              </div>
-            </div>
-            <button
-              class="flex items-center justify-center w-full h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              (click)="registerForEvent(event)"
-              [disabled]="event.participants.length >= event.capacite"
-            >
-              S'inscrire
-            </button>
-          </div>
-        </div>
-        <div *ngIf="events.length === 0" class="text-center py-8 text-[#66676b] font-poppins">
-          Aucun événement disponible pour le moment
-        </div>
-      </div>
-    </div>
-
-    <!-- Appointment Modal -->
-    <div *ngIf="showAppointmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] w-full max-w-md mx-4">
+  <!-- Events Tab Content -->
+  <div *ngIf="activeTab === 'events'" class="mt-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div *ngFor="let event of events" class="bg-white rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)]">
         <div class="p-6 border-b border-[#cfd0d4]">
-          <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-[#080808]">Prendre rendez-vous</h2>
-          <p class="text-sm text-[#66676b] font-poppins">
+          <h2 class="text-xl font-semibold font-['Helvetica_Neue'] text-teal-300">{{ event.titre }}</h2>
+          <p class="text-sm text-[#66676b] font-poppins">{{ event.date | date:'dd MMMM yyyy':'':'fr' }} à {{ event.heure_debut }}</p>
+        </div>
+        <div class="p-6">
+          <p class="text-sm mb-4 font-poppins text-[#080808]">{{ event.description }}</p>
+          <div class="flex flex-col sm:flex-row items-center gap-4 text-sm text-[#66676b] font-poppins mb-4">
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              {{ event.duree }} min
+            </div>
+            <div class="flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1 h-4 w-4">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              {{ event.participants.length }}/{{ event.capacite }}
+            </div>
+          </div>
+          <button
+            class="flex items-center justify-center w-full h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            (click)="registerForEvent(event)"
+            [disabled]="event.participants.length >= event.capacite"
+          >
+            S'inscrire
+          </button>
+        </div>
+      </div>
+      <div *ngIf="events.length === 0" class="text-center py-8 text-[#66676b] font-poppins">
+        Aucun événement disponible pour le moment
+      </div>
+    </div>
+  </div>
+
+  <!-- Appointment Modal -->
+  <div *ngIf="showAppointmentModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl max-w-md w-full shadow-2xl">
+      <!-- En-tête de la modal -->
+      <div class="flex justify-between items-center p-6 border-b border-[#b2e0ff]">
+        <h2 class="text-xl font-semibold text-[#007299] font-['Helvetica_Neue']">Prendre rendez-vous</h2>
+        <button type="button" class="text-gray-400 hover:text-gray-600 text-2xl font-light" (click)="closeAppointmentModal()">×</button>
+      </div>
+      <!-- Corps de la modal -->
+      <div class="p-6">
+        <div class="mb-4 p-3 bg-gradient-to-br from-[#e6f8ff] to-[#d0f0f9] rounded-lg border border-[#b2e0ff]">
+          <p class="text-sm text-[#007299] font-poppins">
             Avec {{ selectedSlot?.id_psychologue?.nom || 'Psychologue' }} le
             {{ selectedDate | date:'dd MMMM yyyy':'':'fr' }} de
             {{ selectedSlot?.heure_debut }} à {{ selectedSlot?.heure_fin }}
           </p>
         </div>
-        <div class="p-6">
-          <form [formGroup]="appointmentForm" (ngSubmit)="submitAppointment()">
-            <div class="space-y-4">
-              <div class="space-y-2">
-                <label for="appointment-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure</label>
-                <select
-                  id="appointment-time"
-                  formControlName="heure"
-                  class="flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  <option *ngFor="let time of availableTimes" [value]="time">{{ time }}</option>
-                </select>
-              </div>
-              <div class="space-y-2">
-                <label for="appointment-reason" class="block text-sm font-medium font-poppins text-[#080808]">Motif</label>
-                <textarea
-                  id="appointment-reason"
-                  formControlName="motif"
-                  placeholder="Motif du rendez-vous"
-                  class="flex min-h-[100px] w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                ></textarea>
-              </div>
-            </div>
-            <div class="flex flex-col sm:flex-row justify-end gap-4 mt-6">
-              <button
-                type="button"
-                class="flex items-center justify-center w-full sm:w-[100px] h-10 px-4 py-2 border border-[#c4c4c4] bg-white text-[#080808] font-medium font-poppins text-sm rounded-md hover:bg-[#f1f2f5] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2"
-                (click)="closeAppointmentModal()"
+        <form [formGroup]="appointmentForm" (ngSubmit)="submitAppointment()">
+          <div class="space-y-4">
+            <div class="space-y-2">
+              <label for="appointment-time" class="block text-sm font-medium text-[#007299] font-poppins">Heure</label>
+              <select
+                id="appointment-time"
+                formControlName="heure"
+                class="w-full text-sm border border-[#b2e0ff] rounded-md px-2 py-1.5 bg-white/80 focus:ring-2 focus:ring-[#56e0e0] transition"
               >
-                Annuler
-              </button>
-              <button
-                type="submit"
-                class="flex items-center justify-center w-full sm:w-[100px] h-10 px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins text-base rounded-2xl shadow-[0px_4px_7px_rgba(1,115,153,0.20)] hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 focus:outline-none focus:ring-2 focus:ring-[#007299] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                [disabled]="appointmentForm.invalid"
-              >
-                Confirmer
-              </button>
+                <option *ngFor="let time of availableTimes" [value]="time">{{ time }}</option>
+              </select>
             </div>
-          </form>
-        </div>
+            <div class="space-y-2">
+              <label for="appointment-reason" class="block text-sm font-medium text-[#007299] font-poppins">Motif</label>
+              <textarea
+                id="appointment-reason"
+                formControlName="motif"
+                placeholder="Motif du rendez-vous"
+                class="w-full min-h-[100px] text-sm border border-[#b2e0ff] rounded-md px-2 py-1.5 bg-white/80 focus:ring-2 focus:ring-[#56e0e0] transition placeholder:text-[#8c939c]"
+              ></textarea>
+            </div>
+          </div>
+          <div class="flex justify-end gap-3 mt-6">
+            <button
+              type="button"
+              class="px-4 py-2 text-sm text-gray-600 border border-[#b2e0ff] rounded-md hover:bg-[#e0f7f9] transition"
+              (click)="closeAppointmentModal()"
+            >
+              Annuler
+            </button>
+            <button
+              type="submit"
+              class="px-4 py-2 text-sm text-white bg-gradient-to-br from-[#56e0e0] to-[#007299] rounded-md hover:opacity-90 transition disabled:opacity-50"
+              [disabled]="appointmentForm.invalid"
+            >
+              <i class="bi bi-check-lg mr-1"></i> Confirmer
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
+    </div>
+
 </div>
 </body>
+</html>
