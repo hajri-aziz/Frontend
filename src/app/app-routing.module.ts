@@ -36,7 +36,7 @@ import { SessionFormComponent } from './pages/cours-sessions/session-form/sessio
 import { SessionDetailComponent } from './pages/cours-sessions/session-detail/session-detail.component';
 import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
-
+import { SessionLoginComponent } from './pages/session-login/session-login.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
@@ -113,6 +113,8 @@ const routes: Routes = [
 
   // 🗂️ Dashboard Cours
    {path: 'dashboard-cours', component: DashboardCoursComponent },
+   { path: 'sessions/:id', component: SessionLoginComponent, canActivate: [AuthGuard] },
+   { path: 'session-login',component: SessionLoginComponent,canActivate: [AuthGuard]},
   
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },

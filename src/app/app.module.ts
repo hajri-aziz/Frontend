@@ -70,6 +70,7 @@ import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours
 import { MessagesComponent } from './pages/messages/messages.component';
 import { ToastComponent } from './pages/toast/toast.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SessionLoginComponent } from './pages/session-login/session-login.component';
 
 
 
@@ -121,6 +122,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DashboardCoursComponent,
     MessagesComponent,
     ToastComponent,
+    SessionLoginComponent,
   ],
  
   imports: [

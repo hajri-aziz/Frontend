@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router,ActivatedRoute } from '@angular/router';
 import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
 
@@ -8,20 +8,24 @@ import { UserService } from 'src/app/services/user.service';
   selector: 'app-login',
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   email: string = '';
   password: string = '';
+  redirectUrl = '/editprofil';
   showPassword: boolean = false; 
 
-  constructor(private userService: UserService, private router: Router,public toastService: ToastService ) { }
+  constructor(private userService: UserService, private router: Router, private route: ActivatedRoute,public toastService: ToastService ) { }
    navigateToLogin() {
     this.router.navigate(['/signup']);
   }
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
-  
 
+  ngOnInit(): void {
+  const r = this.route.snapshot.queryParamMap.get('redirect');
+  if (r) this.redirectUrl = r;
+}
   onSubmit(): void {
     if (!this.email || !this.password) {
       this.toastService.showError('Veuillez remplir tous les champs.');
@@ -43,7 +47,7 @@ console.log(credentials);
         console.log('ID de l\'utilisateur enregistré :', res.user.id);
         this.toastService.showSuccess('Connexion réussie !');
         setTimeout(() => {
-          this.router.navigate(['/editprofil']);
+          this.router.navigateByUrl(this.redirectUrl);
         }, 1000); // 1 seconde de délai
       },
       error: (err:any) => {
