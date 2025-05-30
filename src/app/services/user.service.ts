@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { User } from '../models';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +48,13 @@ export class UserService {
 
   getUserByName(nom: string): Observable<any> {
     return this.http.get(`${this.apiUrl}/user/shownameuser/${nom}`, { headers: this.getAuthHeaders() });
+  }
+  getPsychiatristsList(): Observable<User[]> {
+    return this.http.get<User[]>(`${this.apiUrl}/user/psychiatres`);
+  }
+  logout(): Observable<any> {
+    return this.http.post(`${this.apiUrl}/user/logout`, {},{ headers: this.getAuthHeaders() } // En-tête d'autorisation
+    );
   }
 
   deleteUser(id: string): Observable<any> {

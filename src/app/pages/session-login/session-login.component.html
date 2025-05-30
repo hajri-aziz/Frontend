@@ -1,0 +1,21 @@
+<div class="max-w-md mx-auto mt-12 p-6 border rounded-lg shadow">
+  <h2 class="text-xl font-semibold mb-4">Accès protégé à la session</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <label for="password" class="block mb-1">Mot de passe reçu par email</label>
+    <input 
+      id="password" 
+      type="password" 
+      formControlName="password" 
+      class="w-full p-2 border rounded mb-4"/>
+
+    <button 
+      type="submit" 
+      [disabled]="loading" 
+      class="w-full p-2 bg-blue-600 text-white rounded">
+      {{ loading ? 'Vérification…' : 'Valider' }}
+    </button>
+  </form>
+
+  <p *ngIf="error" class="mt-3 text-red-600">{{ error }}</p>
+</div>

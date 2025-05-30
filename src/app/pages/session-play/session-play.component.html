@@ -1,0 +1,24 @@
+<!-- session-play.component.html -->
+<div *ngIf="loading">Chargement…</div>
+<div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+<div *ngIf="!loading && session">
+  <h2>{{ session.title }}</h2>
+
+  <iframe
+    [src]="embedUrl | safeUrl"
+    width="100%"
+    height="500"
+    frameborder="0"
+    allow="autoplay; encrypted-media"
+    allowfullscreen>
+  </iframe>
+
+  <!--
+  Si tu as aussi des fichiers .mp4 ou autre hors YouTube, tu peux conserver :
+  <video controls width="100%">
+    <source [src]="session.video_url" type="video/mp4" />
+    Votre navigateur ne supporte pas la balise video.
+  </video>
+  -->
+</div>

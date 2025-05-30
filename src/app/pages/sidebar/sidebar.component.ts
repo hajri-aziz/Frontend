@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service'; // Importez le même service que dans editprofil
 
 @Component({
@@ -15,7 +16,8 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     public router: Router,
-    private userService: UserService // Même service que dans editprofil
+    private userService: UserService,
+    private toastService: ToastService // Assurez-vous d'importer ToastService si vous l'utilisez pour les notifications
   ) {}
 
   ngOnInit(): void {
@@ -68,5 +70,19 @@ private loadUserProfile(): void {
     if (!imagePath) return 'assets/Ellipse 23.png';
     if (imagePath.startsWith('http')) return imagePath;
     return `http://localhost:3000/${imagePath.replace(/^\/+/, '').replace(/\\/g, '/')}`;
+  }
+  logout() {
+    this.userService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('token');
+        this.toastService.showSuccess('Deconnexion réussie !');
+        this.router.navigate(['/login']); // Redirige vers la page de login
+      },
+      error: (err) => {
+        console.error('Erreur lors de la déconnexion:', err);
+        this.toastService.showError('Erreur lors de la déconnexion. Veuillez réessayer.');
+        // Optionnel: Afficher un message d'erreur à l'utilisateur
+      }
+    });
   }
 }
