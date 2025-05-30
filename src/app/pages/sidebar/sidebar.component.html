@@ -168,11 +168,11 @@
 
       <!-- Logout -->
       <div class="mt-auto pt-10 border-t border-gray-300">
-        <a routerLink="/home"
+        <button (click)="logout()"
           class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition mt-6">
           <img src="assets/deco.svg" alt="Logout Icon" class="w-5 h-5" />
           <span>Se déconnecter</span>
-        </a>
+      </button>
       </div>
     </div>
   </div>

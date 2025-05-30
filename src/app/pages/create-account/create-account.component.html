@@ -103,8 +103,11 @@
                                 <option value="" disabled selected hidden>
                                     Sélectionnez un rôle
                                 </option>
-                                <option value="Utilisateur">Utilisateur</option>
-                                <option value="Admin">Admin</option>
+                                <option value="admin">Admin</option>
+                                <option value="administrateur">Administrateur</option>
+                                <option value="etudiant">Etudiant</option>
+                                <option value="instructor">Instructor</option>
+                                <option value="psychiatre">Psychiatre</option>
                             </select>
                             <div *ngIf="
                     createAccountForm.get('role')?.invalid &&

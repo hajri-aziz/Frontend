@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { UserService } from 'src/app/services/user.service';
 import { NotificationService } from 'src/app/services/notification.service'; // Import NotificationService
 import { Notification } from 'src/app/models/notification.model'; // Import Notification model
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -22,7 +23,8 @@ export class SidebarComponent implements OnInit {
   constructor(
     public router: Router,
     private userService: UserService,
-    private notificationService: NotificationService // Inject NotificationService
+    private notificationService: NotificationService, // Inject NotificationService
+    private toastService: ToastService // Assurez-vous d'importer ToastService si vous l'utilisez pour les notifications
   ) {}
 
   ngOnInit(): void {
@@ -117,5 +119,19 @@ export class SidebarComponent implements OnInit {
     if (!imagePath) return 'assets/Ellipse 23.png';
     if (imagePath.startsWith('http')) return imagePath;
     return `http://localhost:3000/${imagePath.replace(/^\/+/, '').replace(/\\/g, '/')}`;
+  }
+  logout() {
+    this.userService.logout().subscribe({
+      next: () => {
+        localStorage.removeItem('token');
+        this.toastService.showSuccess('Deconnexion réussie !');
+        this.router.navigate(['/login']); // Redirige vers la page de login
+      },
+      error: (err) => {
+        console.error('Erreur lors de la déconnexion:', err);
+        this.toastService.showError('Erreur lors de la déconnexion. Veuillez réessayer.');
+        // Optionnel: Afficher un message d'erreur à l'utilisateur
+      }
+    });
   }
 }

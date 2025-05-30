@@ -1,31 +1,46 @@
-import { Component } from '@angular/core';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
-  showPassword: boolean = false; 
+  redirectUrl = '/editprofil';
+  showPassword: boolean = false;
 
-  constructor(private userService: UserService, private router: Router,public toastService: ToastService ) { }
-   navigateToLogin() {
+  constructor(
+    private userService: UserService,
+    private router: Router,
+    private route: ActivatedRoute,
+    public toastService: ToastService
+  ) {}
+
+  ngOnInit(): void {
+    const r = this.route.snapshot.queryParamMap.get('redirect');
+    if (r) this.redirectUrl = r;
+  }
+
+  navigateToLogin() {
     this.router.navigate(['/signup']);
   }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
-  
 
-  onSubmit(): void {
-    if (!this.email || !this.password) {
-      this.toastService.showError('Veuillez remplir tous les champs.');
-      return;
+  onSubmit(form: NgForm): void {
+    if (form.invalid) {
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
+      this.toastService.showError('Veuillez corriger les erreurs dans le formulaire.');
+      return; // Ajout important pour sortir de la fonction si le formulaire est invalide
     }
 
     const credentials = {
@@ -33,34 +48,26 @@ export class LoginComponent {
       password: this.password
     };
 
-console.log(credentials);
+  console.log(credentials);
     this.userService.login(credentials).subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         console.log('Connexion réussie :', res);
         localStorage.setItem('token', res.token);
-        localStorage.setItem('userId', res.user.id);// Enregistre l'ID de l'utilisateur dans le localStorage
-        console.log('Token enregistré :', res.token);
-        console.log('ID de l\'utilisateur enregistré :', res.user.id);
+        localStorage.setItem('userId', res.user.id);
         this.toastService.showSuccess('Connexion réussie !');
         setTimeout(() => {
+<<<<<<< HEAD
           this.router.navigate(['/social-feed']);
         }, 1000); // 1 seconde de délai
+=======
+          this.router.navigateByUrl(this.redirectUrl);
+        }, 1000);
+>>>>>>> 9f5db9898d914d7cdb8030faab00fe28102c5c45
       },
-      error: (err:any) => {
+      error: (err: any) => {
         console.error('Erreur :', err);
         this.toastService.showError(err.error.message || 'Une erreur s\'est produite lors de la connexion.');
-      
-        
-        //this.router.navigate(['/editprofil']); // Redirige vers une autre page
-      },
-      
+      }
     });
   }
-  /*ngOnInit() {
-    console.log('ngOnInit lancé');
-    setTimeout(() => {
-      this.toastService.showSuccess('TEST FORCÉ - Ça marche ?');
-    }, 1000);
-  }*/
 }
-

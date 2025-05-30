@@ -11,6 +11,8 @@ import { forkJoin, of, Subject } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http"
 import { Router } from '@angular/router';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 
 @Component({
@@ -21,6 +23,15 @@ import { Router } from '@angular/router';
   styleUrls: ["./social-feed.component.scss"],
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
+
+
+ 
+ 
+  showEmojiPicker: boolean = false;
+
+ 
+
+
 
   messageSubscription: Subscription | undefined;
   selectedGroup: any
@@ -74,6 +85,7 @@ post: any
     private cdr: ChangeDetectorRef,
     private router: Router,
     private http: HttpClient,
+    private sanitizer: DomSanitizer,
   ) {}
  
 
@@ -763,24 +775,7 @@ sendMessage(): void {
       this.selectedUser = null;
     }
   }
-   // Méthode pour charger les messages entre deux utilisateurs
-  loadMessages(userId1: string, userId2: string): void {
-    this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
-      next: (response) => {
-        this.messages = response;
-        // Formater les messages si nécessaire
-        this.messages = this.messages.map(msg => ({
-          ...msg,
-          sender: msg["expediteurId"]._id,
-          content: msg['contenu'],
-          timestamp: msg['dateEnvoi']
-        }));
-      },
-      error: (err) => {
-        console.error('Erreur lors du chargement des messages:', err);
-      }
-    });
-  }
+ 
 expandChat(userId: string) {
   this.expandedChatId = userId;
 
@@ -1544,4 +1539,79 @@ private loadPostsWithUserData(): void {
     })
   );
 }
+
+//*******************************SEARCH MESSAGE********************* */
+// Ajoutez ces propriétés à votre composant
+searchQuery: string = '';
+filteredMessages: any[] = [];
+filterMessages() {
+    if (!this.searchQuery.trim()) {
+        this.filteredMessages = this.messages ? [...this.messages] : [];
+        return;
+    }
+
+    const query = this.searchQuery.toLowerCase().trim();
+    this.filteredMessages = (this.messages || []).filter(message => {
+        const content = message.content?.toLowerCase() || '';
+        const senderName = message.sender === this.currentUser?._id 
+            ? 'vous' 
+            : this.selectedUser?.prenom?.toLowerCase() || '';
+        return content.includes(query) || senderName.includes(query);
+    });
+}
+// Ajoutez cette méthode au composant
+highlightText(text: string): string {
+    if (!this.searchQuery.trim()) return text;
+    
+    const query = this.searchQuery.toLowerCase();
+    return text.replace(new RegExp(query, 'gi'), match => 
+        `<span class="highlight search-match">${match}</span>`
+    );
+}
+// Méthode pour charger les messages entre deux utilisateurs
+loadMessages(userId1: string, userId2: string): void {
+  this.postService.getMessagesBetweenUsersDirect(userId1, userId2).subscribe({
+    next: (response) => {
+      this.messages = response.map((msg: any) => ({
+        ...msg,
+        sender: msg["expediteurId"]._id,
+        content: msg['contenu'],
+        timestamp: msg['dateEnvoi']
+      }));
+      this.filterMessages(); // Appel après avoir reçu et formaté les messages
+    },
+    error: (err) => {
+      console.error('Erreur lors du chargement des messages:', err);
+    }
+  });
+}
+
+
+highlightSearch(text: string): SafeHtml {
+    if (!this.searchQuery?.trim()) {
+      return text;
+    }
+    
+    const searchRegex = new RegExp(this.searchQuery, 'gi');
+    return this.sanitizer.bypassSecurityTrustHtml(
+      text.replace(searchRegex, match => 
+        `<span class="bg-yellow-100 text-gray-900 px-0.5 rounded">${match}</span>`
+      )
+    );
+  }
+  //**************emojie message*************
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  onEmojiClick(event: any) {
+    this.messageContent += event.emoji.native; // Add emoji to input
+    this.showEmojiPicker = false; // Close picker
+  }
+
+
+
+
+  
+
   }

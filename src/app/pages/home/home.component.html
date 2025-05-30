@@ -189,7 +189,7 @@
             </div>
         </section>
 
-        <!-- Our Specialists -->
+        <!-- Nos Specialistes -->
         <section class="mt-20 sm:mt-32">
             <div class="text-center">
                 <h2 class="text-3xl sm:text-4xl font-bold">
@@ -197,141 +197,98 @@
                     <span class="gradient-text">spécialistes</span>
                 </h2>
                 <p class="mt-4 text-neutral-500 max-w-2xl mx-auto">
-                    Rencontrez notre équipe de psychologues dédiés à votre bien-être
+                    Rencontrez notre équipe de psychiatres dédiés à votre bien-être
                 </p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-                <!-- Specialist 1 -->
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                    <div class="h-48 bg-gradient-to-r from-teal-400 to-cyan-600"></div>
-                    <div class="p-6 -mt-16">
-                        <div class="w-32 h-32 mx-auto rounded-full border-4 border-white overflow-hidden">
-                            <img src="assets/specialist1.jpg" alt="Dr. Sophie Martin"
-                                class="w-full h-full object-cover">
-                        </div>
-                        <h3 class="mt-4 text-xl font-bold text-center text-indigo-950">Dr. Sophie Martin</h3>
-                        <p class="text-center text-teal-500">Psychologue clinicienne</p>
-                        <p class="mt-4 text-neutral-500 text-center">
-                            Spécialiste en gestion du stress et anxiété chez les étudiants
-                        </p>
-                        <div class="flex justify-center mt-6">
-                            <button onclick="window.location.href='/specialists/1'"
-                                class="px-6 py-2 bg-teal-100 text-teal-600 rounded-full font-medium hover:bg-teal-200 transition-colors">
-                                Voir le profil
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Specialist 2 -->
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                    <div class="h-48 bg-gradient-to-r from-blue-400 to-indigo-600"></div>
-                    <div class="p-6 -mt-16">
-                        <div class="w-32 h-32 mx-auto rounded-full border-4 border-white overflow-hidden">
-                            <img src="assets/specialist2.jpg" alt="Dr. Jean Dupont" class="w-full h-full object-cover">
-                        </div>
-                        <h3 class="mt-4 text-xl font-bold text-center text-indigo-950">Dr. Jean Dupont</h3>
-                        <p class="text-center text-teal-500">Psychothérapeute</p>
-                        <p class="mt-4 text-neutral-500 text-center">
-                            Expert en thérapie cognitive et comportementale
-                        </p>
-                        <div class="flex justify-center mt-6">
-                            <button onclick="window.location.href='/specialists/2'"
-                                class="px-6 py-2 bg-teal-100 text-teal-600 rounded-full font-medium hover:bg-teal-200 transition-colors">
-                                Voir le profil
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Specialist 3 -->
-                <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
-                    <div class="h-48 bg-gradient-to-r from-purple-400 to-pink-600"></div>
-                    <div class="p-6 -mt-16">
-                        <div class="w-32 h-32 mx-auto rounded-full border-4 border-white overflow-hidden">
-                            <img src="assets/specialist3.jpg" alt="Dr. Amélie Leroy" class="w-full h-full object-cover">
-                        </div>
-                        <h3 class="mt-4 text-xl font-bold text-center text-indigo-950">Dr. Amélie Leroy</h3>
-                        <p class="text-center text-teal-500">Psychologue scolaire</p>
-                        <p class="mt-4 text-neutral-500 text-center">
-                            Spécialiste des problématiques académiques et d'orientation
-                        </p>
-                        <div class="flex justify-center mt-6">
-                            <button onclick="window.location.href='/specialists/3'"
-                                class="px-6 py-2 bg-teal-100 text-teal-600 rounded-full font-medium hover:bg-teal-200 transition-colors">
-                                Voir le profil
-                            </button>
+        
+            <!-- Conteneur des spécialistes -->
+            <div *ngIf="!isLoading; else loading">
+                <div *ngIf="displayedPsychiatres.length > 0; else noSpecialists"
+                    class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
+        
+                    <!-- Carte pour chaque psychiatre -->
+                    <div *ngFor="let psychiatre of displayedPsychiatres"
+                        class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+        
+                        <div class="h-48 bg-gradient-to-r from-teal-400 to-cyan-600"></div>
+        
+                        <div class="p-6 -mt-16">
+                            <div class="w-32 h-32 mx-auto rounded-full border-4 border-white overflow-hidden bg-gray-200">
+                                <img [src]="psychiatre.profileImage" [alt]="'Photo du Dr. ' + psychiatre.prenom + ' ' + psychiatre.nom"
+                                    class="w-full h-full object-cover" />                      </div>
+        
+                            <h3 class="mt-4 text-xl font-bold text-center text-indigo-950">
+                                Dr. {{psychiatre.prenom}} {{psychiatre.nom}}
+                            </h3>
+        
+                            <p class="text-center text-teal-500 capitalize">
+                                {{psychiatre.role}}
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
-
+        
+            <!-- Messages d'état -->
+            <ng-template #loading>
+                <div class="text-center py-12">
+                    <p>Chargement des spécialistes...</p>
+                </div>
+            </ng-template>
+        
+            <ng-template #noSpecialists>
+                <div class="text-center py-8">
+                    <p class="text-red-500">{{errorMessage}}</p>
+                </div>
+            </ng-template>
+        
             <div class="flex justify-center mt-12">
-                <button onclick="window.location.href='/specialists'"
-                    class="px-8 py-3 bg-white border-2 border-teal-400 text-teal-500 font-semibold rounded-3xl shadow-lg hover:shadow-xl transition-all">
+                <button  onclick="window.location.href='/login'" class="px-8 py-3 bg-white border-2 border-teal-400 text-teal-500 font-semibold rounded-3xl shadow-lg hover:shadow-xl transition-all">
                     Voir tous nos spécialistes
                 </button>
             </div>
         </section>
-
         <!-- Testimonials -->
-        <section class="mt-20 sm:mt-32 bg-gradient-to-b from-blue-100 to-teal-100 py-16 rounded-3xl">
-            <div class="text-center">
-                <h2 class="text-3xl sm:text-4xl font-bold">
-                    <span class="text-zinc-900">Témoignages de notre </span>
-                    <span class="gradient-text">communauté</span>
-                </h2>
-                <p class="mt-4 text-neutral-500 max-w-2xl mx-auto">
-                    Ce que disent les membres de notre institution
-                </p>
-            </div>
+<!-- Section Témoignages -->
+    <section class="mt-20 bg-gradient-to-b from-blue-100 to-teal-100 py-16 rounded-3xl">
+        <div class="text-center">
+        <h2 class="text-4xl font-bold">
+            <span class="text-zinc-900">Témoignages </span>
+            <span class="gradient-text">vérifiés</span>
+        </h2>
+        <p class="mt-4 text-neutral-500 max-w-2xl mx-auto">
+            Expériences réelles de notre communauté
+        </p>
+    </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 px-4">
-                <!-- Testimonial 1 -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-16 h-16 rounded-full overflow-hidden">
-                            <img src="assets/testimonial1.jpg" alt="Étudiant" class="w-full h-full object-cover">
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="font-bold text-indigo-950">Thomas, 23 ans</h4>
-                            <p class="text-sm text-neutral-500">Étudiant en Master</p>
-                        </div>
-                    </div>
-                    <p class="mt-4 text-neutral-600">
-                        "En période d'examens, le stress devenait ingérable. Grâce à Zenaura, j'ai pu parler à un
-                        psychologue rapidement et apprendre des techniques de gestion du stress qui m'ont sauvé la
-                        session !"
+    <!-- Contenu dynamique -->
+    <div *ngIf="!testimonialLoading; else loading" class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 px-4">
+        <!-- Témoignage -->
+        <div *ngFor="let post of testimonialPosts"
+            class="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-shadow">
+            <div class="flex items-center">
+                <img [src]="post.idAuteur?.profileImage || 'assets/default-avatar.png'" alt="Photo profil"
+                    class="w-16 h-16 rounded-full object-cover border-2 border-teal-100">
+                <div class="ml-4">
+                    <h4 class="font-bold text-indigo-950">
+                        {{post.idAuteur?.prenom || 'Anonyme'}}
+                    </h4>
+                    <p class="text-sm text-teal-600">
+                        {{post.idAuteur?.role || 'Membre'}}
                     </p>
-                    <div class="flex mt-4 text-yellow-400">
-                        ★ ★ ★ ★ ★
-                    </div>
-                </div>
-
-                <!-- Testimonial 2 -->
-                <div class="bg-white p-6 rounded-2xl shadow-lg">
-                    <div class="flex items-center">
-                        <div class="w-16 h-16 rounded-full overflow-hidden">
-                            <img src="assets/testimonial2.jpg" alt="Enseignante" class="w-full h-full object-cover">
-                        </div>
-                        <div class="ml-4">
-                            <h4 class="font-bold text-indigo-950">Prof. Lefèvre</h4>
-                            <p class="text-sm text-neutral-500">Enseignante</p>
-                        </div>
-                    </div>
-                    <p class="mt-4 text-neutral-600">
-                        "Après des années à négliger mon bien-être mental, Zenaura m'a offert un espace sécurisé pour
-                        enfin prendre soin de moi. La flexibilité des consultations en ligne est parfaite pour mon
-                        emploi du temps chargé."
-                    </p>
-                    <div class="flex mt-4 text-yellow-400">
-                        ★ ★ ★ ★ ★
-                    </div>
                 </div>
             </div>
-        </section>
+            <p class="mt-4 text-gray-600 italic">
+                "{{post.contenu | slice:0:180}}{{post.contenu.length > 180 ? '...' : ''}}"
+            </p>
+            <div class="flex mt-4 text-yellow-400">
+                <span *ngFor="let _ of [1,2,3,4,5]">★</span>
+            </div>
+        </div>
+    </div>
 
+    
+    </section>
         <!-- FAQ -->
         <section class="mt-20 sm:mt-32">
             <div class="text-center">
@@ -421,11 +378,11 @@
                 Rejoignez dès maintenant les membres de notre institution qui ont fait le choix de leur santé mentale.
             </p>
             <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4 mt-8">
-                <button onclick="window.location.href='/register'"
+                <button onclick="window.location.href='/signup'"
                     class="px-8 py-3 bg-white text-teal-600 font-semibold rounded-3xl shadow-lg hover:shadow-xl transition-all">
                     S'inscrire maintenant
                 </button>
-                <button onclick="window.location.href='/contact'"
+                <button onclick="window.location.href='/login'"
                     class="px-8 py-3 border-2 border-white text-white font-semibold rounded-3xl hover:bg-white/10 transition-colors">
                     Nous contacter
                 </button>
@@ -499,7 +456,7 @@
                 <div>
                     <h3 class="text-lg font-bold text-indigo-950">Contact</h3>
                     <ul class="mt-4 space-y-2">
-                        <li class="text-neutral-500">contactzenaura@esprit.tn</li>
+                        <li class="text-neutral-500">contactzenaura&#64;esprit.tn</li>
                         <li class="text-neutral-500">+216 99 999 999</li>
                         <li class="text-neutral-500">Bâtiment C, Esprit Universitaire</li>
                     </ul>

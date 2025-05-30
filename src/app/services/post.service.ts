@@ -70,6 +70,16 @@ export class PostService {
       })
     );
   }
+ // src/app/services/post.service.ts
+  getPostByIdPublic(id: string): Observable<Post> {
+  return this.http.get<Post>(`${this.apiUrl}/post/getPostbyIdpublic/${id}`).pipe(
+    catchError((error) => {
+      console.error('Erreur lors de la récupération du post public:', error);
+      return throwError(() => new Error('Erreur lors de la récupération du post public'));
+    })
+  );
+}
+
 
   getPostWithComments(id: string): Observable<{ post: Post; commentaires: Comment[] }> {
     return this.http.get<{ post: Post; commentaires: Comment[] }>(`${this.apiUrl}/post/getPostAvecCommentaires/${id}`, {
