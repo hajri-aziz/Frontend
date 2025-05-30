@@ -1,8 +1,8 @@
 // src/app/services/api.service.ts
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable, Subject, throwError,BehaviorSubject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { Post, Comment, Group, Message } from '../models/post.models';
 import { User } from '../models/user.model';
 import io from 'socket.io-client';
@@ -44,14 +44,23 @@ export class PostService {
   }
 
   // *******************************************REST API POST  ************************/
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(`${this.apiUrl}/post/getallPost`, { headers: this.getHeaders() }).pipe(
-      catchError((error) => {
-        console.error('Erreur lors de la récupération des posts:', error);
-        return throwError(() => new Error('Erreur lors de la récupération des posts'));
-      })
-    );
-  }
+ getPosts(): Observable<Post[]> {
+  return this.http.get<Post[]>(`${this.apiUrl}/post/getallPost`, { 
+    headers: this.getHeaders(),
+    params: new HttpParams()
+      .set('sort', 'date_creation')
+      .set('order', 'desc')
+  }).pipe(
+    map(posts => posts.map(post => ({
+      ...post,
+      date_creation: new Date(post.date_creation).toISOString()
+    }))),
+    catchError((error) => {
+      console.error('Erreur lors de la récupération des posts:', error);
+      return throwError(() => new Error('Erreur lors de la récupération des posts'));
+    })
+  );
+}
 
   getPostById(id: string): Observable<Post> {
     return this.http.get<Post>(`${this.apiUrl}/post/getPostbyId/${id}`, { headers: this.getHeaders() }).pipe(

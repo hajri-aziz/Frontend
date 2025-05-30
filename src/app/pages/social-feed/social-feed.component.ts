@@ -6,9 +6,9 @@ import type { Post, Comment, Group, Message } from "../../models/post.models"
 import type { User } from "../../models/user.model"
 import { UserService } from "../../services/user.service"
 import { PostService } from "../../services/post.service"
-import type { Subscription } from "rxjs"
-import { forkJoin, Subject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import type { Observable, Subscription } from "rxjs"
+import { forkJoin, of, Subject } from 'rxjs';
+import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http"
 import { Router } from '@angular/router';
 
@@ -176,67 +176,87 @@ post: any
       return defaultImage;
     }
   }
+private loadPosts(): void {
+  this.subscriptions.push(
+    this.postService.getPosts().subscribe({
+      next: (posts) => {
+        console.log('Posts received from API:', posts);
 
-  private loadPosts(): void {
-    this.subscriptions.push(
-      this.postService.getPosts().subscribe({
-        next: (posts) => {
-          console.log('Posts received from API:', posts);
+        // Trier les posts par date de création décroissante
+        const sortedPosts = [...posts].sort((a, b) => 
+          new Date(b.date_creation).getTime() - new Date(a.date_creation).getTime()
+        );
 
-          const userRequests = posts.map((post) =>
-            this.userService.getUserById((post.idAuteur as any)?._id || post.idAuteur).pipe(
-              map((user) => ({
-                post,
-                user: user || {
-                  _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
-                  nom: post.idAuteur?.nom || 'Utilisateur',
-                  prenom: post.idAuteur?.prenom || 'Inconnu',
-                  profileImage: 'https://i.pravatar.cc/150?u=default',
-                },
-              }))
-            )
-          );
+        const userRequests = sortedPosts.map((post) =>
+          this.userService.getUserById((post.idAuteur as any)?._id || post.idAuteur).pipe(
+            map((user) => {
+              const userData = user || {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: post.idAuteur?.nom || 'Utilisateur',
+                prenom: post.idAuteur?.prenom || 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              };
+              if (!userData.prenom || !userData.nom) {
+                console.warn(`Utilisateur ${userData._id} n'a pas de prénom ou de nom défini.`);
+              }
+              return { post, user: userData };
+            }),
+            catchError(() => of({
+              post,
+              user: {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: 'Utilisateur',
+                prenom: 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              }
+            }))
+          )
+        );
 
-          forkJoin(userRequests).subscribe({
-            next: (results) => {
-              this.posts = results.map(({ post, user }) => ({
-                ...post,
-                idAuteur: {
-                  _id: user._id,
-                  nom: user.nom,
-                  prenom: user.prenom,
-                  profileImage: user.profileImage,
-                },
-                comments: [],
-                date_creation: new Date(post.date_creation).toISOString(),
-              }));
-              console.log('Processed posts:', this.posts);
-              this.loadCommentsForPosts();
-            },
-            error: (error) => {
-              console.error('Error fetching user data:', error);
-              this.posts = posts.map((post) => ({
-                ...post,
-                idAuteur: {
-                  _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
-                  nom: 'Utilisateur',
-                  prenom: 'Inconnu',
-                  profileImage: 'https://i.pravatar.cc/150?u=default',
-                },
-                comments: [],
-                date_creation: new Date(post.date_creation).toISOString(),
-              }));
-              this.loadCommentsForPosts();
-            },
-          });
-        },
-        error: (error) => {
-          console.error('Error loading posts:', error);
-          alert('Erreur lors du chargement des posts');
-        },
-      })
-    );
-  }
+        forkJoin(userRequests).subscribe({
+          next: (results) => {
+            this.posts = results.map(({ post, user }) => ({
+              ...post,
+              idAuteur: {
+                _id: user._id,
+                nom: user.nom,
+                prenom: user.prenom,
+                profileImage: user.profileImage,
+              },
+              comments: [],
+              date_creation: new Date(post.date_creation).toISOString(),
+            }));
+            console.log('Processed posts:', this.posts);
+            this.loadCommentsForPosts();
+          },
+          error: (error) => {
+            console.error('Error in forkJoin:', error);
+            this.posts = sortedPosts.map((post) => ({
+              ...post,
+              idAuteur: {
+                _id: (post.idAuteur as any)?._id || post.idAuteur || 'unknown',
+                nom: 'Utilisateur',
+                prenom: 'Inconnu',
+                profileImage: 'https://i.pravatar.cc/150?u=default',
+              },
+              comments: [],
+              date_creation: new Date(post.date_creation).toISOString(),
+            }));
+            this.loadCommentsForPosts();
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error loading posts:', error);
+        alert('Erreur lors du chargement des posts');
+      },
+    })
+  );
+}
+
+getFullName(user: any): string {
+  return `${user.prenom || 'Prénom'} ${user.nom || 'Nom'}`;
+}
 
   private loadCommentsForPosts(): void {
     this.posts.forEach((post) => {
@@ -291,30 +311,46 @@ post: any
     }
   }
 
-  addPost(): void {
-    if (!this.validatePost() || !this.currentUser) {
-      console.warn("Post validation failed or no current user");
-      return;
-    }
-
-    const formData = this.createPostFormData();
-    console.log("FormData prepared:", {
-      titre: this.newPost.titre,
-      contenu: this.newPost.contenu,
-      hasImage: !!this.selectedFile,
-    });
-
-    this.subscriptions.push(
-      this.postService.addPost(formData).subscribe({
-        next: (post) => {
-          console.log("Post added successfully:", post);
-          this.resetPostForm();
-        },
-        error: (error) => this.handlePostError(error),
-      }),
-    );
+ addPost(): void {
+  if (!this.validatePost() || !this.currentUser) {
+    console.warn("Post validation failed or no current user");
+    return;
   }
 
+  const formData = this.createPostFormData();
+  console.log("FormData prepared:", {
+    titre: this.newPost.titre,
+    contenu: this.newPost.contenu,
+    hasImage: !!this.selectedFile,
+  });
+
+  this.subscriptions.push(
+    this.postService.addPost(formData).subscribe({
+      next: (post) => {
+        console.log("Post added successfully:", post);
+        
+        // Créer l'objet utilisateur minimal pour l'affichage immédiat
+        const userData = {
+          _id: this.currentUser!._id ?? '',
+          nom: this.currentUser!.nom,
+          prenom: this.currentUser!.prenom,
+          profileImage: this.currentUser!.profileImage || 'https://i.pravatar.cc/150?u=default'
+        };
+
+        // Ajouter le nouveau post au début du tableau
+        this.posts.unshift({
+          ...post,
+          idAuteur: userData,
+          comments: [],
+          date_creation: new Date().toISOString()
+        });
+
+        this.resetPostForm();
+      },
+      error: (error) => this.handlePostError(error),
+    })
+  );
+}
   private validatePost(): boolean {
     return !!(this.newPost.titre?.trim() && this.newPost.contenu?.trim() && this.currentUser?._id);
   }
@@ -1018,24 +1054,7 @@ toggleReactionMenu(postId: string) {
   this.activeReactionMenu = this.activeReactionMenu === postId ? null : postId;
 }
 
-applyReaction(post: any, reactionType: string) {
-  this.postService.reactToPost(post._id, reactionType).subscribe({
-    next: (updatedPost) => {
-      // Mise à jour immédiate du post dans le feed
-      const index = this.posts.findIndex(p => p._id === post._id);
-      if (index !== -1) {
-        this.posts[index] = updatedPost;
-      }
-      this.activeReactionMenu = null; // Ferme le menu
-    },
-    error: (err) => {
-      console.error('Erreur de réaction:', err);
-      if (err.status === 401) {
-        this.router.navigate(['/login']);
-      }
-    }
-  });
-}
+
 
 getReactionColorClass(post: any): any {
   const reaction = post.likes?.find((r: any) => r.userId === this.currentUser?._id);
@@ -1198,21 +1217,93 @@ getReactionLabel(post: any): string {
 }
 
 
-// Méthode pour rafraîchir un post spécifique
+
+
+
+
+
+
+
+// Unifier la gestion des réactions
+async handleReaction(post: any, reactionType?: string) {
+  try {
+    // Si pas de type spécifié et que l'utilisateur a déjà réagi, on supprime
+    if (!reactionType && this.hasUserReacted(post)) {
+      await this.removeReaction(post);
+      return;
+    }
+    
+    // Si pas de type spécifié, on met like par défaut
+    const typeToApply = reactionType || 'like';
+    await this.applyReaction(post, typeToApply);
+  } catch (error) {
+    console.error('Erreur de réaction:', error);
+  } finally {
+    this.activeReactionMenu = null;
+  }
+}
+
+// Version améliorée de applyReaction
+ async applyReaction(post: any, reactionType: string) {
+  // Sauvegarde pour rollback
+  const originalLikes = [...(post.likes || [])];
+  
+  // Optimistic UI update
+  this.updatePostReactionOptimistically(post, reactionType);
+  
+  try {
+    const updatedPost = await this.postService.reactToPost(post._id, reactionType).toPromise();
+    
+    // Mise à jour immédiate
+    this.updatePostInList(updatedPost);
+    
+    // Rafraîchissement différé pour synchronisation serveur
+    setTimeout(() => this.refreshPost(post._id), 500);
+  } catch (error) {
+    console.error('Erreur API:', error);
+    // Rollback
+    post.likes = originalLikes;
+    if (typeof error === 'object' && error !== null && 'status' in error && (error as any).status === 401) {
+      this.router.navigate(['/login']);
+    }
+  }
+}
+
+private updatePostReactionOptimistically(post: any, reactionType: string) {
+  const userReaction = {
+    userId: this.currentUser!._id,
+    type: reactionType,
+    date: new Date()
+  };
+
+  if (this.hasUserReacted(post)) {
+    post.likes = post.likes.map((reaction: any) => 
+      reaction.userId === this.currentUser!._id ? userReaction : reaction
+    );
+  } else {
+    post.likes = [...(post.likes || []), userReaction];
+  }
+}
+
+private updatePostInList(updatedPost: any) {
+  const index = this.posts.findIndex(p => p._id === updatedPost._id);
+  if (index !== -1) {
+    // Mise à jour en profondeur pour conserver les références
+    Object.assign(this.posts[index], updatedPost);
+  }
+}
+
+// Méthode pour rafraîchir un post
 refreshPost(postId: string) {
   this.postService.getPostById(postId).subscribe({
     next: (updatedPost) => {
-      const index = this.posts.findIndex(p => p._id === postId);
-      if (index !== -1) {
-        this.posts[index] = updatedPost;
-      }
+      this.updatePostInList(updatedPost);
     },
     error: (err) => {
-      console.error('Erreur lors du rafraîchissement:', err);
+      console.error('Erreur de rafraîchissement:', err);
     }
   });
 }
-
 //************************Creer un nouveau group ********************************** */
 
 
@@ -1329,4 +1420,128 @@ addUserToTempList() {
     this.newGroupName = '';
     this.tempUsers = [];
   }
+
+  //********************UPDATE DELET POST BY USER CREATED ************* */
+
+  // Variables de classe
+activePostMenu: string | null = null;
+editingPost: any = null;
+editPostForm = { titre: '', contenu: '' };
+
+// Vérifie si l'utilisateur courant est l'auteur du post
+isPostAuthor(post: any): boolean {
+  return !!(this.currentUser && post.idAuteur._id === this.currentUser._id);
+}
+
+// Gère l'affichage du menu
+togglePostMenu(postId: string): void {
+  this.activePostMenu = this.activePostMenu === postId ? null : postId;
+}
+
+// Commence l'édition d'un post
+startEditPost(post: any): void {
+  this.editingPost = post;
+  this.editPostForm = {
+    titre: post.titre,
+    contenu: post.contenu
+  };
+  this.activePostMenu = null; // Ferme le menu
+}
+
+// Annule l'édition
+cancelEdit(): void {
+  this.editingPost = null;
+}
+
+// Sauvegarde les modifications
+saveEditedPost(): void {
+  if (!this.editingPost) return;
+
+  this.postService.updatePost(this.editingPost._id, this.editPostForm).subscribe({
+    next: (updatedPost) => {
+      const index = this.posts.findIndex(p => p._id === updatedPost._id);
+      if (index !== -1) {
+        this.posts[index] = {
+          ...this.posts[index],
+          titre: updatedPost.titre,
+          contenu: updatedPost.contenu
+        };
+      }
+      this.editingPost = null;
+    },
+    error: (err) => {
+      console.error('Erreur lors de la mise à jour:', err);
+    }
+  });
+}
+
+// Confirme la suppression
+confirmDeletePost(postId: string): void {
+  if (confirm('Êtes-vous sûr de vouloir supprimer ce post ?')) {
+    this.deletePost(postId);
+  }
+  this.activePostMenu = null;
+}
+
+// Supprime le post
+deletePost(postId: string): void {
+  this.postService.deletePost(postId).subscribe({
+    next: () => {
+      this.posts = this.posts.filter(post => post._id !== postId);
+    },
+    error: (err) => {
+      console.error('Erreur lors de la suppression:', err);
+    }
+  });
+}
+
+
+
+//user nom prenom
+
+
+private loadUserData(userId: string): Observable<any> {
+  return this.userService.getUserById(userId).pipe(
+    map(user => ({
+      _id: userId,
+      nom: user?.nom || user?.name || 'Utilisateur',
+      prenom: user?.prenom || user?.firstName || 'Inconnu',
+      profileImage: user?.profileImage || 'assets/profil.png'
+    })),
+    catchError(() => of({
+      _id: userId,
+      nom: 'Utilisateur',
+      prenom: 'Inconnu',
+      profileImage: 'assets/profil.png'
+    }))
+  );
+}
+
+private loadPostsWithUserData(): void {
+  this.subscriptions.push(
+    this.postService.getPosts().pipe(
+      switchMap(posts => {
+        const postsWithUsers$ = posts.map(post => {
+          const userId = typeof post.idAuteur === 'object' ? post.idAuteur._id : post.idAuteur;
+          return this.loadUserData(userId).pipe(
+            map(user => ({
+              ...post,
+              idAuteur: user,
+              date_creation: new Date(post.date_creation).toISOString()
+            }))
+          );
+        });
+        return forkJoin(postsWithUsers$);
+      })
+    ).subscribe({
+      next: (posts) => {
+        this.posts = posts;
+        console.log('Posts with user data:', this.posts);
+      },
+      error: (error) => {
+        console.error('Error loading posts:', error);
+      }
+    })
+  );
+}
   }

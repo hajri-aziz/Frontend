@@ -10,6 +10,8 @@ import { UserService } from 'src/app/services/user.service'; // Importez le mêm
 export class SidebarComponent implements OnInit {
   isMobileMenuOpen = false;
   profileImageUrl: string = 'assets/Ellipse 23.png'; // Image par défaut
+  nom?: string;
+  prenom?: string;
 
   constructor(
     public router: Router,
@@ -24,21 +26,33 @@ export class SidebarComponent implements OnInit {
     this.isMobileMenuOpen = !this.isMobileMenuOpen;
   }
 
-  private loadUserProfile(): void {
-    const token = localStorage.getItem('token');
-    if (!token) return;
 
-    const userId = this.getUserIdFromToken(token);
-    
-    this.userService.getUserById(userId).subscribe({
-      next: (user) => {
-        if (user.profileImage) {
-          this.profileImageUrl = this.normalizeImageUrl(user.profileImage);
-        }
-      },
-      error: (err) => console.error('Erreur de chargement du profil', err)
-    });
-  }
+
+
+private loadUserProfile(): void {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+
+  const userId = this.getUserIdFromToken(token);
+  
+  this.userService.getUserById(userId).subscribe({
+    next: (user) => {
+      // Ajout de la récupération du nom et prénom
+      this.nom = user.nom; // Assurez-vous que ces propriétés existent dans votre modèle User
+      this.prenom = user.prenom;
+      
+      if (user.profileImage) {
+        this.profileImageUrl = this.normalizeImageUrl(user.profileImage);
+      }
+    },
+    error: (err) => console.error('Erreur de chargement du profil', err)
+  });
+}
+
+
+
+
+
 
   private getUserIdFromToken(token: string): string {
     try {
