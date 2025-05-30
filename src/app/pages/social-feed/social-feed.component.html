@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
 </head>
 <body class="bg-[#f4feff] min-h-screen flex items-center justify-center overflow-hidden">
-    <div class="w-full max-w-6xl px-4 py-6">
+    <div class="w-full max-w-6xl px-4 py-6 mt-6">
         <!-- Navbar -->
         <nav class="bg-transparent rounded-xl shadow-[0px_1.33px_40px_rgba(0,0,0,0.2)] mb-6">
             <div class="max-w-6xl mx-auto px-4 py-2 flex justify-between items-center">
@@ -104,55 +104,58 @@
                             <div>{{ post.likes.length }} j'aime</div>
                             <div>{{ post.comments?.length || 0 }} commentaires</div>
                         </div>
-                   <div class="px-4 py-2 flex flex-col sm:flex-row justify-between border-b border-[#cfd0d4] gap-2">
-    <!-- Bouton Réactions -->
-    <div class="relative group">
-        <button 
-            (click)="handleReactionClick(post)"
-            (mouseenter)="showReactionsFor = post._id ?? null"
-            (mouseleave)="hideReactions()"
-            class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition relative"
-            [class.text-blue-500]="hasUserReacted(post, 'like')"
-            [class.text-red-500]="hasUserReacted(post, 'love')"
-            [class.text-yellow-500]="hasUserReacted(post, 'haha') || hasUserReacted(post, 'wow') || hasUserReacted(post, 'sad')"
-            [class.text-orange-500]="hasUserReacted(post, 'angry')"
-        >
-            <span class="emoji-reaction">
-                {{ getCurrentReactionEmoji(post) }}
-            </span>
-            <span class="font-poppins">{{ getReactionLabel(post) }}</span>
+                 <div class="flex items-center space-x-4 text-gray-600">
+
+<div class="relative group">
+    <!-- Bouton principal  Reactions-->
+    <button 
+        (click)="toggleReactionMenu(post._id!)"
+        class="flex items-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition"
+        [ngClass]="getReactionColorClass(post)"
+    >
+        <span class="emoji-reaction">{{ getCurrentReactionEmoji(post) }}</span>
+        <span class="font-poppins text-sm">{{ getReactionLabel(post) }}</span>
+    </button>
+    
+    <!-- Menu des réactions (amélioré) -->
+    <div *ngIf="activeReactionMenu === post._id" 
+         class="absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-full p-2 border border-gray-200 flex reaction-menu"
+         (mouseleave)="activeReactionMenu = null">
+         
+        <button *ngFor="let reaction of reactionTypes" 
+                class="transform transition-transform mx-1 reaction-option"
+                (click)="applyReaction(post, reaction.type)"
+                [title]="reaction.label">
+            <span class="text-2xl hover:scale-150 block">{{ reaction.emoji }}</span>
         </button>
-        
-        <!-- Menu des réactions (style Facebook) -->
-        <div *ngIf="showReactionsFor === post._id" 
-             class="absolute bottom-full left-0 mb-2 bg-white shadow-lg rounded-full p-1 border border-gray-200 flex"
-             (mouseenter)="keepReactionsVisible()"
-             (mouseleave)="hideReactions()">
-             
-            <button *ngFor="let reaction of reactionTypes" 
-                    class="transform transition-transform hover:scale-150 mx-1"
-                    (click)="setReaction(post, reaction.type)">
-                <span class="text-2xl">{{ reaction.emoji }}</span>
-            </button>
-        </div>
     </div>
-    
-    <!-- Bouton Commenter (inchangé) -->
-    <button class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-        <span class="font-poppins">Commenter</span>
+</div>
+
+    <!-- Bouton Commenter -->
+    <button class="flex items-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
+        <span class="text-gray-500">💬</span>
+        <span class="font-poppins text-sm">Commenter</span>
     </button>
-    
-    <!-- Bouton Partager (inchangé) -->
-    <button (click)="sharePost(post)"
-            class="flex items-center justify-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
-        </svg>
-        <span class="font-poppins">Partager</span>
+
+    <!-- Bouton Partager -->
+    <button class="flex items-center space-x-1 px-4 py-2 rounded-md hover:bg-[#f1f2f5] transition">
+        <span class="text-gray-500">↗️</span>
+        <span class="font-poppins text-sm">Partager</span>
     </button>
+</div>
+
+<!-- Liste des réactions (optionnel) -->
+<div *ngIf="(post.likes?.length || 0) > 0" class="mt-1 flex items-center">
+    <div class="flex -space-x-1">
+        <span *ngFor="let reaction of getUniqueReactions(post)" 
+              class="bg-white rounded-full p-1 border border-white text-xs"
+              [title]="getReactionUsers(post, reaction.type).join(', ')">
+            {{ getReactionEmoji(reaction.type) }}
+        </span>
+    </div>
+    <span class="ml-2 text-xs text-gray-500">
+        {{ post.likes.length }} réaction<span *ngIf="post.likes.length > 1">s</span>
+    </span>
 </div>
                         <!-- Commentaire Section -->
                         <div class="p-4 space-y-3">
@@ -258,13 +261,16 @@
       <div class="relative">
         <div class="relative w-10 h-10 rounded-full overflow-hidden border-2 border-white">
           <ng-container *ngIf="group.creator?.profileImage; else defaultIcon">
-            <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" class="absolute w-full h-full object-cover" (error)="handleImageError($event)">
+            <img [src]="getProfileImageUrl(group.creator.profileImage)" alt="Photo du créateur" 
+                 class="absolute w-full h-full object-cover" 
+                 (error)="handleImageError($event)">
           </ng-container>
           <ng-template #defaultIcon>
-            <img src="assets/profil.png" alt="Photo de profil par défaut" class="absolute w-full h-full object-cover">
+            <img src="assets/profil.png" alt="Photo de profil par défaut" 
+                 class="absolute w-full h-full object-cover">
           </ng-template>
           <ng-container *ngIf="group.members?.length > 0 && group.members[0]?.profileImage">
-            <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre"
+            <img [src]="getProfileImageUrl(group.members[0].profileImage)" alt="Photo d'un membre" 
                  class="absolute w-6 h-6 rounded-full border-2 border-white -right-2 top-0 object-cover"
                  (error)="handleImageError($event)">
           </ng-container>
@@ -274,18 +280,102 @@
       <div class="ml-3 flex-1">
         <h5 class="font-medium text-[#080808]">{{ group.name }}</h5>
         <p class="text-sm text-gray-500">{{ group.members?.length || 0 }} membres</p>
+        
       </div>
-      <button (click)="$event.stopPropagation(); group._id && addMemberToGroup(group._id)"
-              class="text-sm text-[#04789d] font-poppins hover:text-[#036582] px-2 py-1 rounded hover:bg-blue-50 transition-colors">
-        Ajouter membre
-      </button>
+       <button 
+                    (click)="group._id && addMemberToGroup(group._id)"
+                    class="text-sm text-[#04789d] font-poppins"
+                >
+                    Ajouter membre
+                </button>
+      
     </div>
   </div>
+  <!-- Bouton pour ouvrir le modale -->
   <div class="mt-3">
     <button (click)="openCreateGroupModal()"
             class="w-full px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90">
       Créer un groupe
     </button>
+  </div>
+
+  <!-- Modale pour créer un groupe -->
+  <div *ngIf="showCreateGroupModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96">
+      <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Créer un groupe</h2>
+      <!-- Champ pour le nom du groupe -->
+      <input 
+        [(ngModel)]="newGroupName"
+        class="w-full border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] mb-3"
+        placeholder="Nom du groupe"
+      >
+      <!-- Champ pour ajouter un email -->
+      <div class="flex space-x-2 mb-3">
+        <input 
+          [(ngModel)]="tempEmail"
+          class="flex-1 border border-[#c4c4c4] rounded-lg p-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d]"
+          placeholder="Email de l'utilisateur à inviter"
+        >
+        <button 
+          (click)="addUserToTempList()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+        >
+          Ajouter
+        </button>
+      </div>
+      <!-- Liste des utilisateurs temporairement ajoutés -->
+      <div class="max-h-40 overflow-y-auto mb-3">
+        <p *ngIf="tempUsers.length === 0" class="text-sm text-[#66676b] font-poppins">Aucun utilisateur ajouté.</p>
+        <div *ngFor="let user of tempUsers" class="flex items-center justify-between py-1">
+          <span class="text-sm font-poppins text-[#080808]">{{ user.email }}</span>
+          <button 
+            (click)="removeUserFromTempList(user.email)"
+            class="text-sm text-red-500 font-poppins"
+          >
+            Supprimer
+          </button>
+        </div>
+      </div>
+      <!-- Boutons du modale -->
+      <div class="flex justify-end space-x-2">
+        <button 
+          (click)="closeCreateGroupModal()"
+          class="px-4 py-2 bg-gray-300 text-[#080808] font-semibold font-poppins rounded-lg hover:bg-gray-400"
+        >
+          Annuler
+        </button>
+        <button 
+          [disabled]="tempUsers.length < 3"
+          (click)="createGroup()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90 disabled:opacity-50"
+        >
+          Créer ({{ tempUsers.length }}/3)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modale de confirmation -->
+  <div *ngIf="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-white rounded-lg p-6 w-96">
+      <h2 class="text-lg font-bold font-['Helvetica_Neue'] text-[#080808] mb-4">Groupe créé avec succès</h2>
+      <p class="text-sm font-poppins text-[#080808] mb-2"><strong>Nom du groupe :</strong> {{ newGroupName }}</p>
+      <p class="text-sm font-poppins text-[#080808] mb-4">
+        <strong>Utilisateurs invités :</strong> 
+        <span *ngIf="tempUsers.length === 0">Aucun utilisateur invité</span>
+        <span *ngFor="let user of tempUsers; let isLast=last">
+          {{ user.email }}{{ isLast ? '' : ', ' }}
+        </span>
+      </p>
+      <div class="flex justify-end">
+        <button 
+          (click)="closeModal()"
+          class="px-4 py-2 bg-gradient-to-br from-[#56e0e0] to-[#007299] text-white font-semibold font-poppins rounded-lg hover:bg-gradient-to-br hover:from-[#56e0e0]/90 hover:to-[#007299]/90"
+        >
+          Fermer
+        </button>
+      </div>
+    </div>
   </div>
 </div>
 

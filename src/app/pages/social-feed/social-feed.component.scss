@@ -492,3 +492,26 @@ textarea {
 .break-words {
   word-break: break-word;
 }
+
+.emoji-reaction {
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.emoji-reaction:hover {
+  transform: scale(1.2);
+}
+
+.reaction-menu {
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+.reaction-option {
+  transition: all 0.2s;
+}
+
+.reaction-option:hover {
+  transform: scale(1.5);
+  transition: all 0.2s;
+}

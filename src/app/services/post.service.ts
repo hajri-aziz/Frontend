@@ -374,21 +374,20 @@ onNewGroupMessage(): Observable<{
   });
 }
 //************************************REACTION********************* */
-
-   addReaction(postId: string, reactionType: any) {
-    
-        
-
-      
-  return this.http.post(`http://localhost:3000/post/posts/${postId}/react`, { 
-    type: reactionType 
+reactToPost(postId: string, reactionType: string): Observable<any> {
+  const headers = new HttpHeaders({
+    'Authorization': `Bearer ${localStorage.getItem('token') || ''}`
   });
-    }
-    
-    removeReaction(postId: string) {
-        return this.http.delete(`/api/posts/${postId}/react`);
-    }
-  
+
+  return this.http.post<any>(
+    `${this.apiUrl}/post/posts/${postId}/react`, 
+    { type: reactionType },
+    { headers }
+  );
+}
+  removeReaction(postId: string): Observable<any> {
+  return this.http.delete(`${this.apiUrl}/posts/${postId}/reaction`);
+}
 }
 
 
