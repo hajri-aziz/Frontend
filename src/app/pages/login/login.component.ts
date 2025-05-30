@@ -48,6 +48,7 @@ export class LoginComponent implements OnInit {
       password: this.password
     };
 
+  console.log(credentials);
     this.userService.login(credentials).subscribe({
       next: (res: any) => {
         console.log('Connexion réussie :', res);

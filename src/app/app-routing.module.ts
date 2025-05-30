@@ -37,12 +37,14 @@ import { SessionDetailComponent } from './pages/cours-sessions/session-detail/se
 import { SessionCalendarComponent } from './pages/session-calendar/session-calendar.component';
 import { DashboardCoursComponent } from './pages/dashboard-cours/dashboard-cours.component';
 import { SessionLoginComponent } from './pages/session-login/session-login.component';
+import { SessionPlayComponent } from './pages/session-play/session-play.component';
 
 import { AuthGuard } from './guards/auth.guard';
 import { AdminGuard } from './guards/admin.guard';
 
 import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 import { MessagesComponent } from './pages/messages/messages.component';
+
 
 
 const routes: Routes = [
@@ -115,7 +117,8 @@ const routes: Routes = [
    {path: 'dashboard-cours', component: DashboardCoursComponent },
    { path: 'sessions/:id', component: SessionLoginComponent, canActivate: [AuthGuard] },
    { path: 'session-login',component: SessionLoginComponent,canActivate: [AuthGuard]},
-  
+   { path: 'sessions/:id/play', component: SessionPlayComponent, canActivate: [AuthGuard] },
+
   // Redirection si aucune route ne correspond
   { path: 'navbar', component: NavbarComponent },
 

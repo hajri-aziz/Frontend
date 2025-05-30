@@ -71,6 +71,8 @@ import { MessagesComponent } from './pages/messages/messages.component';
 import { ToastComponent } from './pages/toast/toast.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SessionLoginComponent } from './pages/session-login/session-login.component';
+import { SessionPlayComponent } from './pages/session-play/session-play.component';
+import { SafeUrlPipe } from './pipes/safe-url.pipe';
 
 
 
@@ -123,6 +125,8 @@ import { SessionLoginComponent } from './pages/session-login/session-login.compo
     MessagesComponent,
     ToastComponent,
     SessionLoginComponent,
+    SessionPlayComponent,
+    SafeUrlPipe,
   ],
  
   imports: [
