@@ -29,33 +29,112 @@
           </div>
         </div>
 
-        <!-- Time Range -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div class="space-y-2">
-            <label for="start-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de début</label>
-            <input 
-              type="time" 
-              id="start-time" 
-              formControlName="heure_debut"
-              class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <div *ngIf="availabilityForm.get('heure_debut')?.invalid && availabilityForm.get('heure_debut')?.touched" class="text-red-500 text-sm font-poppins">
-              L'heure de début est requise (format HH:MM).
-            </div>
-          </div>
-          <div class="space-y-2">
-            <label for="end-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de fin</label>
-            <input 
-              type="time" 
-              id="end-time" 
-              formControlName="heure_fin"
-              class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-            />
-            <div *ngIf="availabilityForm.get('heure_fin')?.invalid && availabilityForm.get('heure_fin')?.touched" class="text-red-500 text-sm font-poppins">
-              L'heure de fin est requise (format HH:MM).
+<!-- Time Range -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <!-- Start Time -->
+  <div class="space-y-2 relative">
+    <label for="start-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de début</label>
+    <input 
+      type="text" 
+      id="start-time" 
+      formControlName="heure_debut"
+      (focus)="showStartTimePicker = true"
+      (blur)="hideTimePickerWithDelay('start')"
+      placeholder="HH:MM (ex. 14:30)"
+      class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789d] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    />
+    <!-- Time Picker Overlay -->
+    <div *ngIf="showStartTimePicker" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+      <div class="grid grid-cols-2 gap-2 p-2">
+        <!-- Hours -->
+        <div>
+          <div class="text-sm font-medium text-gray-700 mb-1">Heures</div>
+          <div class="max-h-32 overflow-y-auto">
+            <div 
+              *ngFor="let hour of hours" 
+              (mousedown)="selectStartHour(hour); $event.preventDefault()"
+              class="px-2 py-1 hover:bg-[#04789d] hover:text-white cursor-pointer rounded text-sm"
+              [class.bg-[#04789d]="getHourFromTime(availabilityForm.get('heure_debut')?.value) === hour"
+              [class.text-white]="getHourFromTime(availabilityForm.get('heure_debut')?.value) === hour"
+            >
+              {{ hour | number:'2.0-0' }}
             </div>
           </div>
         </div>
+        <!-- Minutes -->
+        <div>
+          <div class="text-sm font-medium text-gray-700 mb-1">Minutes</div>
+          <div class="max-h-32 overflow-y-auto">
+            <div 
+              *ngFor="let minute of minutes" 
+              (mousedown)="selectStartMinute(minute); $event.preventDefault()"
+              class="px-2 py-1 hover:bg-[#04789d] hover:text-white cursor-pointer rounded text-sm"
+              [class.bg-[#04789d]="getMinuteFromTime(availabilityForm.get('heure_debut')?.value) === minute"
+              [class.text-white]="getMinuteFromTime(availabilityForm.get('heure_debut')?.value) === minute"
+            >
+              {{ minute | number:'2.0-0' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="availabilityForm.get('heure_debut')?.invalid && availabilityForm.get('heure_debut')?.touched" class="text-red-500 text-sm font-poppins">
+      L'heure de début est requise (format 24h, ex. 14:30).
+    </div>
+  </div>
+
+  <!-- End Time -->
+  <div class="space-y-2 relative">
+    <label for="end-time" class="block text-sm font-medium font-poppins text-[#080808]">Heure de fin</label>
+    <input 
+      type="text" 
+      id="end-time" 
+      formControlName="heure_fin"
+      (focus)="showEndTimePicker = true"
+      (blur)="hideTimePickerWithDelay('end')"
+      placeholder="HH:MM (ex. 16:00)"
+      class="opaque-placeholder flex h-10 w-full rounded-md border border-[#c4c4c4] bg-white px-3 py-2 text-sm font-poppins text-[#080808] placeholder:text-[#8c939c] focus:outline-none focus:ring-2 focus:ring-[#04789c] focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    />
+    <!-- Time Picker Overlay -->
+    <div *ngIf="showEndTimePicker" class="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded-md shadow-lg max-h-48 overflow-y-auto">
+      <div class="grid grid-cols-2 gap-2 p-2">
+        <!-- Hours -->
+        <div>
+          <div class="text-sm font-medium text-gray-700 mb-1">Heures</div>
+          <div class="max-h-32 overflow-y-auto">
+            <div 
+              *ngFor="let hour of hours" 
+              (mousedown)="selectEndHour(hour); $event.preventDefault()"
+              class="px-2 py-1 hover:bg-[#04789d] hover:text-white cursor-pointer rounded text-sm"
+              [class.bg-[#04789d]="getHourFromTime(availabilityForm.get('heure_fin')?.value) === hour"
+              [class.text-white]="getHourFromTime(availabilityForm.get('heure_fin')?.value) === hour"
+            >
+              {{ hour | number:'2.0-0' }}
+            </div>
+          </div>
+        </div>
+        <!-- Minutes -->
+        <div>
+          <div class="text-sm font-medium text-gray-700 mb-1">Minutes</div>
+          <div class="max-h-32 overflow-y-auto">
+            <div 
+              *ngFor="let minute of minutes" 
+              (mousedown)="selectEndMinute(minute); $event.preventDefault()"
+              class="px-2 py-1 hover:bg-[#04789d] hover:text-white cursor-pointer rounded text-sm"
+              [class.bg-[#04789d]="getMinuteFromTime(availabilityForm.get('heure_fin')?.value) === minute"
+              [class.text-white]="getMinuteFromTime(availabilityForm.get('heure_fin')?.value) === minute"
+            >
+              {{ minute | number:'2.0-0' }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="availabilityForm.get('heure_fin')?.invalid && availabilityForm.get('heure_fin')?.touched" class="text-red-500 text-sm font-poppins">
+      L'heure de fin est requise (format 24h, ex. 16:00).
+    </div>
+  </div>
+</div>
 
         <!-- Status -->
         <div class="space-y-2">
