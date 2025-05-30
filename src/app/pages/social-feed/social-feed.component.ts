@@ -12,6 +12,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 import { HttpClient } from "@angular/common/http"
 import { Router } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 
 @Component({
@@ -22,6 +23,15 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
   styleUrls: ["./social-feed.component.scss"],
 })
 export class SocialFeedComponent implements OnInit, OnDestroy {
+
+
+ 
+ 
+  showEmojiPicker: boolean = false;
+
+ 
+
+
 
   messageSubscription: Subscription | undefined;
   selectedGroup: any
@@ -1589,5 +1599,19 @@ highlightSearch(text: string): SafeHtml {
       )
     );
   }
+  //**************emojie message*************
+  toggleEmojiPicker() {
+    this.showEmojiPicker = !this.showEmojiPicker;
+  }
+
+  onEmojiClick(event: any) {
+    this.messageContent += event.emoji.native; // Add emoji to input
+    this.showEmojiPicker = false; // Close picker
+  }
+
+
+
+
+  
 
   }
