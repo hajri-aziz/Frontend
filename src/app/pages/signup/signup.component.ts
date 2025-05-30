@@ -11,16 +11,20 @@ export class SignupComponent {
   signupForm: FormGroup;
   showPassword: boolean = false; 
 
-  constructor(private fb: FormBuilder, private userService: UserService,public toastService: ToastService ) {
+  constructor(private fb: FormBuilder, private userService: UserService, public toastService: ToastService) {
     this.signupForm = this.fb.group({
       nom: ['', Validators.required],
       prenom: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
       dateNaissance: ['', Validators.required],
-      telephone: ['', Validators.required]
+      telephone: ['', [
+        Validators.required,
+        Validators.pattern(/^[0-9]{8}$/) // Exactement 8 chiffres
+      ]]
     });
   }
+
   togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword;
   }
@@ -29,12 +33,9 @@ export class SignupComponent {
     if (this.signupForm.valid) {
       this.userService.register(this.signupForm.value).subscribe({
         next: (res) => {
-
           this.toastService.showSuccess('Inscription réussie! , Votre inscription est en attente d\'approbation');
         },
-        
         error: (err) => {
-          
           this.toastService.showError(err.error.message || 'Une erreur s\'est produite lors de l\'inscription.');
         }
       });

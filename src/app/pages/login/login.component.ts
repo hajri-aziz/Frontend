@@ -3,6 +3,7 @@ import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -22,9 +23,14 @@ export class LoginComponent {
   }
   
 
-  onSubmit(): void {
-    if (!this.email || !this.password) {
-      this.toastService.showError('Veuillez remplir tous les champs.');
+  onSubmit(form: NgForm): void { // Recevez le formulaire en paramètre
+    // Vérifiez si le formulaire est valide avant de soumettre
+    if (form.invalid) {
+      // Marquez tous les champs comme touchés pour afficher les erreurs
+      Object.keys(form.controls).forEach(key => {
+        form.controls[key].markAsTouched();
+      });
+      this.toastService.showError('Veuillez corriger les erreurs dans le formulaire.');
       return;
     }
 
@@ -33,27 +39,20 @@ export class LoginComponent {
       password: this.password
     };
 
-console.log(credentials);
     this.userService.login(credentials).subscribe({
-      next: (res:any) => {
+      next: (res: any) => {
         console.log('Connexion réussie :', res);
         localStorage.setItem('token', res.token);
-        localStorage.setItem('userId', res.user.id);// Enregistre l'ID de l'utilisateur dans le localStorage
-        console.log('Token enregistré :', res.token);
-        console.log('ID de l\'utilisateur enregistré :', res.user.id);
+        localStorage.setItem('userId', res.user.id);
         this.toastService.showSuccess('Connexion réussie !');
         setTimeout(() => {
           this.router.navigate(['/editprofil']);
-        }, 1000); // 1 seconde de délai
+        }, 1000);
       },
-      error: (err:any) => {
+      error: (err: any) => {
         console.error('Erreur :', err);
         this.toastService.showError(err.error.message || 'Une erreur s\'est produite lors de la connexion.');
-      
-        
-        //this.router.navigate(['/editprofil']); // Redirige vers une autre page
       },
-      
     });
   }
   /*ngOnInit() {

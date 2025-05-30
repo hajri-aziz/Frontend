@@ -75,10 +75,10 @@
 
     </div>
         <!-- Logout -->
-      <a routerLink="/home"
-         class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition py-2 md:py-0">
-        <img src="assets/se-deconnecter.png" alt="Logout Icon" class="w-5 h-5" />
-        <span>Se déconnecter</span>
-      </a>
+        <button (click)="logout()"
+          class="flex items-center space-x-3 text-gray-600 font-medium text-base hover:text-red-600 transition py-2 md:py-0">
+          <img src="assets/se-deconnecter.png" alt="Logout Icon" class="w-5 h-5" />
+          <span>Se déconnecter</span>
+        </button>
   </div>
 </nav>
