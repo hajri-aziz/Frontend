@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,7 +22,7 @@
                     <a href="/contact" class="hover:text-teal-500">Contact</a>
                     <a href="/about" class="hover:text-teal-500">À propos de nous</a>
                 </div>
-                <button (click)="navigateToLogin()" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
+                <button onclick="window.location.href='/signup'" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
             </div>
             <!-- Mobile Menu Button -->
             <button class="md:hidden text-indigo-950 focus:outline-none">
@@ -35,58 +35,58 @@
         <div class="md:hidden hidden flex-col space-y-2 text-zinc-500 text-base font-semibold font-poppins bg-white p-4 rounded-lg">
             <a href="/" class="hover:text-teal-500">Accueil</a>
             <a href="/services" class="hover:text-teal-500">Services</a>
-            <a href="#" class="hover:text-teal-500">Contact</a>
+            <a href="/contact" class="hover:text-teal-500">Contact</a>
             <a href="/about" class="hover:text-teal-500">À propos de nous</a>
-            <button (click)="navigateToLogin()" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
+            <button onclick="window.location.href='/signup'" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
         </div>
 
         <!-- Header Section -->
         <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
             <div class="flex items-center space-x-4">
                 <div class="w-1 h-32 sm:h-40 bg-sky-800"></div>
-                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">Services Detail</h1>
+                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">Détails des Services</h1>
             </div>
             <p class="mt-6 text-sky-800 text-base sm:text-lg font-normal font-poppins max-w-4xl">
-                Our website offers a range of services to support your well-being, including online therapy sessions with licensed professionals, community forums for peer support, and personalized mental health assessments.
+                Notre site web propose une gamme de services pour soutenir votre bien-être, y compris des sessions de thérapie en ligne avec des professionnels agréés, des forums communautaires pour un soutien entre pairs et des évaluations personnalisées de la santé mentale.
             </p>
         </section>
 
         <!-- Community Posts Section -->
         <section class="mt-12 sm:mt-16 bg-gray-50 py-12 sm:py-16 px-4 sm:px-6">
             <h2 class="text-center text-3xl sm:text-4xl md:text-3xl font-bold font-poppins">
-                <span class="text-zinc-900">Community</span>
-                <span class="text-teal-300"> Anonymous Posts</span>
+                <span class="text-zinc-900">Communauté</span>
+                <span class="text-teal-300"> Publications Anonymes</span>
             </h2>
             <div class="mt-12 max-w-4xl mx-auto bg-gray-50 rounded-[30px] shadow-lg border border-neutral-400 p-6 sm:p-8">
                 <div class="flex flex-col sm:flex-row items-start">
                     <img src="assets/Ellipse 22.png" alt="Avatar" class="w-24 h-24 sm:w-32 sm:h-32 rounded-full mb-4 sm:mb-0">
                     <div class="sm:ml-6">
-                        <h3 class="text-zinc-900 text-2xl sm:text-3xl font-semibold font-poppins">Mystery Mind</h3>
+                        <h3 class="text-zinc-900 text-2xl sm:text-3xl font-semibold font-poppins">Esprit Mystérieux</h3>
                         <p class="mt-4 text-sky-800 text-base sm:text-lg font-normal font-poppins">
-                            Hi, i had been suffering from depression since past few months then i came across this website, and consulted with a few counselors/Mates and attended sessions with them. The mates are very cooperative and were very supportive throughout my journey. I recovered pretty soon from my condition, and i'd like to thank all the MindMates who supported and helped me.
+                            Salut, j'ai souffert de dépression pendant plusieurs mois, puis j'ai découvert ce site web et j'ai consulté quelques conseillers. Les sessions avec eux ont été très coopératives et m'ont soutenu tout au long de mon parcours. J'ai récupéré assez rapidement de mon état, et je tiens à remercier tous les compagnons qui m'ont soutenu et aidé.
                         </p>
-                        <h4 class="mt-8 text-sky-800 text-xl sm:text-2xl font-semibold font-poppins">Comments</h4>
+                        <h4 class="mt-8 text-sky-800 text-xl sm:text-2xl font-semibold font-poppins">Commentaires</h4>
                         <hr class="my-4 border-t border-sky-800">
                         <div class="flex items-center mt-4">
-                            <img src="assets/Ellipse 23.png" alt="Commenter" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
+                            <img src="assets/Ellipse 23.png" alt="Commentateur" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
                             <div class="ml-4 sm:ml-6">
-                                <h5 class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins">Micky Mouse</h5>
+                                <h5 class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins">Souris Mignonne</h5>
                                 <p class="mt-2 text-sky-800 text-sm sm:text-base font-normal font-poppins">
-                                    Glad to hear that Take Care
+                                    Heureux d'entendre ça, prends soin de toi !
                                 </p>
                             </div>
                         </div>
                         <div class="flex items-center mt-4">
-                            <img src="assets/Ellipse 24.png" alt="Commenter" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
+                            <img src="assets/Ellipse 24.png" alt="Commentateur" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
                             <div class="ml-4 sm:ml-6">
-                                <h5 class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins">Shadow Light</h5>
+                                <h5 class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins">Lumière d'Ombre</h5>
                                 <p class="mt-2 text-sky-800 text-sm sm:text-base font-normal font-poppins">
-                                    Great Keep Growing
+                                    Super, continue de grandir !
                                 </p>
                             </div>
                         </div>
                         <div class="flex justify-end mt-4">
-                            <span class="text-sky-800 text-lg sm:text-xl font-semibold font-poppins">Reply</span>
+                            <span class="text-sky-800 text-lg sm:text-xl font-semibold font-poppins">Répondre</span>
                         </div>
                     </div>
                 </div>
@@ -95,33 +95,35 @@
                 <div class="p-6 rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col sm:flex-row items-center">
                     <img src="assets/Ellipse 23.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-4 sm:mb-0">
                     <div class="sm:ml-6">
-                        <h3 class="text-zinc-900 text-xl sm:text-2xl font-semibold font-poppins">Micky Mouse</h3>
+                        <h3 class="text-zinc-900 text-xl sm:text-
+
+2xl font-semibold font-poppins">Souris Mignonne</h3>
                         <p class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                             Lorem ipsum dolor sit amet consectetur. Convallis est urna adipiscing fringilla nulla diam lorem non mauris.
                         </p>
                         <div class="flex space-x-4 mt-4 text-zinc-900 text-lg font-semibold font-poppins">
-                            <span>View</span>
-                            <span>Reply</span>
+                            <span>Voir</span>
+                            <span>Répondre</span>
                         </div>
                     </div>
                 </div>
                 <div class="p-6 rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col sm:flex-row items-center">
                     <img src="assets/Ellipse 24.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full mb-4 sm:mb-0">
                     <div class="sm:ml-6">
-                        <h3 class="text-zinc-900 text-xl sm:text-2xl font-semibold font-poppins">Shadow Light</h3>
+                        <h3 class="text-zinc-900 text-xl sm:text-2xl font-semibold font-poppins">Lumière d'Ombre</h3>
                         <p class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
                             Lorem ipsum dolor sit amet consectetur. Convallis est urna adipiscing fringilla nulla diam lorem non mauris.
                         </p>
                         <div class="flex space-x-4 mt-4 text-zinc-900 text-lg font-semibold font-poppins">
-                            <span>View</span>
-                            <span>Reply</span>
+                            <span>Voir</span>
+                            <span>Répondre</span>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="flex justify-center mt-8">
-                <button class="px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-lg sm:text-xl font-semibold font-poppins rounded-[40px] shadow-lg">
-                    View All
+                <button onclick="window.location.href='/signup'" class="px-4 py-3 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-lg sm:text-xl font-semibold font-poppins rounded-[40px] shadow-lg">
+                    Voir tout
                 </button>
             </div>
         </section>
@@ -132,97 +134,97 @@
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Your Well-Wisher</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Votre Bienfaiteur</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Depression</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychology</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Dépression</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        I believe that mental health is a key component of well-being and success. I use evidence based and holistic approaches.
+                        Je crois que la santé mentale est une composante clé du bien-être et du succès. J'utilise des approches fondées sur des preuves et holistiques.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Helping hands</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Mains Secourables</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiety</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Depression</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiété</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Dépression</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        I believe in following my passion, so I do it through creating mindful beings and creating happy lives on earth.
+                        Je crois en la poursuite de ma passion, alors je le fais en créant des êtres conscients et en favorisant des vies heureuses sur terre.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 20.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Smiley</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Sourire</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiety</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychology</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Anxiété</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        My goal as an empathetic practitioner is creating a secure therapeutic environment for clients. I employ versatile approach to meet individual needs.
+                        Mon objectif en tant que praticien empathique est de créer un environnement thérapeutique sécurisé pour les clients. J'emploie une approche polyvalente pour répondre aux besoins individuels.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shellow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Peaceful mind</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Esprit Paisible</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Schizophrenia</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Depression</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Schizophrénie</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Dépression</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        In my practice, I believe that the effectiveness of therapy relies on the individual’s willingness to make it work.
+                        Dans ma pratique, je crois que l'efficacité de la thérapie repose sur la volonté de l'individu à la faire fonctionner.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Zuzutsu Kaisen</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Éclat d'Esprit</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Bipolar</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychology</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Bipolaire</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        My aim is to provide people with a space to express themselves in a non-judgemental environment, and gain insights regarding their behaviour.
+                        Mon objectif est d'offrir aux gens un espace pour s'exprimer dans un environnement sans jugement et de mieux comprendre leur comportement.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-gray-50 rounded-3xl shadow-lg flex flex-col items-center p-6">
                     <div class="w-20 h-20 sm:w-24 sm:h-24 bg-gradient-to-b from-teal-300 to-sky-800 rounded-full"></div>
                     <img src="assets/Ellipse 20.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 -mt-20 sm:-mt-24 rounded-full">
-                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Yours truly</div>
+                    <div class="text-indigo-950 text-base sm:text-lg font-semibold font-poppins mt-4">Guide Bienveillant</div>
                     <div class="flex space-x-2 mt-4">
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Bipolar</button>
-                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychology</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Bipolaire</button>
+                        <button class="px-3 py-1 bg-gray-50 rounded-3xl border border-indigo-950/50 text-indigo-950 text-xs font-normal font-poppins">Psychologie</button>
                     </div>
                     <p class="mt-4 text-indigo-950 text-sm font-normal font-poppins leading-relaxed">
-                        I am a psychologist who plays the role of a friend and guide to many, to achieve betterment. I believe tough times are nothing but the best teacher in life.
+                        Je suis un psychologue qui joue le rôle d'ami et de guide pour beaucoup, pour atteindre une amélioration. Je crois que les moments difficiles sont les meilleurs enseignants de la vie.
                     </p>
-                    <button class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 px-4 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">
+                        Démarrer le chat
                     </button>
                 </div>
             </div>
         </section>
 
- <!-- Footer -->
+        <!-- Footer -->
         <footer class="mt-20 sm:mt-32 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -289,7 +291,7 @@
                 <div>
                     <h3 class="text-lg font-bold text-indigo-950">Contact</h3>
                     <ul class="mt-4 space-y-2">
-                        <li class="text-neutral-500">contactzenaura@esprit.tn</li>
+                        <li class="text-neutral-500">contactzenaura&#64;esprit.tn</li>
                         <li class="text-neutral-500">+216 99 999 999</li>
                         <li class="text-neutral-500">Bâtiment C, Esprit Universitaire</li>
                     </ul>
