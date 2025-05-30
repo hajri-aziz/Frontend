@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { User } from 'src/app/models/user.model';
+import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -13,7 +14,8 @@ export class CreateAccountComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    public toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -36,10 +38,12 @@ export class CreateAccountComponent implements OnInit {
     this.userService.register(user).subscribe(
       (response) => {
         console.log('Utilisateur ajouté avec succès:', response);
+        this.toastService.showSuccess('Utilisateur ajouté avec succès !');
         this.createAccountForm.reset(); // Optionnel : reset du formulaire
       },
       (error) => {
         console.error('Erreur lors de l\'ajout de l\'utilisateur:', error);
+        this.toastService.showError(error.error.message || 'Une erreur s\'est produite lors de l\'ajout de l\'utilisateur.');
       }
     );
   }

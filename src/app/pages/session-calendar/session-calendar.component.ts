@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CoursSessionService } from '../../services/cours-session.service';
 import { BookingService } from '../../services/booking.service';
 import { UserService } from 'src/app/services/user.service';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-session-calendar',
@@ -9,6 +11,7 @@ import { UserService } from 'src/app/services/user.service';
   styleUrls: ['./session-calendar.component.scss']
 })
 export class SessionCalendarComponent implements OnInit {
+  currentDate!: Date;
   calendarDays: any[] = [];
   selectedDate: Date | null = null;
   currentMonthYear: string = '';
@@ -20,6 +23,8 @@ export class SessionCalendarComponent implements OnInit {
   userId: string | null = null;
   errorMessage: string | null = null;
   successMessage: string | null = null;
+
+  coursId: string = ''; // <-- Ajout de la propriété coursId
   
   // Propriétés pour l'admin
   isAdmin: boolean = false;
@@ -33,13 +38,15 @@ export class SessionCalendarComponent implements OnInit {
   constructor(
     private sessionService: CoursSessionService,
     private bookingService: BookingService,
-    private userService: UserService
+    private userService: UserService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
     this.userId = localStorage.getItem('userId');
     this.checkIfAdmin();
     this.loadAllSessions();
+    this.currentDate = new Date();
     this.generateCalendar(new Date());
     if (this.isAdmin) {
       this.loadAllUsers();
@@ -110,7 +117,7 @@ export class SessionCalendarComponent implements OnInit {
       }
     });
   }
-getUserFullName(user: any): string {
+ getUserFullName(user: any): string {
   // Cas 1 : si user est un objet avec les champs attendus (cas `.populate`)
   if (user && typeof user === 'object') {
     if (user.firstname && user.lastname) {
@@ -205,6 +212,7 @@ getUserFullName(user: any): string {
   generateCalendar(date: Date): void {
     const year = date.getFullYear();
     const month = date.getMonth();
+    this.currentDate = new Date(date.getFullYear(), date.getMonth(), 1);
     const firstDay = new Date(year, month, 1);
     const lastDay = new Date(year, month + 1, 0);
     const daysInMonth = lastDay.getDate();
@@ -225,27 +233,23 @@ getUserFullName(user: any): string {
       this.calendarDays.push({ date: dayDate, isOtherMonth: false, day: i });
     }
 
-    this.currentMonthYear = date.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
+    this.currentMonthYear = this.currentDate.toLocaleString('fr-FR', { month: 'long', year: 'numeric' });
   }
 
   /**
    * Passe au mois précédent
    */
-  previousMonth(): void {
-    const firstVisibleDay = this.calendarDays[0].date;
-    const newDate = new Date(firstVisibleDay);
-    newDate.setMonth(newDate.getMonth() - 1);
-    this.generateCalendar(newDate);
+  previousMonth() {
+    const prev = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() - 1, 1);
+    this.generateCalendar(prev);
   }
 
   /**
    * Passe au mois suivant
    */
-  nextMonth(): void {
-    const firstVisibleDay = this.calendarDays[0].date;
-    const newDate = new Date(firstVisibleDay);
-    newDate.setMonth(newDate.getMonth() + 1);
-    this.generateCalendar(newDate);
+ nextMonth() {
+    const next = new Date(this.currentDate.getFullYear(), this.currentDate.getMonth() + 1, 1);
+    this.generateCalendar(next);
   }
 
   /**
@@ -537,6 +541,9 @@ getUserFullName(user: any): string {
     }
   });
 }
+ goBack(): void {
+    this.router.navigate(['/cours']);
+  }
 
 
 }

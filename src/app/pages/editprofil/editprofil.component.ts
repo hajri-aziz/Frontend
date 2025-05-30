@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastService } from 'src/app/services/toast.service';
 import { UserService } from 'src/app/services/user.service';
 
 @Component({
@@ -18,7 +19,8 @@ export class EditprofilComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private userService: UserService,
-    private router: Router
+    private router: Router,
+    public toastService: ToastService
   ) {
     this.userForm = this.fb.group({
       nom: [''],
@@ -112,8 +114,8 @@ export class EditprofilComponent implements OnInit {
   
     this.userService.updateUser(userId, formData).subscribe({
       next: (response) => {
-        console.log('Profil mis à jour avec succès !', response);
-        alert('Votre profil a été mis à jour.');
+        
+        this.toastService.showSuccess('Votre profil a été mis à jour avec succès !');
         
         // Mise à jour de l'image après upload
         if (response.profileImage) {
@@ -121,8 +123,7 @@ export class EditprofilComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Erreur lors de la mise à jour:', err);
-        alert(`Erreur lors de la mise à jour: ${err.error?.message || err.message}`);
+        this.toastService.showError('Erreur lors de la mise à jour du profil.');
       }
     });
   }

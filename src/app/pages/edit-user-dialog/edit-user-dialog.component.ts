@@ -1,8 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from 'src/app/services/user.service';
 import { User } from 'src/app/models/user.model';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
   selector: 'app-edit-user-dialog',
@@ -15,35 +16,46 @@ export class EditUserDialogComponent implements OnInit {
     private fb: FormBuilder,
     private userService: UserService,
     public dialogRef: MatDialogRef<EditUserDialogComponent>,
+    public toastService: ToastService,
     @Inject(MAT_DIALOG_DATA) public data: User
   ) {}
 
   ngOnInit(): void {
     this.editForm = this.fb.group({
-      
-      email: [this.data.email],
-      role: [this.data.role],
-      isApproved: [this.data.isApproved]
+      email: [this.data.email, [Validators.required, Validators.email]],
+      role: [this.data.role, Validators.required],
+      isApproved: [this.data.isApproved, Validators.required]
     });
   }
-  
 
   onSave(): void {
-    const updatedUser: User = { ...this.data, ...this.editForm.value };
+    if (this.editForm.invalid) {
+      return;
+    }
 
     const formData = new FormData();
-    for (const key in updatedUser) {
-      if (Object.prototype.hasOwnProperty.call(updatedUser, key)) {
-        formData.append(key, (updatedUser as any)[key]); // 👈 cast en any ici
-      }
-    }
-    console.log("Données envoyées :", this.editForm.value);
+    // Ajoutez seulement les champs nécessaires
+    formData.append('email', this.editForm.value.email);
+    formData.append('role', this.editForm.value.role);
+    // Convertir le booléen en string si nécessaire
+    formData.append('isApproved', this.editForm.value.isApproved.toString());
+
+    console.log("Données envoyées :", {
+      email: this.editForm.value.email,
+      role: this.editForm.value.role,
+      isApproved: this.editForm.value.isApproved
+    });
+
     this.userService.updateUser(this.data._id!, formData).subscribe({
-      next: () => {
+      next: (updatedUser) => {
+        console.log('Mise à jour réussie', updatedUser);
         this.dialogRef.close(updatedUser);
+        this.toastService.showSuccess('Utilisateur mis à jour avec succès !');
       },
       error: (err) => {
         console.error('Erreur lors de la mise à jour :', err);
+        this.toastService.showError(err.error.message || 'Une erreur s\'est produite lors de la mise à jour de l\'utilisateur.');
+        // Ajoutez ici un message d'erreur à l'utilisateur si nécessaire
       },
     });
   }
