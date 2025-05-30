@@ -6,6 +6,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { Chart } from 'chart.js/auto';
+import { PickerModule } from '@ctrl/ngx-emoji-mart';
 
 
 
@@ -137,6 +138,7 @@ import { SafeUrlPipe } from './pipes/safe-url.pipe';
     FormsModule,
     MatDialogModule,
     BrowserAnimationsModule,
+    PickerModule,
   ],
   bootstrap: [AppComponent]
 })

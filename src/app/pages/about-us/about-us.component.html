@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zenaura - About Us</title>
+    <title>Zenaura - À propos de nous</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
 </head>
@@ -22,7 +22,7 @@
                     <a href="/contact" class="hover:text-teal-500">Contact</a>
                     <a href="/about" class="hover:text-teal-500">À propos de nous</a>
                 </div>
-                <button (click)="navigateToLogin()" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
+                <button onclick="window.location.href='/signup'" class="px-6 py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl shadow-lg">Se connecter</button>
             </div>
             <!-- Mobile Menu Button -->
             <button class="md:hidden text-indigo-950 focus:outline-none">
@@ -32,120 +32,119 @@
             </button>
         </nav>
         <!-- Mobile Menu (Hidden by Default) -->
-        <div class="md:hidden hidden flex-col space-y-2 text-zinc-500 text-base font-semibold font-poppins bg-white p-4 rounded-lg">
+        <div class='md:hidden hidden flex-col space-y-2 text-zinc-500 text-base font-semibold font-poppins bg-white p-4 rounded-lg'>
             <a href="/" class="hover:text-teal-500">Accueil</a>
             <a href="/services" class="hover:text-teal-500">Services</a>
-            <a href="#" class="hover:text-teal-500">Contact</a>
+            <a href="/contact" class="hover:text-teal-500">Contact</a>
             <a href="/about" class="hover:text-teal-500">À propos de nous</a>
-            <button  (click)="navigateToLogin()" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
+            <button onclick="window.location.href='/signup'" class="w-full py-2 bg-gradient-to-br from-teal-300 to-sky-700 text-white text-base font-semibold font-poppins rounded-3xl">Se connecter</button>
         </div>
 
         <!-- Header Section -->
         <section class="bg-gradient-to-b from-blue-100 to-teal-100 py-12 sm:py-16 px-4 sm:px-6">
             <div class="flex items-center space-x-4">
                 <div class="w-1 h-32 sm:h-40 bg-sky-800"></div>
-                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">About Us</h1>
+                <h1 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-extrabold font-manrope">À propos de nous</h1>
             </div>
             <p class="mt-6 text-sky-800 text-base sm:text-lg font-normal font-poppins max-w-4xl">
-                Our website offers a range of services to support your well-being, including online therapy sessions with licensed professionals, community forums for peer support, and personalized mental health assessments.
+                Notre site web propose une gamme de services pour soutenir votre bien-être, y compris des sessions de thérapie en ligne avec des professionnels agréés, des forums communautaires pour un soutien entre pairs et des évaluations personnalisées de la santé mentale.
             </p>
         </section>
 
         <!-- Consultants Section -->
         <section class="mt-12 sm:mt-16 bg-white py-12 sm:py-16 px-4 sm:px-6">
             <h2 class="text-center text-3xl sm:text-4xl md:text-3xl font-bold font-poppins max-w-3xl mx-auto">
-                <span class="text-zinc-900">Discover the Faces Behind Our</span>
-                <span class="text-teal-300"> Mental Health</span>
-                <span class="text-zinc-900"> Consultants</span>
+                <span class="text-zinc-900">Découvrez les visages de nos</span>
+                <span class="text-teal-300"> consultants en santé mentale</span>
             </h2>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 20.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Your Well Wisher</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Votre Bienfaiteur</div>
                     <div class="mt-4 text-zinc-600 text-sm sm:text-base font-normal font-poppins">
-                        <p>M.Phil Clinical Psychology (RCI)</p>
-                        <p>Diploma in Guidance & Counseling</p>
-                        <p>M.A. Psychology</p>
-                        <p>B.A. (Hons) Psychology</p>
-                        <p class="font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>M.Phil Psychologie Clinique (RCI)</p>
+                        <p>Diplôme en Orientation et Conseil</p>
+                        <p>M.A. Psychologie</p>
+                        <p>B.A. (Hons) Psychologie</p>
+                        <p class="font-semibold">Adresse :</p>
+                        <p>Departement C , Esprit</p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Helping hands</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Mains Secourables</div>
                     <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
-                        <p>M.A Counselling Psychology</p>
-                        <p>APA Member</p>
-                        <p>Certified NLP practitioner</p>
-                        <p>Certified Relationship Coach</p>
-                        <p class="text-zinc-600 font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>M.A. Psychologie du Conseil</p>
+                        <p>Membre APA</p>
+                        <p>Praticien certifié PNL</p>
+                        <p>Coach en relations certifié</p>
+                        <p class="text-zinc-600 font-semibold">Adresse :</p>
+                        <p>Lac 2 , Rue des oiseaux</p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Smiley</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Sourire</div>
                     <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
-                        <p>M. Phil. Clinical Psychology</p>
-                        <p>Masters in Psychology</p>
-                        <p>Bachelors in Psychology</p>
-                        <p>Post graduate diploma in counselling and family therapy</p>
-                        <p class="text-zinc-600 font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>M. Phil. Psychologie Clinique</p>
+                        <p>Master en Psychologie</p>
+                        <p>Licence en Psychologie</p>
+                        <p>Diplôme de troisième cycle en conseil et thérapie familiale</p>
+                        <p class="text-zinc-600 font-semibold">Adresse :</p>
+                        <p>hopital militaire ,3eme etage</p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 22.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Peaceful mind</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Esprit Paisible</div>
                     <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
-                        <p>PhD Psychology</p>
-                        <p>Masters in Psychology</p>
-                        <p class="text-zinc-600 font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>Doctorat en Psychologie</p>
+                        <p>Master en Psychologie</p>
+                        <p class="text-zinc-600 font-semibold">Adresse :</p>
+                        <p>direction el ghazela</p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 21.png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Zuzutsu Kaisen</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Lumière Intérieure</div>
                     <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
-                        <p>Phd in Clinical Psychology</p>
-                        <p>APA Certified</p>
-                        <p class="text-zinc-600 font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>Doctorat en Psychologie Clinique</p>
+                        <p>Certifié APA</p>
+                        <p class="text-zinc-600 font-semibold">Adresse :</p>
+                        <p>Mohamed 5 , rue de la liberté</p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
                 <div class="bg-white rounded-[30px] shadow-lg border-2 border-neutral-400 flex flex-col items-center p-6">
                     <img src="assets/Ellipse 21 (1).png" alt="Avatar" class="w-20 h-20 sm:w-24 sm:h-24 rounded-full border border-zinc-400">
-                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Yours truly</div>
+                    <div class="text-zinc-900 text-lg sm:text-xl font-semibold font-poppins mt-4">Compagnon Fidèle</div>
                     <div class="mt-4 text-neutral-400 text-sm sm:text-base font-normal font-poppins">
-                        <p>Masters in Counseling Psychology</p>
-                        <p class="text-zinc-600 font-semibold">Address:</p>
-                        <p>Any City, XYZ MP</p>
+                        <p>Master en Psychologie du Conseil</p>
+                        <p class="text-zinc-600 font-semibold">Adresse :</p>
+                        <p>lac 2 </p>
                     </div>
-                    <button class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
-                        Start Chat
+                    <button onclick="window.location.href='/signup'" class="mt-4 w-36 h-10 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-base font-bold font-poppins rounded-[30px]">
+                        Démarrer le chat
                     </button>
                 </div>
             </div>
             <div class="flex justify-center mt-8">
-                <button class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
-                    View All
+                <button onclick="window.location.href='/signup'" class="w-48 h-12 bg-gradient-to-r from-teal-300 to-sky-800 text-white text-lg font-bold font-poppins rounded-full">
+                    Voir tout
                 </button>
             </div>
         </section>
@@ -157,13 +156,13 @@
                 <div class="flex flex-col space-y-6 max-w-lg">
                     <h2 class="text-sky-800 text-3xl sm:text-4xl md:text-5xl font-bold font-poppins text-center md:text-left">Zenaura</h2>
                     <p class="text-sky-800 text-base sm:text-lg md:text-xl font-normal font-poppins">
-                        Our mental health counselors are highly qualified professionals with extensive experience in their fields, providing expert support and guidance tailored to individual needs. Trust in their expertise to navigate and address your mental health concerns effectively.
+                        Nos conseillers en santé mentale sont des professionnels hautement qualifiés avec une vaste expérience dans leurs domaines, offrant un soutien et des conseils spécialisés adaptés aux besoins individuels. Faites confiance à leur expertise pour naviguer et traiter efficacement vos préoccupations en matière de santé mentale.
                     </p>
                 </div>
             </div>
         </section>
 
-<!-- Footer -->
+        <!-- Footer -->
         <footer class="mt-20 sm:mt-32 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -230,7 +229,7 @@
                 <div>
                     <h3 class="text-lg font-bold text-indigo-950">Contact</h3>
                     <ul class="mt-4 space-y-2">
-                        <li class="text-neutral-500">contactzenaura@esprit.tn</li>
+                        <li class="text-neutral-500">contactzenaura&#64;esprit.tn</li>
                         <li class="text-neutral-500">+216 99 999 999</li>
                         <li class="text-neutral-500">Bâtiment C, Esprit Universitaire</li>
                     </ul>
