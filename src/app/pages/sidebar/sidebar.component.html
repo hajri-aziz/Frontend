@@ -1,11 +1,11 @@
 <style>
- .sidebar a {
-  text-decoration: none;
-}
+  .sidebar a {
+    text-decoration: none;
+  }
 
-.sidebar a:hover {
-  text-decoration: none; /* Assure-toi qu'il n'y a pas de soulignement au survol */
-}
+  .sidebar a:hover {
+    text-decoration: none; /* Assure-toi qu'il n'y a pas de soulignement au survol */
+  }
 </style>
 <div class="flex flex-col md:flex-row max-w-7xl mx-auto font-sans sidebar">
   <!-- Sidebar -->
@@ -19,22 +19,58 @@
 
     <!-- Sidebar Content -->
     <div class="hidden md:flex flex-col h-full p-6">
-      <!-- Logo -->
-      <div class="flex items-center space-x-3 mb-6">
-        <img src="assets/logo.png" alt="Zenaura Logo" class="w-14 h-14" />
+      <!-- Logo and Notification -->
+      <div class="flex items-center space-x-3 mb-6 relative">
+        <img src="assets/logo.png" alt="Zenaura Logo" class="w-16 h-16" />
         <span class="text-xl font-semibold text-[#172048]">Zenaura</span>
+        <!-- Notification Icon -->
+          <div class="relative ml-auto mr-8 mt-2">
+            <button (click)="toggleNotificationMenu()" class="focus:outline-none relative" aria-label="Notifications">
+            <img 
+              src="assets/cloche (1).png" 
+              alt="Notification Icon" 
+              class="w-6 h-6 notification-icon transition"
+            />
+            <!-- Unread Count Badge -->
+            <span *ngIf="unreadNotificationsCount > 0" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">
+              {{ unreadNotificationsCount }}
+            </span>
+          </button>
+          <!-- Notification Dropdown -->
+          <div *ngIf="isNotificationMenuOpen" class="absolute left-0 mt-2 w-64 bg-white rounded-md shadow-lg py-1 z-50 max-h-96 overflow-y-auto">
+            <div *ngIf="notifications.length === 0" class="px-4 py-2 text-sm text-gray-500 text-center">
+              Aucune notification
+            </div>
+            <div *ngFor="let notification of notifications" (click)="markAsRead(notification._id!)" class="flex items-start px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-b-0" [ngClass]="{'bg-gray-100': !notification.lu}">
+              <div class="w-2 h-2 bg-[#04789d] rounded-full mt-1.5 mr-2" *ngIf="!notification.lu"></div>
+              <div class="flex-1">
+                <div class="flex justify-between items-center">
+                  <p class="font-medium capitalize" [ngClass]="{'text-[#04789d]': !notification.lu}">{{ notification.type }}</p>
+                  <span class="text-xs text-gray-500" [ngClass]="{'text-[#04789d]': !notification.lu}">{{ notification.envoye ? 'Envoyé' : 'Non envoyé' }}</span>
+                </div>
+                <p class="text-sm mt-1">{{ notification.message }}</p>
+                <p class="text-xs text-gray-500 mt-1">Rappel: {{ notification.date_rappel | date:'medium' }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- Profile -->
       <div class="flex flex-col items-center my-10">
         <img [src]="profileImageUrl" alt="Profile Image" class="w-20 h-20 rounded-full shadow" />
-        <p class="text-gray-700 text-lg font-semibold mt-4">Admin</p>
+        <div *ngIf="nom || prenom" class="text-center mt-4">
+          <p class="text-gray-700 text-lg font-semibold">
+            {{ prenom }} {{ nom }}
+          </p>
+        </div>
+        <div *ngIf="!(nom || prenom)" class="text-center mt-4">
+          <p class="text-gray-500 italic">Chargement du profil...</p>
+        </div>
       </div>
-      
 
       <!-- Navigation -->
       <nav class="flex flex-col space-y-4">
-
         <!-- Dashboard -->
         <a routerLink="/editprofil"
           class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
@@ -64,8 +100,8 @@
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
           <img src="assets/contact-us.png" alt="Messages Icon" class="w-5 h-5" />
-          <span> Boîte de réception</span>
-</a>
+          <span>Boîte de réception</span>
+        </a>
         <!-- Liste Utilisateurs -->
         <a routerLink="/list-user"
           class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
@@ -84,7 +120,7 @@
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
           <img src="assets/calendrier.png" alt="Planning Icon" class="w-5 h-5" />
-          <span>Tableau bord planning</span>
+          <span>PlanManager</span>
         </a> 
         <!-- Dashboard Cours -->
         <a routerLink="/dashboard-cours"
@@ -93,10 +129,9 @@
           <ng-container *ngIf="router.url === '/dashboard-cours'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
-          <img src="assets/calendrier.png" alt="Dashboard Cours Icon" class="w-5 h-5" />
-          <span>Tableau de bord Cours</span>
+          <img src="assets/analytique.png" alt="Dashboard Cours Icon" class="w-5 h-5" />
+          <span>Suivi des Cours</span>
         </a>
-
 
         <!-- Espace planning Patient -->
         <a routerLink="/rendz-inscri"
@@ -106,7 +141,7 @@
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
           <img src="assets/planification-devenements.png" alt="Planning Icon" class="w-5 h-5" />
-          <span>Espace planning Patient</span>
+          <span>PlanifMoi</span>
         </a>
 
         <!-- Forum -->
@@ -116,11 +151,11 @@
           <ng-container *ngIf="router.url === '/social-feed'">
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
-          <img src="assets/reseaux-sociaux.png" alt="Forum Icon" class="w-5 h-5" />
-          <span>Forum</span>
+          <img src="assets/reseaux-sociaux (3).png" alt="Forum Icon" class="w-5 h-5" />
+          <span>MurSocial</span>
         </a>
 
-         <!-- Liste des Cours -->
+        <!-- Liste des Cours -->
         <a routerLink="/cours" class="flex items-center space-x-3 font-medium text-base hover:text-[#035e7d] transition"
            [ngClass]="{ 'text-[#04789d] font-semibold': router.url.startsWith('/cours'), 'text-gray-600': !router.url.startsWith('/cours') }">
           <ng-container *ngIf="router.url.startsWith('/cours')">
@@ -129,7 +164,6 @@
           <img src="assets/dictionnaire.png" alt="Cours Icon" class="w-5 h-5" />
           <span>Liste des cours</span>
         </a>
-
       </nav>
 
       <!-- Logout -->

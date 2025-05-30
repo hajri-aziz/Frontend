@@ -43,7 +43,7 @@ console.log(credentials);
         console.log('ID de l\'utilisateur enregistré :', res.user.id);
         this.toastService.showSuccess('Connexion réussie !');
         setTimeout(() => {
-          this.router.navigate(['/editprofil']);
+          this.router.navigate(['/social-feed']);
         }, 1000); // 1 seconde de délai
       },
       error: (err:any) => {

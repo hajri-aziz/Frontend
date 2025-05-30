@@ -18,6 +18,10 @@ export class SessionDetailComponent implements OnInit {
     userId: string | null = null;
     sessionId: string = '';
     error: string | null = null;
+    loading   = false;
+    message   = '';
+    inscriptionLoading = false;
+    inscriptionMessage: string | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -58,19 +62,17 @@ export class SessionDetailComponent implements OnInit {
     });
   }
 
-  private getUserIdFromToken(): string | null {
+    private getUserIdFromToken(): string | null {
     const token = localStorage.getItem('token');
     if (!token) return null;
-    
     try {
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      return payload.userId || null;
-    } catch (e) {
-      console.error('Error decoding token', e);
+      const payload: any = JSON.parse(atob(token.split('.')[1]));
+      // Votre back renvoie un champ "id"
+      return payload.id?.toString() ?? null;
+    } catch {
       return null;
     }
   }
-
   loadCoursDetails(coursId: string): void {
     const resolvedCoursId = typeof this.session.cours_id === 'string'
       ? this.session.cours_id
@@ -88,39 +90,46 @@ export class SessionDetailComponent implements OnInit {
   }
 
   isRegistered(): boolean {
-    if (!this.userId || !this.session) return false;
-    return this.session.participants.some((p: any) => p.user_id === this.userId);
-  }
+  if (!this.userId || !this.session) return false;
+  return this.session.participants.some((p: any) =>
+    p.user_id._id?.toString() === this.userId
+  );
+}
 
-  registerToSession(): void {
+  toggleRegistration(): void {
     if (!this.userId) {
-      alert('Vous devez être connecté pour vous inscrire');
+      this.inscriptionMessage = 'Vous devez être connecté pour vous (dés)inscrire.';
       return;
     }
 
-    if (!this.sessionId) return;
+    this.inscriptionLoading = true;
+    this.inscriptionMessage = null;
 
-    this.sessionService.inscrireUtilisateur(this.sessionId, this.userId).subscribe({
-      next: () => {
-        this.loadSessionDetail(this.sessionId); // Recharger les détails
+    const obs = this.isRegistered()
+      ? this.sessionService.annulerInscription(this.sessionId, this.userId)
+      : this.sessionService.inscrireUtilisateur(this.sessionId, this.userId);
+
+    obs.subscribe({
+      next: (res: any) => {
+        // Affichage du message
+        if (res.success !== undefined) {
+          this.inscriptionMessage = res.success
+            ? (this.isRegistered()
+                ? 'Désinscription réussie.'
+                : 'Inscription réussie ! Un email de confirmation a été envoyé.')
+            : 'Opération effectuée mais échec de l’envoi de l’email.';
+        } else {
+          this.inscriptionMessage = 'Opération réussie.';
+        }
+        // on recharge les données
+        this.loadSessionDetail(this.sessionId);
       },
-      error: (err) => {
-        console.error('Erreur lors de l\'inscription', err);
-        this.error = 'Erreur lors de l\'inscription à la session';
-      }
-    });
-  }
-
-  cancelRegistration(): void {
-    if (!this.userId || !this.sessionId) return;
-
-    this.sessionService.annulerInscription(this.sessionId, this.userId).subscribe({
-      next: () => {
-        this.loadSessionDetail(this.sessionId); // Recharger les détails
+      error: err => {
+        this.inscriptionMessage = err.error?.message || 'Erreur durant l’opération.';
+        this.inscriptionLoading = false;
       },
-      error: (err) => {
-        console.error('Erreur lors de l\'annulation', err);
-        this.error = 'Erreur lors de l\'annulation de l\'inscription';
+      complete: () => {
+        this.inscriptionLoading = false;
       }
     });
   }

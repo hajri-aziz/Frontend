@@ -30,12 +30,12 @@ export class NotificationService {
     );
   }
 
-  // Marquer une notification comme lue
+// Marquer une notification comme lue
   markNotificationAsRead(id: string): Observable<{ message: string; notification: Notification }> {
-    return this.http.put<{ message: string; notification: Notification }>(`${this.apiUrl}/notifications/${id}/lu`, { headers: this.getAuthHeaders() }).pipe(
+    return this.http.put<{ message: string; notification: Notification }>(`${this.apiUrl}/notifications/lu/${id}`, {}, { headers: this.getAuthHeaders() }).pipe(
       catchError((error) => {
         console.error('Erreur:', error);
-        return throwError('Erreur lors de la mise à jour de la notification');
+        return throwError(() => new Error('Erreur lors de la mise à jour de la notification'));
       })
     );
   }
