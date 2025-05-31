@@ -43,7 +43,7 @@ export class NavbarComponent implements OnInit {
       next: () => {
         localStorage.removeItem('token');
         this.toastService.showSuccess('Deconnexion réussie !');
-        this.router.navigate(['/login']); // Redirige vers la page de login
+        this.router.navigate(['/home']); // Redirige vers la page de login
       },
       error: (err) => {
         console.error('Erreur lors de la déconnexion:', err);

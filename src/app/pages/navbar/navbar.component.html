@@ -12,7 +12,7 @@
         </svg>
       </button>
     </div>
- 
+
     <!-- Desktop and Mobile Menu -->
     <div class="md:flex md:items-center md:justify-between" [ngClass]="{'hidden': !isMobileMenuOpen, 'md:flex': true}">
       <!-- Logo (Desktop) -->
@@ -20,7 +20,7 @@
         <img src="assets/logo.png" alt="Zenaura Logo" class="w-12 h-12 transition-transform hover:scale-105" />
         <span class="text-xl font-semibold text-[#172048] hover:text-[#04789d] transition">Zenaura</span>
       </div>
- 
+
       <!-- Navigation Links -->
       <div class="flex flex-col md:flex-row md:items-center md:space-x-6 w-full md:w-auto md:flex-1 md:justify-center">
         <!-- Forum -->
@@ -33,7 +33,7 @@
             <div class="w-2 h-2 bg-[#04789d] rounded-full"></div>
           </ng-container>
           <img src="assets/reseaux-sociaux (2).png" alt="Forum Icon" class="w-5 h-5 group-hover:opacity-80" />
-          <span>MurSocial</span>
+          <span>Forum</span>
         </a>
         <!-- Planning -->
         <a routerLink="/rendz-inscri"
@@ -47,8 +47,7 @@
           <img src="assets/calendrier (1).png" alt="Planning Icon" class="w-5 h-5 group-hover:opacity-80" />
           <span>PlanifMoi</span>
         </a>
-
-        <!-- cours -->
+        <!-- Cours -->
         <a routerLink="/cours"
            class="group flex items-center space-x-2 font-medium text-base transition py-3 md:py-4 px-2 rounded-lg" [ngClass]="{
              'text-[#04789d] bg-[#f0f9fb] font-semibold': router.url === '/cours',
@@ -61,6 +60,7 @@
           <span>Liste cours</span>
         </a>
       </div>
+
       <!-- Right Side: Notifications and Profile -->
 <div class=" flex items-center">
   <!-- Notification Icon (Separated) -->
@@ -89,6 +89,9 @@
           </div>
           <p class="text-sm mt-1">{{ notification.message }}</p>
           <p class="text-xs text-gray-500 mt-1">Rappel: {{ notification.date_rappel | date:'medium' }}</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Profile Dropdown (Separated) -->
@@ -103,7 +106,7 @@
         <img src="assets/profilnavbar.png" alt="Profile Icon" class="w-5 h-5 mr-2 opacity-80" />
         Mon Profil
       </a>
-      <a routerLink="/home" 
+      <a (click)="logout()"  
          class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600">
         <img src="assets/se-deconnecter.png" alt="Logout Icon" class="w-5 h-5 mr-2 opacity-80" />
         Déconnexion

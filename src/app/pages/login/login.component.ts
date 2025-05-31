@@ -11,7 +11,7 @@ import { NgForm } from '@angular/forms';
 export class LoginComponent implements OnInit {
   email: string = '';
   password: string = '';
-  redirectUrl = '/editprofil';
+  redirectUrl = '/social-feed';
   showPassword: boolean = false;
 
   constructor(
@@ -56,13 +56,8 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('userId', res.user.id);
         this.toastService.showSuccess('Connexion réussie !');
         setTimeout(() => {
-<<<<<<< HEAD
-          this.router.navigate(['/social-feed']);
-        }, 1000); // 1 seconde de délai
-=======
           this.router.navigateByUrl(this.redirectUrl);
         }, 1000);
->>>>>>> 9f5db9898d914d7cdb8030faab00fe28102c5c45
       },
       error: (err: any) => {
         console.error('Erreur :', err);
